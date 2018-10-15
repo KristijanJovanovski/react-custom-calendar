@@ -1,0 +1,11 @@
+.grid {
+  min-width: 300px;
+  width: 100%;
+  display: grid;
+}
+.grid-dates {
+  grid-template-columns: repeat(7, 1fr);
+}
+.grid-months {
+  grid-template-columns: repeat(3, 1fr);
+}

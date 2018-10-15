@@ -1,0 +1,15 @@
+.navigation {
+  min-width: 300px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+}
+.nav-item {
+  padding: 15px 0;
+  text-align: center;
+  user-select: none;
+}
+.nav-item:hover {
+  cursor: pointer;
+  background-color: #aeefe8;
+}

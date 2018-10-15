@@ -1,0 +1,27 @@
+.tile {
+  font-size: 1rem;
+  background-color: #fff;
+  color: #555;
+  user-select: none;
+  text-align: center;
+}
+.tile-date {
+  padding: 5px;
+}
+.tile-month {
+  padding: 15px;
+}
+.tile:hover {
+  cursor: pointer;
+  background-color: #aeefe8;
+}
+.tile .disabled {
+  background-color: gray;
+}
+.tile .selected {
+  background-color: #4093e0;
+  color: #fff;
+}
+.tile .grayed {
+  background-color: lightgray;
+}
