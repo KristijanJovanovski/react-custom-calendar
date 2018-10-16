@@ -3,7 +3,15 @@ import './Grid.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { getMonthsArray, getMonthViewDates } from '../utils/helpers'
+import {
+  getMonthsArray,
+  getMonthViewDates,
+  beforeDates,
+  afterDates,
+  equalDates,
+  beginingOfMonthDateObj,
+  endOfMonthDateObj
+} from '../utils/helpers'
 import Tile from './Tile'
 
 const Grid = ({
@@ -13,8 +21,28 @@ const Grid = ({
   currentStartDate,
   weekends,
   onDrillDown,
-  onDateSelected
+  onDateSelected,
+  minDate,
+  maxDate,
+  disabledDates,
+  availableDates,
+  selectedDates,
+  selectedDate,
+  multiSelect,
+  onMultiSelect,
+  onSingleSelect,
+  onPrev,
+  onNext
 }) => {
+  const selectHandler = (date, selected) => {
+    const selectFn = multiSelect ? onMultiSelect : onSingleSelect
+    if (beforeDates(date, beginingOfMonthDateObj(currentStartDate))) {
+      onPrev && onPrev()
+    } else if (afterDates(date, endOfMonthDateObj(currentStartDate))) {
+      onNext && onNext()
+    }
+    selectFn(date, selected)
+  }
   const isYearView = currentView === 'Year'
   const dates = getMonthViewDates(currentStartDate, calendarType).map(
     (item, idx) => {
@@ -22,6 +50,37 @@ const Grid = ({
       const grayed =
         currentStartDate.getFullYear() !== item.getFullYear() ||
         currentStartDate.getMonth() !== item.getMonth()
+      const selected =
+        (selectedDates &&
+          selectedDates.some(selectedItem => equalDates(item, selectedItem))) ||
+        (selectedDate && equalDates(item, selectedDate))
+      let disabled
+      if (!availableDates) {
+        disabled =
+          (minDate && beforeDates(item, minDate)) ||
+          (maxDate && afterDates(item, maxDate)) ||
+          (disabledDates &&
+            disabledDates.some(disabledItems =>
+              equalDates(disabledItems, item)
+            ))
+      } else if (!minDate && !maxDate) {
+        disabled = !availableDates.some(availableItems =>
+          equalDates(availableItems, item)
+        )
+      } else {
+        disabled =
+          (!availableDates.some(availableItems =>
+            equalDates(availableItems, item)
+          ) &&
+            (minDate &&
+              maxDate &&
+              (beforeDates(item, minDate) || afterDates(item, maxDate)))) ||
+          (disabledDates &&
+            disabledDates.some(disabledItems =>
+              equalDates(disabledItems, item)
+            ))
+      }
+
       let showWeekend
       if (weekends && calendarType === 'ISO 8601') {
         showWeekend = weekend === 5 || weekend === 6
@@ -35,7 +94,10 @@ const Grid = ({
           idx={idx}
           weekend={showWeekend}
           grayed={grayed}
+          disabled={disabled}
+          selected={selected}
           onDateSelected={onDateSelected}
+          onDateSelect={selectHandler}
           value={item}
         />
       )
@@ -61,12 +123,23 @@ const Grid = ({
 
 Grid.propTypes = {
   onDrillDown: PropTypes.func.isRequired,
+  onMultiSelect: PropTypes.func.isRequired,
+  onSingleSelect: PropTypes.func.isRequired,
   currentView: PropTypes.string.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
   onDateSelected: PropTypes.func,
   currentStartDate: PropTypes.instanceOf(Date).isRequired,
   locale: PropTypes.string,
   calendarType: PropTypes.string,
-  weekends: PropTypes.bool
+  weekends: PropTypes.bool,
+  multiSelect: PropTypes.bool,
+  minDate: PropTypes.instanceOf(Date),
+  maxDate: PropTypes.instanceOf(Date),
+  disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  selectedDate: PropTypes.instanceOf(Date)
 }
 
 export default Grid

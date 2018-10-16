@@ -18,6 +18,10 @@ class App extends Component {
             locale={'mk'}
             onDateSelected={this.handleDateSelected}
             weekends
+            minDate={new Date(2018, 9, 3)}
+            maxDate={new Date(2018, 10, 1)}
+            disabledDates={[new Date(2018, 9, 5)]}
+            availableDates={[new Date(2018, 10, 4)]}
           />
         </div>
         <div className="calendar-container">
@@ -26,6 +30,7 @@ class App extends Component {
             locale={'en'}
             calendarType={'ISO 8601'}
             weekends
+            availableDates={[new Date(2018, 10, 5)]}
             onDateSelected={this.handleDateSelected}
           />
         </div>
@@ -34,6 +39,7 @@ class App extends Component {
           <Calendar
             locale={'mk'}
             calendarType={'US'}
+            multiSelect
             onDateSelected={this.handleDateSelected}
           />
         </div>

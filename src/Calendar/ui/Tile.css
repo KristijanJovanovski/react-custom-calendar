@@ -21,16 +21,16 @@
 }
 .disabled,
 .disabled:hover {
-  background-color: gray;
-}
-.selected {
-  background-color: #4093e0;
-  color: #fff;
-}
-.selected:hover {
-  color: #555;
+  background-color: gray !important;
 }
 .grayed {
   background-color: #eae6e6;
+  color: #555;
+}
+.selected {
+  background-color: #4093e0 !important;
+  color: #fff;
+}
+.selected:hover {
   color: #555;
 }

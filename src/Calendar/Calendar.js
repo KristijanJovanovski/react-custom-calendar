@@ -11,14 +11,18 @@ import {
   getDoublePrevDate,
   getNewDate,
   getNextDate,
-  getPrevDate
+  getPrevDate,
+  checkMinMaxDate,
+  checkDate,
+  equalDates
 } from './utils/helpers'
 
 class Calendar extends Component {
   state = {
     currentView: 'Month',
     currentStartDate: new Date(),
-    selectedDates: []
+    selectedDates: [],
+    selectedDate: undefined
   }
 
   handleDrillUp = () => {
@@ -65,12 +69,62 @@ class Calendar extends Component {
     this.setState({ currentStartDate: newDate })
   }
 
+  handleMultiSelect = (date, selected) => {
+    const selectedDates = this.state.selectedDates
+    if (selected) {
+      this.setState({ selectedDates: [...selectedDates, date] })
+    } else {
+      const index = selectedDates.findIndex(stateDate =>
+        equalDates(stateDate, date)
+      )
+      this.setState({
+        selectedDates: [
+          ...selectedDates.slice(0, index),
+          ...selectedDates.slice(index + 1)
+        ]
+      })
+    }
+  }
+  handleSingleSelect = (date, selected) => {
+    if (selected) {
+      this.setState({ selectedDate: date })
+    } else {
+      this.setState({ selectedDate: undefined })
+    }
+  }
+
   render() {
-    const { currentStartDate, currentView } = this.state
-    const { classNames, onDateSelected, weekends } = this.props
+    const {
+      currentStartDate,
+      currentView,
+      selectedDate,
+      selectedDates
+    } = this.state
+    const {
+      classNames,
+      onDateSelected,
+      weekends,
+      minDate,
+      maxDate,
+      disabledDates,
+      availableDates,
+      multiSelect
+    } = this.props
     const monthView = currentView === 'Month'
     const locale = this.props.locale || 'en'
     const calendarType = this.props.calendarType || 'ISO 8601'
+
+    minDate && !maxDate && checkDate(minDate)
+    maxDate && !minDate && checkDate(maxDate)
+    minDate && maxDate && checkMinMaxDate(minDate, maxDate)
+    disabledDates &&
+      disabledDates.forEach(date => {
+        checkDate(date)
+      })
+    availableDates &&
+      availableDates.forEach(date => {
+        checkDate(date)
+      })
 
     return (
       <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
@@ -90,9 +144,20 @@ class Calendar extends Component {
           calendarType={calendarType}
           currentStartDate={currentStartDate}
           locale={locale}
+          minDate={minDate}
+          maxDate={maxDate}
+          selectedDate={selectedDate}
+          selectedDates={selectedDates}
+          disabledDates={disabledDates}
+          availableDates={availableDates}
+          multiSelect={multiSelect}
           weekends={weekends}
           onDrillDown={this.handleDrillDown}
+          onMultiSelect={this.handleMultiSelect}
+          onSingleSelect={this.handleSingleSelect}
           onDateSelected={onDateSelected}
+          onPrev={this.handlePrev}
+          onNext={this.handleNext}
         />
       </div>
     )
@@ -104,6 +169,11 @@ Calendar.propTypes = {
   locale: PropTypes.string,
   weekends: PropTypes.bool,
   calendarType: PropTypes.string,
-  onDateSelected: PropTypes.func
+  onDateSelected: PropTypes.func,
+  multiSelect: PropTypes.bool,
+  minDate: PropTypes.instanceOf(Date),
+  maxDate: PropTypes.instanceOf(Date),
+  disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date))
 }
 export default Calendar

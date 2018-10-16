@@ -6,6 +6,39 @@ export const checkDate = date => {
   }
   throw new Error('Not a date')
 }
+export const checkMinMaxDate = (minDate, maxDate) => {
+  checkDate(minDate)
+  checkDate(maxDate)
+  if (afterDates(minDate, maxDate))
+    throw new Error('Min Date cannot be after Max Date')
+}
+
+export const equalDates = (first, second) => {
+  return (
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate()
+  )
+}
+
+export const beforeDates = (first, second) => {
+  return (
+    first.getFullYear() < second.getFullYear() ||
+    (first.getFullYear() === second.getFullYear() &&
+      (first.getMonth() < second.getMonth() ||
+        (first.getMonth() === second.getMonth() &&
+          first.getDate() < second.getDate())))
+  )
+}
+export const afterDates = (first, second) => {
+  return (
+    first.getFullYear() > second.getFullYear() ||
+    (first.getFullYear() === second.getFullYear() &&
+      (first.getMonth() > second.getMonth() ||
+        (first.getMonth() === second.getMonth() &&
+          first.getDate() > second.getDate())))
+  )
+}
 
 export const getMonthsArray = (locale = 'en') => {
   const monthsArray = Object.keys(months[locale])
@@ -134,14 +167,24 @@ export const getNewDate = (date, type, idx) => {
   }
   return newDate
 }
+export const beginingOfMonthDateObj = date => {
+  const month = date.getMonth()
+  const year = date.getFullYear()
+  return new Date(year, month, 1)
+}
+export const endOfMonthDateObj = date => {
+  const month = date.getMonth()
+  const year = date.getFullYear()
+  return new Date(year, month + 1, 0)
+}
 
 export const getMonthViewDates = (date, type = 'ISO 8601') => {
   checkDate(date)
   let viewDates = []
   const month = date.getMonth()
   const year = date.getFullYear()
-  const currMonthStartDateObj = new Date(year, month, 1)
-  const currMonthEndDateObj = new Date(year, month + 1, 0)
+  const currMonthStartDateObj = beginingOfMonthDateObj(date)
+  const currMonthEndDateObj = endOfMonthDateObj(date)
   const firstDay = currMonthStartDateObj.getDay()
   const lastDay = currMonthEndDateObj.getDay()
   const lastDate = currMonthEndDateObj.getDate()
