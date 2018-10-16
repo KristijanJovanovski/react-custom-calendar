@@ -1,12 +1,15 @@
-import React from 'react'
 import './Header.css'
 
-const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+import PropTypes from 'prop-types'
+import React from 'react'
 
-const Header = () => {
+import { transformWeekDays } from '../utils/helpers'
+
+const Header = ({ locale = 'en', calendarType = 'ISO 8601' }) => {
+  const days = transformWeekDays(locale, calendarType)
   return (
     <div className="header">
-      {days.map((item, idx) => (
+      {days.short.map((item, idx) => (
         <div className="header-item" key={idx}>
           {item}
         </div>
@@ -14,5 +17,8 @@ const Header = () => {
     </div>
   )
 }
-
+Header.propTypes = {
+  locale: PropTypes.string,
+  calendarType: PropTypes.string
+}
 export default Header

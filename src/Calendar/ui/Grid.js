@@ -1,35 +1,44 @@
-import React from 'react'
-// import PropTypes from 'prop-types'
-import Tile from './Tile'
 import './Grid.css'
-const Grid = ({ num }) => {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ]
+
+import PropTypes from 'prop-types'
+import React from 'react'
+
+import { getMonthsArray, getMonthViewDates } from '../utils/helpers'
+import Tile from './Tile'
+
+const Grid = ({
+  locale = 'en',
+  calendarType = 'ISO 8601',
+  currentView,
+  currentStartDate,
+  onDrillDown
+}) => {
+  const isYearView = currentView === 'Year'
   return (
-    <div className={`grid${num ? ' grid-dates' : ' grid-months'}`}>
-      {num
-        ? Array(+num)
-            .fill()
-            .map((item, idx) => idx + 1)
-            .map((n, idx) => <Tile key={idx} val={n} datesType />)
-        : months.map((n, idx) => <Tile key={idx} val={n} />)}
+    <div className={`grid${!isYearView ? ' grid-dates' : ' grid-months'}`}>
+      {isYearView
+        ? getMonthsArray(locale).map((item, idx) => (
+            <Tile
+              key={idx}
+              onDrillDown={idx => onDrillDown(idx, 'Month')}
+              monthType
+              value={item}
+              idx={idx}
+            />
+          ))
+        : getMonthViewDates(currentStartDate, calendarType).map((n, idx) => (
+            <Tile key={idx} idx={idx} value={n} />
+          ))}
     </div>
   )
 }
 
-// Grid.propTypes = {
-// }
+Grid.propTypes = {
+  onDrillDown: PropTypes.func.isRequired,
+  currentView: PropTypes.string.isRequired,
+  currentStartDate: PropTypes.instanceOf(Date).isRequired,
+  locale: PropTypes.string,
+  calendarType: PropTypes.string
+}
 
 export default Grid

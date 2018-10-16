@@ -1,21 +1,46 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import './Tile.css'
-const Tile = ({ val, disabled, selected, grayed, datesType }) => {
+
+import PropTypes from 'prop-types'
+import React from 'react'
+
+const Tile = ({
+  value,
+  disabled,
+  selected,
+  grayed,
+  monthType,
+  onDrillDown,
+  idx,
+  onDateSelected
+}) => {
+  const classes = `tile${disabled ? ' disabled' : ''}${
+    selected ? ' selected' : ''
+  }${grayed ? ' grayed' : ''}${monthType ? ' tile-month' : ' tile-date'}`
+
   return (
-    <div
-      className={`tile${disabled ? ' disabled' : ''}${
-        selected ? ' selected' : ''
-      }${grayed ? ' grayed' : ''}${datesType ? ' tile-date' : ' tile-month'}`}
-    >
-      {val}
-    </div>
+    <>
+      {onDrillDown ? (
+        <div className={classes} onClick={e => onDrillDown(idx)}>
+          {value}
+        </div>
+      ) : (
+        <div
+          className={classes}
+          // onClick={e => onDateSelected(idx)}
+        >
+          {value}
+        </div>
+      )}
+    </>
   )
 }
 
 Tile.propTypes = {
-  val: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  datesType: PropTypes.bool.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  idx: PropTypes.PropTypes.number.isRequired,
+  onDrillDown: PropTypes.func,
+  onDateSelected: PropTypes.func,
+  monthType: PropTypes.bool,
   disabled: PropTypes.bool,
   selected: PropTypes.bool,
   grayed: PropTypes.bool

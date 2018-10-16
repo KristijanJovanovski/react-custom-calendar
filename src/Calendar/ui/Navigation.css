@@ -2,10 +2,10 @@
   min-width: 300px;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 4fr 1fr 1fr;
 }
 .nav-item {
-  padding: 15px 0;
+  padding: 10px 0;
   text-align: center;
   user-select: none;
 }

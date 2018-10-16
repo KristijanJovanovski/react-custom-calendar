@@ -4,8 +4,8 @@
   display: grid;
 }
 .grid-dates {
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(14%, 1fr));
 }
 .grid-months {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(30%, 1fr));
 }

@@ -9,19 +9,23 @@
   padding: 5px;
 }
 .tile-month {
-  padding: 15px;
+  padding: 15px 10px;
 }
 .tile:hover {
   cursor: pointer;
   background-color: #aeefe8;
 }
-.tile .disabled {
+.disabled,
+.disabled:hover {
   background-color: gray;
 }
-.tile .selected {
+.selected {
   background-color: #4093e0;
   color: #fff;
 }
-.tile .grayed {
+.selected:hover {
+  color: #555;
+}
+.grayed {
   background-color: lightgray;
 }

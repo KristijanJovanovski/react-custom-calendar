@@ -1,0 +1,6 @@
+.calendar {
+  width: 300px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  box-sizing: content-box;
+}
