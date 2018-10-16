@@ -1,17 +1,24 @@
-import './Calendar.css';
+import './Calendar.css'
 
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
-import Grid from './ui/Grid';
-import Header from './ui/Header';
-import Navigation from './ui/Navigation';
-import { getDoubleNextDate, getDoublePrevDate, getNewDate, getNextDate, getPrevDate } from './utils/helpers';
+import Grid from './ui/Grid'
+import Header from './ui/Header'
+import Navigation from './ui/Navigation'
+import {
+  getDoubleNextDate,
+  getDoublePrevDate,
+  getNewDate,
+  getNextDate,
+  getPrevDate
+} from './utils/helpers'
 
 class Calendar extends Component {
   state = {
     currentView: 'Month',
-    currentStartDate: new Date()
+    currentStartDate: new Date(),
+    selectedDates: []
   }
 
   handleDrillUp = () => {
@@ -60,7 +67,7 @@ class Calendar extends Component {
 
   render() {
     const { currentStartDate, currentView } = this.state
-    const { classNames } = this.props
+    const { classNames, onDateSelected, weekends } = this.props
     const monthView = currentView === 'Month'
     const locale = this.props.locale || 'en'
     const calendarType = this.props.calendarType || 'ISO 8601'
@@ -83,7 +90,9 @@ class Calendar extends Component {
           calendarType={calendarType}
           currentStartDate={currentStartDate}
           locale={locale}
+          weekends={weekends}
           onDrillDown={this.handleDrillDown}
+          onDateSelected={onDateSelected}
         />
       </div>
     )
@@ -93,6 +102,7 @@ class Calendar extends Component {
 Calendar.propTypes = {
   classNames: PropTypes.string,
   locale: PropTypes.string,
+  weekends: PropTypes.bool,
   calendarType: PropTypes.string,
   onDateSelected: PropTypes.func
 }

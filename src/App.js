@@ -5,8 +5,8 @@ import React, { Component } from 'react'
 import Calendar from './Calendar/Calendar'
 
 class App extends Component {
-  handleDateSelected = date => {
-    console.log(date)
+  handleDateSelected = (date, selected) => {
+    console.log('selected:', selected, date)
   }
 
   render() {
@@ -14,13 +14,18 @@ class App extends Component {
       <div className="App">
         <div className="calendar-container">
           <h1>Calendar 1</h1>
-          <Calendar locale={'mk'} onDateSelected={this.handleDateSelected} />
+          <Calendar
+            locale={'mk'}
+            onDateSelected={this.handleDateSelected}
+            weekends
+          />
         </div>
         <div className="calendar-container">
           <h1>Calendar 2</h1>
           <Calendar
             locale={'en'}
             calendarType={'ISO 8601'}
+            weekends
             onDateSelected={this.handleDateSelected}
           />
         </div>

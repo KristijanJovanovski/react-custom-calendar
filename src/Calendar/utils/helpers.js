@@ -146,52 +146,61 @@ export const getMonthViewDates = (date, type = 'ISO 8601') => {
   const lastDay = currMonthEndDateObj.getDay()
   const lastDate = currMonthEndDateObj.getDate()
   const prevMonthEndDateObj = new Date(year, month, 0)
-
   const prevMonthEndLastDate = prevMonthEndDateObj.getDate()
+  const nextMonthStartDateObj = new Date(year, month + 1, 1)
 
-  switch (type) {
-    case 'ISO 8601':
-      const isoFirstDay = (firstDay + 6) % 7
-      if (isoFirstDay !== 0) {
-        const prevMonthStartLastDates = prevMonthEndLastDate - isoFirstDay + 1
-        viewDates = Array(isoFirstDay)
-          .fill()
-          .map((item, idx) => idx + prevMonthStartLastDates)
-          .reduce((prev, curr) => [...prev, curr], viewDates)
-      }
-      viewDates = Array(lastDate)
-        .fill()
-        .map((item, idx) => idx + 1)
-        .reduce((prev, curr) => [...prev, curr], viewDates)
+  let trailingDays, prependDays
 
-      viewDates = Array((6 - lastDay + 1) % 7)
-        .fill()
-        .map((item, idx) => idx + 1)
-        .reduce((prev, curr) => [...prev, curr], viewDates)
-      break
-
-    case 'US':
-      if (firstDay !== 0) {
-        const prevMonthStartLastDates = prevMonthEndLastDate - firstDay + 1
-        viewDates = Array(firstDay)
-          .fill()
-          .map((item, idx) => idx + prevMonthStartLastDates)
-          .reduce((prev, curr) => [...prev, curr], viewDates)
-      }
-      viewDates = Array(lastDate)
-        .fill()
-        .map((item, idx) => idx + 1)
-        .reduce((prev, curr) => [...prev, curr], viewDates)
-
-      viewDates = Array((6 - lastDay) % 7)
-        .fill()
-        .map((item, idx) => idx + 1)
-        .reduce((prev, curr) => [...prev, curr], viewDates)
-
-      break
-
-    default:
-      break
+  if (type === 'ISO 8601') {
+    trailingDays = (6 - lastDay + 1) % 7
+    prependDays = (firstDay + 6) % 7
   }
+
+  if (type === 'US') {
+    prependDays = firstDay
+    trailingDays = (6 - lastDay) % 7
+  }
+  if (prependDays !== 0) {
+    const prevMonthStartLastDates = prevMonthEndLastDate - prependDays + 1
+    viewDates = Array(prependDays)
+      .fill()
+      .map((item, idx) => idx + prevMonthStartLastDates)
+      .map(
+        date =>
+          new Date(
+            prevMonthEndDateObj.getFullYear(),
+            prevMonthEndDateObj.getMonth(),
+            date
+          )
+      )
+      .reduce((prev, curr) => [...prev, curr], viewDates)
+  }
+  viewDates = Array(lastDate)
+    .fill()
+    .map((item, idx) => idx + 1)
+    .map(
+      date =>
+        new Date(
+          currMonthStartDateObj.getFullYear(),
+          currMonthStartDateObj.getMonth(),
+          date
+        )
+    )
+
+    .reduce((prev, curr) => [...prev, curr], viewDates)
+
+  viewDates = Array(trailingDays)
+    .fill()
+    .map((item, idx) => idx + 1)
+    .map(
+      date =>
+        new Date(
+          nextMonthStartDateObj.getFullYear(),
+          nextMonthStartDateObj.getMonth(),
+          date
+        )
+    )
+
+    .reduce((prev, curr) => [...prev, curr], viewDates)
   return viewDates
 }
