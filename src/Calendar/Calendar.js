@@ -6,20 +6,21 @@ import React, { Component } from 'react'
 import Grid from './ui/Grid'
 import Header from './ui/Header'
 import Navigation from './ui/Navigation'
+import { MONTH, YEAR, DECADE, CENTURY } from './utils/constants'
 import {
+  checkDate,
+  checkMinMaxDate,
+  equalDates,
   getDoubleNextDate,
   getDoublePrevDate,
   getNewDate,
   getNextDate,
-  getPrevDate,
-  checkMinMaxDate,
-  checkDate,
-  equalDates
+  getPrevDate
 } from './utils/helpers'
 
 class Calendar extends Component {
   state = {
-    currentView: 'Month',
+    currentView: MONTH,
     currentStartDate: new Date(),
     selectedDates: [],
     selectedDate: undefined
@@ -28,22 +29,36 @@ class Calendar extends Component {
   handleDrillUp = () => {
     const currentView = this.state.currentView
     switch (currentView) {
-      case 'Month':
-        this.setState({ currentView: 'Year' })
+      case MONTH:
+        this.setState({ currentView: YEAR })
+        break
+      case YEAR:
+        this.setState({ currentView: DECADE })
+        break
+      case DECADE:
+        this.setState({ currentView: CENTURY })
         break
 
       default:
         break
     }
   }
-  handleDrillDown = (idx, type) => {
+  handleDrillDown = idx => {
     const { currentView, currentStartDate } = this.state
+    let newDate
     switch (currentView) {
-      case 'Year':
-        const newDate = getNewDate(currentStartDate, type, idx)
-        this.setState({ currentView: 'Month', currentStartDate: newDate })
+      case YEAR:
+        newDate = getNewDate(currentStartDate, MONTH, idx)
+        this.setState({ currentView: MONTH, currentStartDate: newDate })
         break
-
+      case DECADE:
+        newDate = getNewDate(currentStartDate, YEAR, idx)
+        this.setState({ currentView: YEAR, currentStartDate: newDate })
+        break
+      case CENTURY:
+        newDate = getNewDate(currentStartDate, DECADE, idx)
+        this.setState({ currentView: DECADE, currentStartDate: newDate })
+        break
       default:
         break
     }
@@ -108,9 +123,15 @@ class Calendar extends Component {
       maxDate,
       disabledDates,
       availableDates,
-      multiSelect
+      multiSelect,
+      navigationDisabled,
+      prevDisabled,
+      nextDisabled,
+      doublePrevDisabled,
+      doubleNextDisabled,
+      navigationHidden
     } = this.props
-    const monthView = currentView === 'Month'
+    const monthView = currentView === MONTH
     const locale = this.props.locale || 'en'
     const calendarType = this.props.calendarType || 'ISO 8601'
 
@@ -137,6 +158,12 @@ class Calendar extends Component {
           onNext={this.handleNext}
           onDoublePrev={this.handleDoublePrev}
           onDoubleNext={this.handleDoubleNext}
+          navigationDisabled={navigationDisabled}
+          prevDisabled={prevDisabled}
+          nextDisabled={nextDisabled}
+          doublePrevDisabled={doublePrevDisabled}
+          doubleNextDisabled={doubleNextDisabled}
+          navigationHidden={navigationHidden}
         />
         {monthView && <Header calendarType={calendarType} locale={locale} />}
         <Grid
@@ -174,6 +201,18 @@ Calendar.propTypes = {
   minDate: PropTypes.instanceOf(Date),
   maxDate: PropTypes.instanceOf(Date),
   disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date))
+  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  navigationDisabled: PropTypes.bool,
+  prevDisabled: PropTypes.bool,
+  nextDisabled: PropTypes.bool,
+  doublePrevDisabled: PropTypes.bool,
+  doubleNextDisabled: PropTypes.bool,
+  navigationHidden: PropTypes.bool,
+  navigationClasses: PropTypes.string,
+  doublePrevClasses: PropTypes.string,
+  prevClasses: PropTypes.string,
+  labelClasses: PropTypes.string,
+  nextClasses: PropTypes.string,
+  doubleNextClasses: PropTypes.string
 }
 export default Calendar

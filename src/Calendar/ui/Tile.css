@@ -5,32 +5,33 @@
   user-select: none;
   text-align: center;
 }
-.tile-date {
+.tile.tile-date {
   padding: 5px;
 }
-.weekend,
-.weekend:hover {
+.tile.weekend,
+.tile.weekend:hover {
   color: red;
 }
-.tile-month {
+.tile.tile-month {
   padding: 15px 10px;
 }
 .tile:hover {
   cursor: pointer;
   background-color: #aeefe8;
 }
-.disabled,
-.disabled:hover {
-  background-color: gray !important;
-}
-.grayed {
+
+.tile.grayed {
   background-color: #eae6e6;
   color: #555;
 }
-.selected {
+.tile.selected {
   background-color: #4093e0 !important;
   color: #fff;
 }
-.selected:hover {
+.tile.selected:hover {
   color: #555;
+}
+.tile.disabled,
+.tile.disabled:hover {
+  background-color: #c6c6c6;
 }

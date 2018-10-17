@@ -9,7 +9,7 @@ const Tile = ({
   selected,
   grayed,
   weekend,
-  monthType,
+  dateType,
   onDrillDown,
   idx,
   onDateSelected,
@@ -18,7 +18,7 @@ const Tile = ({
   const classes = `tile${disabled ? ' disabled' : ''}${
     selected ? ' selected' : ''
   }${grayed ? ' grayed' : ''}${weekend ? ' weekend' : ' '}${
-    monthType ? ' tile-month' : ' tile-date'
+    dateType ? ' tile-date' : ' tile-month'
   }`
 
   const handleClick = () => {
@@ -30,7 +30,7 @@ const Tile = ({
 
   return (
     <>
-      {onDrillDown ? (
+      {!dateType ? (
         <div className={classes} onClick={e => onDrillDown(idx)}>
           {value}
         </div>
@@ -50,7 +50,7 @@ Tile.propTypes = {
   onDateSelect: PropTypes.func,
   onDrillDown: PropTypes.func,
   onDateSelected: PropTypes.func,
-  monthType: PropTypes.bool,
+  dateType: PropTypes.bool,
   disabled: PropTypes.bool,
   selected: PropTypes.bool,
   weekend: PropTypes.bool,

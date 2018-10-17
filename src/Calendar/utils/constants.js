@@ -1,3 +1,11 @@
+export const DATE = 'DATE'
+export const MONTH = 'MONTH'
+export const YEAR = 'YEAR'
+export const DECADE = 'DECADE'
+export const CENTURY = 'CENTURY'
+export const SHORT = 'SHORT'
+export const LONG = 'LONG'
+
 export const months = {
   en: {
     1: 'January',

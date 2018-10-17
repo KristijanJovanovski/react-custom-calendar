@@ -4,6 +4,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr 4fr 1fr 1fr;
 }
+.century {
+  grid-template-columns: 1fr 4fr 1fr;
+}
+.hidden {
+  grid-template-columns: 1fr;
+}
 .nav-item {
   padding: 10px 0;
   text-align: center;
@@ -12,4 +18,10 @@
 .nav-item:hover {
   cursor: pointer;
   background-color: #aeefe8;
+}
+.nav-item.disabled,
+.nav-item.disabled:hover {
+  cursor: auto;
+  background-color: #e4e4e4;
+  user-select: none;
 }

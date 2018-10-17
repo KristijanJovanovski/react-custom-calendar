@@ -37,16 +37,17 @@ class App extends Component {
         <div className="calendar-container">
           <h1>Calendar 3</h1>
           <Calendar
-            locale={'mk'}
+            locale={'fr'}
             calendarType={'US'}
             multiSelect
+            range
             onDateSelected={this.handleDateSelected}
           />
         </div>
         <div className="calendar-container">
           <h1>Calendar 4</h1>
           <Calendar
-            locale={'en'}
+            locale={'ddd'}
             calendarType={'US'}
             onDateSelected={this.handleDateSelected}
           />
