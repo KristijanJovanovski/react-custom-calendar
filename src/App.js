@@ -19,9 +19,9 @@ class App extends Component {
               locale={'mk'}
               onDateSelected={this.handleDateSelected}
               weekends
-              disableableCenturyViewTiles
-              disableableDecadeViewTiles
-              disableableYearViewTiles
+              disableableCenturyTiles
+              disableableDecadeTiles
+              disableableYearTiles
               navigableBeforeAndAfterDates
               minDate={new Date(2018, 9, 3)}
               maxDate={new Date(2018, 10, 1)}
@@ -34,9 +34,9 @@ class App extends Component {
                   locale={'mk'}
                   onDateSelected={this.handleDateSelected}
                   weekends
-                  disableableCenturyViewTiles
-                  disableableDecadeViewTiles
-                  disableableYearViewTiles
+                  disableableCenturyTiles
+                  disableableDecadeTiles
+                  disableableYearTiles
                   navigableBeforeAndAfterDates
                   minDate={new Date(2018, 9, 3)}
                   maxDate={new Date(2018, 10, 1)}
@@ -109,7 +109,8 @@ class App extends Component {
               locale={'fr'}
               calendarType={'US'}
               multiSelect
-              range
+              maxView={'MONTH'}
+              onMultiSelect={data => console.log(data)}
               onDateSelected={this.handleDateSelected}
             />
             <code className="calendar-code">
@@ -118,7 +119,8 @@ class App extends Component {
                   locale={'fr'}
                   calendarType={'US'}
                   multiSelect
-                  range
+                  maxView={'MONTH'}
+                  onMultiSelect={(data)=>console.log(data)}
                   onDateSelected={this.handleDateSelected}
               />`}
             </code>
@@ -131,6 +133,9 @@ class App extends Component {
             <Calendar
               locale={'ddd'}
               calendarType={'US'}
+              onMouseEnterTile={(e, date) =>
+                console.log('OnMouseEnter: ', date)
+              }
               onDateSelected={this.handleDateSelected}
             />
             <code className="calendar-code">
@@ -138,6 +143,7 @@ class App extends Component {
               <Calendar
                   locale={'ddd'}
                   calendarType={'US'}
+                  onMouseEnterTile={(e,date)=>console.log('OnMouseEnter: ',date)}
                   onDateSelected={this.handleDateSelected}
               />`}
             </code>

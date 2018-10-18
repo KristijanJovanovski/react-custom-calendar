@@ -10,51 +10,54 @@ const Tile = ({
   grayed,
   weekend,
   dateType,
+  date,
   onDrillDown,
   idx,
   onDateSelected,
   onDateSelect,
-  blank
+  blank,
+  onMouseEnter,
+  onMouseLeave
 }) => {
   const classes = `tile${disabled || blank ? ' disabled' : ''}${
     selected ? ' selected' : ''
-  }${grayed ? ' grayed' : ''}${weekend ? ' weekend' : ' '}${
+  }${grayed ? ' grayed' : ''}${weekend ? ' weekend' : ''}${
     dateType ? ' tile-date' : ' tile-month'
   }${blank ? ' blank' : ''}`
 
   const handleSelectDate = () => {
-    if (!disabled && !blank) {
-      onDateSelect(value, !selected)
-      onDateSelected(value, !selected)
+    if (dateType) {
+      if (!disabled && !blank) {
+        onDateSelect(date, !selected)
+        onDateSelected(date, !selected)
+      }
+    } else {
+      if (!disabled && !blank) {
+        onDrillDown(idx)
+      }
     }
   }
-  const handleDrillDown = () => {
-    if (!disabled && !blank) {
-      onDrillDown(idx)
-    }
-  }
+  const hover = {}
+  onMouseEnter && (hover['onMouseEnter'] = e => onMouseEnter(e, date))
+  onMouseLeave && (hover['onMouseLeave'] = e => onMouseLeave(e, date))
 
   return (
     <>
-      {!dateType ? (
-        <div className={classes} onClick={e => handleDrillDown()}>
-          {value}
-        </div>
-      ) : (
-        <div className={classes} onClick={e => handleSelectDate(e)}>
-          {blank ? '' : value.getDate()}
-        </div>
-      )}
+      <div
+        index={idx}
+        className={classes}
+        {...hover}
+        onClick={handleSelectDate}
+      >
+        {value}
+      </div>
     </>
   )
 }
 
 Tile.propTypes = {
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.instanceOf(Date)
-  ]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  date: PropTypes.instanceOf(Date).isRequired,
   idx: PropTypes.PropTypes.number.isRequired,
   onDateSelect: PropTypes.func,
   onDrillDown: PropTypes.func,
@@ -64,7 +67,9 @@ Tile.propTypes = {
   selected: PropTypes.bool,
   weekend: PropTypes.bool,
   grayed: PropTypes.bool,
-  blank: PropTypes.bool
+  blank: PropTypes.bool,
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func
 }
 
 export default Tile

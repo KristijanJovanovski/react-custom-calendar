@@ -3,13 +3,13 @@ import './Navigation.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
+import { CENTURY, DECADE, MONTH, YEAR } from '../utils/constants'
 import {
-  getMonthAndYear,
-  getYear,
+  getCenturyRange,
   getDecadeRange,
-  getCenturyRange
+  getMonthAndYear,
+  getYear
 } from '../utils/helpers'
-import { MONTH, YEAR, DECADE, CENTURY } from '../utils/constants'
 
 const Navigation = ({
   locale = 'en',

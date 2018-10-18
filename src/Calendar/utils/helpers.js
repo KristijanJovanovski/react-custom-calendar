@@ -21,6 +21,20 @@ export const checkDate = date => {
   }
   throw new Error('Not a date')
 }
+export const checkViewOrder = (min, max) => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
+  if (units.some(u => u === min) && units.some(u => u === max)) {
+    return units.indexOf(min) <= units.indexOf(max)
+  }
+  throw new Error('Not a vaild view unit')
+}
+export const checkView = date => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
+  if (units.some(u => u === date)) {
+    return true
+  }
+  throw new Error('Not a vaild view unit')
+}
 export const checkMinMaxDate = (minDate, maxDate) => {
   checkDate(minDate)
   checkDate(maxDate)
