@@ -129,7 +129,12 @@ class Calendar extends Component {
       nextDisabled,
       doublePrevDisabled,
       doubleNextDisabled,
-      navigationHidden
+      navigationHidden,
+      disableableYearViewTiles,
+      disableableDecadeViewTiles,
+      disableableCenturyViewTiles,
+      hideBeforeAndAfterDates,
+      navigableBeforeAndAfterDates
     } = this.props
     const monthView = currentView === MONTH
     const locale = this.props.locale || 'en'
@@ -185,6 +190,11 @@ class Calendar extends Component {
           onDateSelected={onDateSelected}
           onPrev={this.handlePrev}
           onNext={this.handleNext}
+          disableableYearViewTiles={disableableYearViewTiles}
+          disableableDecadeViewTiles={disableableDecadeViewTiles}
+          disableableCenturyViewTiles={disableableCenturyViewTiles}
+          navigableBeforeAndAfterDates={navigableBeforeAndAfterDates}
+          hideBeforeAndAfterDates={hideBeforeAndAfterDates}
         />
       </div>
     )
@@ -213,6 +223,11 @@ Calendar.propTypes = {
   prevClasses: PropTypes.string,
   labelClasses: PropTypes.string,
   nextClasses: PropTypes.string,
-  doubleNextClasses: PropTypes.string
+  doubleNextClasses: PropTypes.string,
+  disableableYearViewTiles: PropTypes.bool,
+  disableableDecadeViewTiles: PropTypes.bool,
+  disableableCenturyViewTiles: PropTypes.bool,
+  navigableBeforeAndAfterDates: PropTypes.bool,
+  hideBeforeAndAfterDates: PropTypes.bool
 }
 export default Calendar

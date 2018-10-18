@@ -12,45 +12,136 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="calendar-container">
+        <div className="container">
+          <h1>Calendar 0</h1>
+          <div className="calendar-container">
+            <Calendar
+              locale={'mk'}
+              onDateSelected={this.handleDateSelected}
+              weekends
+              disableableCenturyViewTiles
+              disableableDecadeViewTiles
+              disableableYearViewTiles
+              navigableBeforeAndAfterDates
+              minDate={new Date(2018, 9, 3)}
+              maxDate={new Date(2018, 10, 1)}
+              disabledDates={[new Date(2018, 9, 5)]}
+              availableDates={[new Date(2018, 10, 4)]}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'mk'}
+                  onDateSelected={this.handleDateSelected}
+                  weekends
+                  disableableCenturyViewTiles
+                  disableableDecadeViewTiles
+                  disableableYearViewTiles
+                  navigableBeforeAndAfterDates
+                  minDate={new Date(2018, 9, 3)}
+                  maxDate={new Date(2018, 10, 1)}
+                  disabledDates={[new Date(2018, 9, 5)]}
+                  availableDates={[new Date(2018, 10, 4)]}
+              />`}
+            </code>
+          </div>
+        </div>
+        <div className="container">
           <h1>Calendar 1</h1>
-          <Calendar
-            locale={'mk'}
-            onDateSelected={this.handleDateSelected}
-            weekends
-            minDate={new Date(2018, 9, 3)}
-            maxDate={new Date(2018, 10, 1)}
-            disabledDates={[new Date(2018, 9, 5)]}
-            availableDates={[new Date(2018, 10, 4)]}
-          />
+          <div className="calendar-container">
+            <Calendar
+              locale={'mk'}
+              onDateSelected={this.handleDateSelected}
+              weekends
+              minDate={new Date(2018, 9, 3)}
+              maxDate={new Date(2018, 10, 1)}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'mk'}
+                  onDateSelected={this.handleDateSelected}
+                  weekends
+                  minDate={new Date(2018, 9, 3)}
+                  maxDate={new Date(2018, 10, 1)}
+              />`}
+            </code>
+          </div>
         </div>
-        <div className="calendar-container">
+
+        <div className="container">
           <h1>Calendar 2</h1>
-          <Calendar
-            locale={'en'}
-            calendarType={'ISO 8601'}
-            weekends
-            availableDates={[new Date(2018, 10, 5)]}
-            onDateSelected={this.handleDateSelected}
-          />
+          <div className="calendar-container">
+            <Calendar
+              locale={'en'}
+              calendarType={'ISO 8601'}
+              weekends
+              availableDates={[
+                new Date(2018, 10, 5),
+                new Date(2018, 10, 6),
+                new Date(2018, 10, 7),
+                new Date(2018, 10, 8)
+              ]}
+              onDateSelected={this.handleDateSelected}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'en'}
+                  calendarType={'ISO 8601'}
+                  weekends
+                  availableDates={[
+                    new Date(2018, 10, 5),
+                    new Date(2018, 10, 6),
+                    new Date(2018, 10, 7),
+                    new Date(2018, 10, 8)
+                  ]}
+                  onDateSelected={this.handleDateSelected}
+              />`}
+            </code>
+          </div>
         </div>
-        <div className="calendar-container">
+
+        <div className="container">
           <h1>Calendar 3</h1>
-          <Calendar
-            locale={'fr'}
-            calendarType={'US'}
-            multiSelect
-            range
-            onDateSelected={this.handleDateSelected}
-          />
+          <div className="calendar-container">
+            <Calendar
+              locale={'fr'}
+              calendarType={'US'}
+              multiSelect
+              range
+              onDateSelected={this.handleDateSelected}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'fr'}
+                  calendarType={'US'}
+                  multiSelect
+                  range
+                  onDateSelected={this.handleDateSelected}
+              />`}
+            </code>
+          </div>
         </div>
-        <div className="calendar-container">
+
+        <div className="container">
           <h1>Calendar 4</h1>
-          <Calendar
-            locale={'ddd'}
-            calendarType={'US'}
-            onDateSelected={this.handleDateSelected}
-          />
+          <div className="calendar-container">
+            <Calendar
+              locale={'ddd'}
+              calendarType={'US'}
+              onDateSelected={this.handleDateSelected}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'ddd'}
+                  calendarType={'US'}
+                  onDateSelected={this.handleDateSelected}
+              />`}
+            </code>
+          </div>
         </div>
       </div>
     )

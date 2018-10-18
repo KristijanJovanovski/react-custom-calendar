@@ -20,10 +20,13 @@
   background-color: #aeefe8;
 }
 
-.tile.grayed {
-  background-color: #eae6e6;
+.tile.grayed,
+.tile.blank,
+.tile.blank:hover {
+  background-color: #e6e6e6;
   color: #555;
 }
+
 .tile.selected {
   background-color: #4093e0 !important;
   color: #fff;

@@ -54,23 +54,26 @@ export const afterDates = (first, second) => {
           first.getDate() > second.getDate())))
   )
 }
+export const beforeMonths = (first, second) => {
+  return (
+    first.getFullYear() < second.getFullYear() ||
+    (first.getFullYear() === second.getFullYear() &&
+      first.getMonth() < second.getMonth())
+  )
+}
+export const afterMonths = (first, second) => {
+  return (
+    first.getFullYear() > second.getFullYear() ||
+    (first.getFullYear() === second.getFullYear() &&
+      first.getMonth() > second.getMonth())
+  )
+}
 
-export const getMonthsArray = (locale = 'en', format = LONG) => {
-  if (locale !== 'mk') {
-    const monthFormat = format === LONG ? 'long' : 'short'
-    return Array(12)
-      .fill()
-      .map((i, idx) =>
-        new Intl.DateTimeFormat([locale], {
-          month: monthFormat
-        }).format(new Date(new Date(0).setMonth(idx)))
-      )
-  }
-  const monthsArray = Object.keys(months[locale])
-    .sort((a, b) => a - b)
-    .map(m => capitalizeFirst(m))
-    .reduce((prev, curr) => [...prev, months[locale][curr]], [])
-  return monthsArray
+export const getMonthsArray = date => {
+  checkDate(date)
+  return Array(12)
+    .fill()
+    .map((i, idx) => new Date(date.getFullYear(), idx))
 }
 
 export const transformWeekDays = (
@@ -309,7 +312,11 @@ export const endOfMonthDate = date => {
   return new Date(year, month + 1, 0)
 }
 
-export const getMonthViewDates = (date, type = 'ISO 8601') => {
+export const getMonthViewDates = (
+  date,
+  type = 'ISO 8601',
+  hideBeforeAndAfterDates = false
+) => {
   checkDate(date)
   let viewDates = []
   const month = date.getMonth()
@@ -343,11 +350,13 @@ export const getMonthViewDates = (date, type = 'ISO 8601') => {
       .map((item, idx) => idx + prevMonthStartLastDates)
       .map(
         date =>
-          new Date(
-            prevMonthEndDateObj.getFullYear(),
-            prevMonthEndDateObj.getMonth(),
-            date
-          )
+          hideBeforeAndAfterDates
+            ? null
+            : new Date(
+                prevMonthEndDateObj.getFullYear(),
+                prevMonthEndDateObj.getMonth(),
+                date
+              )
       )
       .reduce((prev, curr) => [...prev, curr], viewDates)
   }
@@ -369,11 +378,13 @@ export const getMonthViewDates = (date, type = 'ISO 8601') => {
     .map((item, idx) => idx + 1)
     .map(
       date =>
-        new Date(
-          nextMonthStartDateObj.getFullYear(),
-          nextMonthStartDateObj.getMonth(),
-          date
-        )
+        hideBeforeAndAfterDates
+          ? null
+          : new Date(
+              nextMonthStartDateObj.getFullYear(),
+              nextMonthStartDateObj.getMonth(),
+              date
+            )
     )
     .reduce((prev, curr) => [...prev, curr], viewDates)
 
