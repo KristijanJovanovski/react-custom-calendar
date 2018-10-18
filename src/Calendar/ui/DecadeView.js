@@ -11,13 +11,13 @@ const DecadeView = ({
   minDate,
   maxDate,
   onDrillDown,
-  currentStartDate,
+  currentViewDate,
   onMouseEnterTile,
   onMouseLeaveTile
 }) => {
   const data = Array(10)
     .fill()
-    .map((item, idx) => getNewDate(currentStartDate, YEAR, idx))
+    .map((item, idx) => getNewDate(currentViewDate, YEAR, idx))
     .map((item, idx) => {
       let disabled
       if (disableableDecadeTiles) {
@@ -67,7 +67,7 @@ DecadeView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
-  currentStartDate: PropTypes.instanceOf(Date),
+  currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func
 }

@@ -19,7 +19,7 @@ const CalendarView = ({
   locale,
   calendarType,
   currentView,
-  currentStartDate,
+  currentViewDate,
   weekends,
   onDrillDown,
   onDateSelected,
@@ -46,12 +46,12 @@ const CalendarView = ({
     const selectFn = multiSelect ? onMultiSelect : onSingleSelect
     if (
       navigableBeforeAndAfterDates &&
-      beforeDates(date, firstOfMonthDate(currentStartDate))
+      beforeDates(date, firstOfMonthDate(currentViewDate))
     ) {
       onPrev && onPrev()
     } else if (
       navigableBeforeAndAfterDates &&
-      afterDates(date, endOfMonthDate(currentStartDate))
+      afterDates(date, endOfMonthDate(currentViewDate))
     ) {
       onNext && onNext()
     }
@@ -65,7 +65,7 @@ const CalendarView = ({
       data = (
         <MonthView
           calendarType={calendarType}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           weekends={weekends}
           onDateSelected={onDateSelected}
           minDate={minDate}
@@ -90,7 +90,7 @@ const CalendarView = ({
           maxDate={maxDate}
           onDrillDown={onDrillDown}
           locale={locale}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
         />
@@ -104,7 +104,7 @@ const CalendarView = ({
           minDate={minDate}
           maxDate={maxDate}
           onDrillDown={onDrillDown}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
         />
@@ -118,7 +118,7 @@ const CalendarView = ({
           minDate={minDate}
           maxDate={maxDate}
           onDrillDown={onDrillDown}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
         />
@@ -148,7 +148,7 @@ CalendarView.propTypes = {
   onPrev: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
   onDateSelected: PropTypes.func,
-  currentStartDate: PropTypes.instanceOf(Date).isRequired,
+  currentViewDate: PropTypes.instanceOf(Date).isRequired,
   locale: PropTypes.string,
   calendarType: PropTypes.string,
   weekends: PropTypes.bool,

@@ -76,6 +76,7 @@ class App extends Component {
               locale={'en'}
               calendarType={'ISO 8601'}
               weekends
+              startViewDate={new Date(2018, 10, 1)}
               availableDates={[
                 new Date(2018, 10, 5),
                 new Date(2018, 10, 6),
@@ -90,6 +91,7 @@ class App extends Component {
                   locale={'en'}
                   calendarType={'ISO 8601'}
                   weekends
+                  startViewDate={new Date(2018,10,1)}
                   availableDates={[
                     new Date(2018, 10, 5),
                     new Date(2018, 10, 6),

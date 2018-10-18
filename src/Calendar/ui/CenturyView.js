@@ -16,13 +16,13 @@ const CenturyView = ({
   minDate,
   maxDate,
   onDrillDown,
-  currentStartDate,
+  currentViewDate,
   onMouseEnterTile,
   onMouseLeaveTile
 }) => {
   const data = Array(10)
     .fill()
-    .map((item, idx) => getNewDate(currentStartDate, DECADE, idx))
+    .map((item, idx) => getNewDate(currentViewDate, DECADE, idx))
     .map((item, idx) => {
       let disabled
       if (disableableCenturyTiles) {
@@ -78,7 +78,7 @@ CenturyView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
-  currentStartDate: PropTypes.instanceOf(Date),
+  currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func
 }

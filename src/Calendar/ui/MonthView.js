@@ -11,7 +11,7 @@ import Tile from './Tile'
 
 const MonthView = ({
   calendarType,
-  currentStartDate,
+  currentViewDate,
   weekends,
   onDateSelected,
   minDate,
@@ -26,7 +26,7 @@ const MonthView = ({
   onMouseLeaveTile
 }) => {
   const data = getMonthViewDates(
-    currentStartDate,
+    currentViewDate,
     calendarType,
     !!hideBeforeAndAfterDates
   ).map((item, idx) => {
@@ -36,8 +36,8 @@ const MonthView = ({
       blank = true
     } else {
       grayed =
-        currentStartDate.getFullYear() !== item.getFullYear() ||
-        currentStartDate.getMonth() !== item.getMonth()
+        currentViewDate.getFullYear() !== item.getFullYear() ||
+        currentViewDate.getMonth() !== item.getMonth()
       selected =
         (selectedDates &&
           selectedDates.some(selectedItem => equalDates(item, selectedItem))) ||
@@ -100,7 +100,7 @@ const MonthView = ({
 
 MonthView.propTypes = {
   calendarType: PropTypes.string,
-  currentStartDate: PropTypes.instanceOf(Date).isRequired,
+  currentViewDate: PropTypes.instanceOf(Date).isRequired,
   weekends: PropTypes.bool,
   onDateSelected: PropTypes.func,
   minDate: PropTypes.instanceOf(Date),

@@ -22,15 +22,18 @@ import {
 
 class Calendar extends Component {
   state = {
-    currentView: MONTH,
-    currentStartDate: new Date(),
+    currentView: undefined,
+    currentViewDate: undefined,
     selectedDates: [],
     selectedDate: undefined
   }
   static defaultProps = {
-    // currentView: MONTH,
+    startView: MONTH,
+    startViewDate: new Date(),
     minView: MONTH,
-    maxView: CENTURY
+    maxView: CENTURY,
+    locale: 'en',
+    calendarType: 'US'
   }
   static propTypes = {
     classNames: PropTypes.string,
@@ -40,11 +43,12 @@ class Calendar extends Component {
     onDateSelected: PropTypes.func,
     onMultiSelect: PropTypes.func,
     multiSelect: PropTypes.bool,
+    startViewDate: PropTypes.instanceOf(Date),
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
     minView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
     maxView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-    // currentView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
+    startView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
     disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
     availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
     navigationDisabled: PropTypes.bool,
@@ -68,32 +72,65 @@ class Calendar extends Component {
     onMouseLeaveTile: PropTypes.func
   }
 
-  componentDidMount() {
-    const {
-      minDate,
-      maxDate,
-      disabledDates,
-      availableDates,
-      maxView,
-      minView
-    } = this.props
-    minDate && !maxDate && checkDate(minDate)
-    maxDate && !minDate && checkDate(maxDate)
-    minDate && maxDate && checkMinMaxDate(minDate, maxDate)
-    disabledDates &&
-      disabledDates.forEach(date => {
-        checkDate(date)
-      })
-    availableDates &&
-      availableDates.forEach(date => {
-        checkDate(date)
-      })
+  static getDerivedStateFromProps(nextProps, prevState) {
+    // before first render
+    let state = null
+    if (prevState.currentViewDate === undefined) {
+      nextProps.startViewDate && checkDate(nextProps.startViewDate)
+      nextProps.minDate && checkDate(nextProps.minDate)
+      nextProps.maxDate && checkDate(nextProps.maxDate)
+      nextProps.minDate &&
+        nextProps.maxDate &&
+        checkMinMaxDate(nextProps.minDate, nextProps.maxDate)
+      nextProps.disabledDates &&
+        nextProps.disabledDates.forEach(date => {
+          checkDate(date)
+        })
+      nextProps.availableDates &&
+        nextProps.availableDates.forEach(date => {
+          checkDate(date)
+        })
 
-    minView && checkView(minView)
-    maxView && checkView(maxView)
-    if (minView && maxView && !checkViewOrder(minView, maxView)) {
-      throw new Error('minView should lower than maxView')
+      state = {
+        ...prevState,
+        ...state,
+        selectedDates: [...prevState.selectedDates],
+        currentViewDate: nextProps.startViewDate
+      }
     }
+    // before first render
+    if (prevState.currentView === undefined) {
+      nextProps.startView && checkView(nextProps.startView)
+      nextProps.minView && checkView(nextProps.minView)
+      nextProps.maxView && checkView(nextProps.maxView)
+
+      if (
+        nextProps.minView &&
+        nextProps.maxView &&
+        !checkViewOrder(nextProps.minView, nextProps.maxView)
+      ) {
+        throw new Error('minView should lower than maxView')
+      }
+      if (
+        nextProps.minView &&
+        nextProps.maxView &&
+        !checkViewOrder(nextProps.minView, nextProps.maxView) &&
+        !checkViewOrder(nextProps.minView, nextProps.startView) &&
+        !checkViewOrder(nextProps.startView, nextProps.maxView)
+      ) {
+        throw new Error(
+          'startView value shoud be beetween or equal to minView and maxView'
+        )
+      }
+      state = {
+        ...prevState,
+        ...state,
+        selectedDates: [...prevState.selectedDates],
+        currentView: nextProps.startView
+      }
+    }
+
+    return state
   }
 
   handleDrillUp = () => {
@@ -118,48 +155,48 @@ class Calendar extends Component {
     }
   }
   handleDrillDown = idx => {
-    const { currentView, currentStartDate } = this.state
+    const { currentView, currentViewDate } = this.state
     const minView = this.props.minView
     let newDate
     switch (currentView) {
       case YEAR:
-        newDate = getNewDate(currentStartDate, MONTH, idx)
+        newDate = getNewDate(currentViewDate, MONTH, idx)
         checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: MONTH, currentStartDate: newDate })
+          this.setState({ currentView: MONTH, currentViewDate: newDate })
         break
       case DECADE:
-        newDate = getNewDate(currentStartDate, YEAR, idx)
+        newDate = getNewDate(currentViewDate, YEAR, idx)
         checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: YEAR, currentStartDate: newDate })
+          this.setState({ currentView: YEAR, currentViewDate: newDate })
         break
       case CENTURY:
-        newDate = getNewDate(currentStartDate, DECADE, idx)
+        newDate = getNewDate(currentViewDate, DECADE, idx)
         checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: DECADE, currentStartDate: newDate })
+          this.setState({ currentView: DECADE, currentViewDate: newDate })
         break
       default:
         break
     }
   }
   handlePrev = () => {
-    const { currentView, currentStartDate } = this.state
-    const newDate = getPrevDate(currentStartDate, currentView)
-    this.setState({ currentStartDate: newDate })
+    const { currentView, currentViewDate } = this.state
+    const newDate = getPrevDate(currentViewDate, currentView)
+    this.setState({ currentViewDate: newDate })
   }
   handleNext = () => {
-    const { currentView, currentStartDate } = this.state
-    const newDate = getNextDate(currentStartDate, currentView)
-    this.setState({ currentStartDate: newDate })
+    const { currentView, currentViewDate } = this.state
+    const newDate = getNextDate(currentViewDate, currentView)
+    this.setState({ currentViewDate: newDate })
   }
   handleDoublePrev = () => {
-    const { currentView, currentStartDate } = this.state
-    const newDate = getDoublePrevDate(currentStartDate, currentView)
-    this.setState({ currentStartDate: newDate })
+    const { currentView, currentViewDate } = this.state
+    const newDate = getDoublePrevDate(currentViewDate, currentView)
+    this.setState({ currentViewDate: newDate })
   }
   handleDoubleNext = () => {
-    const { currentView, currentStartDate } = this.state
-    const newDate = getDoubleNextDate(currentStartDate, currentView)
-    this.setState({ currentStartDate: newDate })
+    const { currentView, currentViewDate } = this.state
+    const newDate = getDoubleNextDate(currentViewDate, currentView)
+    this.setState({ currentViewDate: newDate })
   }
 
   handleMultiSelect = (date, selected) => {
@@ -193,10 +230,10 @@ class Calendar extends Component {
 
   render() {
     const {
-      currentStartDate,
-      currentView,
       selectedDate,
-      selectedDates
+      selectedDates,
+      currentView,
+      currentViewDate
     } = this.state
     const {
       classNames,
@@ -222,15 +259,15 @@ class Calendar extends Component {
       onMouseLeaveTile
     } = this.props
     const monthView = currentView === MONTH
-    const locale = this.props.locale || 'en'
-    const calendarType = this.props.calendarType || 'ISO 8601'
+    const locale = this.props.locale
+    const calendarType = this.props.calendarType
 
     return (
       <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
         <Navigation
           locale={locale}
           currentView={currentView}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           drillUp={this.handleDrillUp}
           onPrev={this.handlePrev}
           onNext={this.handleNext}
@@ -247,7 +284,7 @@ class Calendar extends Component {
         <CalendarView
           currentView={currentView}
           calendarType={calendarType}
-          currentStartDate={currentStartDate}
+          currentViewDate={currentViewDate}
           locale={locale}
           minDate={minDate}
           maxDate={maxDate}

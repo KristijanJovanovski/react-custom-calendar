@@ -14,7 +14,7 @@ import {
 const Navigation = ({
   locale = 'en',
   currentView,
-  currentStartDate,
+  currentViewDate,
   drillUp,
   onPrev,
   onNext,
@@ -40,13 +40,13 @@ const Navigation = ({
 }) => {
   let labelText
   if (currentView === MONTH) {
-    labelText = getMonthAndYear(currentStartDate, locale, labelShortFormat)
+    labelText = getMonthAndYear(currentViewDate, locale, labelShortFormat)
   } else if (currentView === YEAR) {
-    labelText = getYear(currentStartDate)
+    labelText = getYear(currentViewDate)
   } else if (currentView === DECADE) {
-    labelText = getDecadeRange(currentStartDate)
+    labelText = getDecadeRange(currentViewDate)
   } else if (currentView === CENTURY) {
-    labelText = getCenturyRange(currentStartDate)
+    labelText = getCenturyRange(currentViewDate)
   }
   const doublePrev =
     navigationDisabled || doublePrevDisabled ? (
@@ -153,7 +153,7 @@ Navigation.propTypes = {
   onDoubleNext: PropTypes.func.isRequired,
   locale: PropTypes.string,
   currentView: PropTypes.string,
-  currentStartDate: PropTypes.instanceOf(Date),
+  currentViewDate: PropTypes.instanceOf(Date),
   navigationDisabled: PropTypes.bool,
   prevDisabled: PropTypes.bool,
   nextDisabled: PropTypes.bool,

@@ -17,11 +17,11 @@ const YearView = ({
   maxDate,
   onDrillDown,
   locale,
-  currentStartDate,
+  currentViewDate,
   onMouseEnterTile,
   onMouseLeaveTile
 }) => {
-  const data = getMonthsArray(currentStartDate).map((item, idx) => {
+  const data = getMonthsArray(currentViewDate).map((item, idx) => {
     let disabled
     const month = getMonthFormated(item, locale, LONG)
     if (disableableYearTiles) {
@@ -66,7 +66,7 @@ YearView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
-  currentStartDate: PropTypes.instanceOf(Date),
+  currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func
 }
