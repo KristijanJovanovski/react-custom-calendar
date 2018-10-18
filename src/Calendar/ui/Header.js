@@ -20,6 +20,6 @@ const Header = ({ locale = 'en', calendarType = 'ISO 8601' }) => {
 }
 Header.propTypes = {
   locale: PropTypes.string,
-  calendarType: PropTypes.string
+  calendarType: PropTypes.oneOf(['US', 'ISO 8601'])
 }
 export default Header

@@ -290,6 +290,33 @@ export const getDoubleNextDate = (date, type) => {
   return newDate
 }
 
+export const getDateRange = (dateOne, dateTwo) => {
+  checkDate(dateOne)
+  checkDate(dateTwo)
+  if (beforeDates(dateOne, dateTwo)) {
+    return range(dateOne, dateTwo)
+  } else if (afterDates(dateOne, dateTwo)) {
+    return range(dateTwo, dateOne)
+  }
+  return [dateOne, dateTwo]
+}
+export const range = (lowerBound, upperBound) => {
+  checkDate(lowerBound)
+  checkDate(upperBound)
+  const timeDiff = Math.abs(upperBound.getTime() - lowerBound.getTime())
+  const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
+
+  return Array(diffDays + 1)
+    .fill()
+    .map((item, idx) => {
+      return new Date(
+        lowerBound.getFullYear(),
+        lowerBound.getMonth(),
+        lowerBound.getDate() + idx
+      )
+    })
+}
+
 export const getNewDate = (date, type, idx) => {
   checkDate(date)
   let year,

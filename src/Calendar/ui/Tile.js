@@ -6,6 +6,7 @@ import React from 'react'
 const Tile = ({
   value,
   disabled,
+  range,
   selected,
   grayed,
   weekend,
@@ -17,13 +18,15 @@ const Tile = ({
   onDateSelect,
   blank,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
+  onRangeHover,
+  hover
 }) => {
   const classes = `tile${disabled || blank ? ' disabled' : ''}${
     selected ? ' selected' : ''
   }${grayed ? ' grayed' : ''}${weekend ? ' weekend' : ''}${
     dateType ? ' tile-date' : ' tile-month'
-  }${blank ? ' blank' : ''}`
+  }${blank ? ' blank' : ''}${hover ? ' hover-range' : ''}`
 
   const handleSelectDate = () => {
     if (dateType) {
@@ -37,16 +40,22 @@ const Tile = ({
       }
     }
   }
-  const hover = {}
-  onMouseEnter && (hover['onMouseEnter'] = e => onMouseEnter(e, date))
-  onMouseLeave && (hover['onMouseLeave'] = e => onMouseLeave(e, date))
+  const handleMouseEnter = e => {
+    onMouseEnter && onMouseEnter(e, date)
+    range && onRangeHover(date, true)
+  }
+  const handleMouseLeave = e => {
+    onMouseLeave && onMouseLeave(e, date)
+    range && onRangeHover(date, false)
+  }
 
   return (
     <>
       <div
         index={idx}
         className={classes}
-        {...hover}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onClick={handleSelectDate}
       >
         {value}
@@ -67,9 +76,12 @@ Tile.propTypes = {
   selected: PropTypes.bool,
   weekend: PropTypes.bool,
   grayed: PropTypes.bool,
+  range: PropTypes.bool,
+  hover: PropTypes.bool,
   blank: PropTypes.bool,
   onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func
+  onMouseLeave: PropTypes.func,
+  onRangeHover: PropTypes.func
 }
 
 export default Tile

@@ -10,6 +10,7 @@ import {
 import Tile from './Tile'
 
 const MonthView = ({
+  range,
   calendarType,
   currentViewDate,
   weekends,
@@ -23,7 +24,9 @@ const MonthView = ({
   selectHandler,
   hideBeforeAndAfterDates,
   onMouseEnterTile,
-  onMouseLeaveTile
+  onMouseLeaveTile,
+  onHover,
+  hoverDates
 }) => {
   const data = getMonthViewDates(
     currentViewDate,
@@ -31,7 +34,7 @@ const MonthView = ({
     !!hideBeforeAndAfterDates
   ).map((item, idx) => {
     const weekend = idx % 7
-    let blank, grayed, disabled, showWeekend, selected
+    let blank, grayed, disabled, showWeekend, selected, hover
     if (item === null) {
       blank = true
     } else {
@@ -75,12 +78,18 @@ const MonthView = ({
       if (weekends && calendarType === 'US') {
         showWeekend = weekend === 0 || weekend === 6
       }
+      if (range && hoverDates && onHover && selectedDate) {
+        hover = hoverDates.some(hoverItem => equalDates(hoverItem, item))
+      }
     }
     return (
       <Tile
         key={idx}
         idx={idx}
         dateType
+        hover={hover}
+        onRangeHover={onHover}
+        range={range}
         blank={blank}
         weekend={showWeekend}
         grayed={grayed}
@@ -99,9 +108,10 @@ const MonthView = ({
 }
 
 MonthView.propTypes = {
-  calendarType: PropTypes.string,
+  calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
   currentViewDate: PropTypes.instanceOf(Date).isRequired,
   weekends: PropTypes.bool,
+  range: PropTypes.bool,
   onDateSelected: PropTypes.func,
   minDate: PropTypes.instanceOf(Date),
   maxDate: PropTypes.instanceOf(Date),

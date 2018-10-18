@@ -38,3 +38,6 @@
 .tile.disabled:hover {
   background-color: #c6c6c6;
 }
+.tile.hover-range {
+  background-color: #aeefe8;
+}

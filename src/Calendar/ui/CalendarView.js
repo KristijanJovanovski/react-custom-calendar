@@ -8,11 +8,14 @@ import {
   afterDates,
   beforeDates,
   endOfMonthDate,
-  firstOfMonthDate
+  equalDates,
+  firstOfMonthDate,
+  getDateRange
 } from '../utils/helpers'
 import CenturyView from './CenturyView'
 import DecadeView from './DecadeView'
 import MonthView from './MonthView'
+import RangeHover from './RangeHover'
 import YearView from './YearView'
 
 const CalendarView = ({
@@ -31,6 +34,7 @@ const CalendarView = ({
   selectedDate,
   multiSelect,
   onMultiSelect,
+  onRangeSelect,
   onSingleSelect,
   onPrev,
   onNext,
@@ -40,7 +44,8 @@ const CalendarView = ({
   navigableBeforeAndAfterDates,
   hideBeforeAndAfterDates,
   onMouseEnterTile,
-  onMouseLeaveTile
+  onMouseLeaveTile,
+  range
 }) => {
   const selectHandler = (date, selected) => {
     const selectFn = multiSelect ? onMultiSelect : onSingleSelect
@@ -55,31 +60,69 @@ const CalendarView = ({
     ) {
       onNext && onNext()
     }
-    selectFn(date, selected)
+    if (!range) {
+      selectFn(date, selected)
+    } else if (selectedDate && !equalDates(selectedDate, date)) {
+      onSingleSelect(date, false)
+      onRangeSelect([...getDateRange(selectedDate, date)], selected)
+    } else if (selectedDates.length) {
+      onRangeSelect([], false)
+    } else {
+      onSingleSelect(date, selected)
+    }
   }
   const isMonthView = currentView === MONTH
 
   let data
   switch (currentView) {
     case MONTH:
-      data = (
-        <MonthView
-          calendarType={calendarType}
-          currentViewDate={currentViewDate}
-          weekends={weekends}
-          onDateSelected={onDateSelected}
-          minDate={minDate}
-          maxDate={maxDate}
-          disabledDates={disabledDates}
-          availableDates={availableDates}
-          selectedDates={selectedDates}
-          selectedDate={selectedDate}
-          selectHandler={selectHandler}
-          hideBeforeAndAfterDates={hideBeforeAndAfterDates}
-          onMouseEnterTile={onMouseEnterTile}
-          onMouseLeaveTile={onMouseLeaveTile}
-        />
-      )
+      if (range) {
+        data = (
+          <RangeHover selectedDate={selectedDate}>
+            {(hoverDates, onHover) => (
+              <MonthView
+                range={range}
+                hoverDates={hoverDates}
+                onHover={onHover}
+                calendarType={calendarType}
+                currentViewDate={currentViewDate}
+                weekends={weekends}
+                onDateSelected={onDateSelected}
+                minDate={minDate}
+                maxDate={maxDate}
+                disabledDates={disabledDates}
+                availableDates={availableDates}
+                selectedDates={selectedDates}
+                selectedDate={selectedDate}
+                selectHandler={selectHandler}
+                hideBeforeAndAfterDates={hideBeforeAndAfterDates}
+                onMouseEnterTile={onMouseEnterTile}
+                onMouseLeaveTile={onMouseLeaveTile}
+              />
+            )}
+          </RangeHover>
+        )
+      } else {
+        data = (
+          <MonthView
+            range={range}
+            calendarType={calendarType}
+            currentViewDate={currentViewDate}
+            weekends={weekends}
+            onDateSelected={onDateSelected}
+            minDate={minDate}
+            maxDate={maxDate}
+            disabledDates={disabledDates}
+            availableDates={availableDates}
+            selectedDates={selectedDates}
+            selectedDate={selectedDate}
+            selectHandler={selectHandler}
+            hideBeforeAndAfterDates={hideBeforeAndAfterDates}
+            onMouseEnterTile={onMouseEnterTile}
+            onMouseLeaveTile={onMouseLeaveTile}
+          />
+        )
+      }
       break
     case YEAR:
       data = (
@@ -129,7 +172,9 @@ const CalendarView = ({
       break
   }
   return (
-    <div className={`grid${isMonthView ? ' grid-dates' : ' grid-months'}`}>
+    <div
+      className={`grid${isMonthView ? ' grid-dates' : ' grid-months'} range`}
+    >
       {data}
     </div>
   )
@@ -142,6 +187,7 @@ CalendarView.defaultProps = {
 
 CalendarView.propTypes = {
   onDrillDown: PropTypes.func.isRequired,
+  onRangeSelect: PropTypes.func.isRequired,
   onMultiSelect: PropTypes.func.isRequired,
   onSingleSelect: PropTypes.func.isRequired,
   currentView: PropTypes.string.isRequired,
@@ -150,9 +196,10 @@ CalendarView.propTypes = {
   onDateSelected: PropTypes.func,
   currentViewDate: PropTypes.instanceOf(Date).isRequired,
   locale: PropTypes.string,
-  calendarType: PropTypes.string,
+  calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
   weekends: PropTypes.bool,
   multiSelect: PropTypes.bool,
+  range: PropTypes.bool,
   minDate: PropTypes.instanceOf(Date),
   maxDate: PropTypes.instanceOf(Date),
   disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),

@@ -39,10 +39,11 @@ class Calendar extends Component {
     classNames: PropTypes.string,
     locale: PropTypes.string,
     weekends: PropTypes.bool,
-    calendarType: PropTypes.string,
+    calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
     onDateSelected: PropTypes.func,
     onMultiSelect: PropTypes.func,
     multiSelect: PropTypes.bool,
+    range: PropTypes.bool,
     startViewDate: PropTypes.instanceOf(Date),
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
@@ -220,6 +221,20 @@ class Calendar extends Component {
     }
     onMultiSelect && onMultiSelect([...newSelectedDates])
   }
+  handleRangeSelect = (dates, selected) => {
+    const { onMultiSelect } = this.props
+    let newSelectedDates
+    if (selected) {
+      newSelectedDates = [...dates]
+      this.setState({ selectedDates: newSelectedDates })
+    } else {
+      newSelectedDates = []
+      this.setState({
+        selectedDates: newSelectedDates
+      })
+    }
+    onMultiSelect && onMultiSelect([...newSelectedDates])
+  }
   handleSingleSelect = (date, selected) => {
     if (selected) {
       this.setState({ selectedDate: date })
@@ -238,6 +253,8 @@ class Calendar extends Component {
     const {
       classNames,
       onDateSelected,
+      calendarType,
+      locale,
       weekends,
       minDate,
       maxDate,
@@ -256,11 +273,9 @@ class Calendar extends Component {
       hideBeforeAndAfterDates,
       navigableBeforeAndAfterDates,
       onMouseEnterTile,
-      onMouseLeaveTile
+      onMouseLeaveTile,
+      range
     } = this.props
-    const monthView = currentView === MONTH
-    const locale = this.props.locale
-    const calendarType = this.props.calendarType
 
     return (
       <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
@@ -280,7 +295,9 @@ class Calendar extends Component {
           doubleNextDisabled={doubleNextDisabled}
           navigationHidden={navigationHidden}
         />
-        {monthView && <Header calendarType={calendarType} locale={locale} />}
+        {currentView === MONTH && (
+          <Header calendarType={calendarType} locale={locale} />
+        )}
         <CalendarView
           currentView={currentView}
           calendarType={calendarType}
@@ -295,6 +312,8 @@ class Calendar extends Component {
           multiSelect={multiSelect}
           weekends={weekends}
           onDrillDown={this.handleDrillDown}
+          range={range}
+          onRangeSelect={this.handleRangeSelect}
           onMultiSelect={this.handleMultiSelect}
           onSingleSelect={this.handleSingleSelect}
           onDateSelected={onDateSelected}

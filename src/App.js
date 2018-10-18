@@ -111,6 +111,33 @@ class App extends Component {
               locale={'fr'}
               calendarType={'US'}
               multiSelect
+              range
+              maxView={'MONTH'}
+              onMultiSelect={data => console.log(data)}
+              onDateSelected={this.handleDateSelected}
+            />
+            <code className="calendar-code">
+              {`
+              <Calendar
+                  locale={'fr'}
+                  calendarType={'US'}
+                  multiSelect
+                  range
+                  maxView={'MONTH'}
+                  onMultiSelect={(data)=>console.log(data)}
+                  onDateSelected={this.handleDateSelected}
+              />`}
+            </code>
+          </div>
+        </div>
+
+        <div className="container">
+          <h1>Calendar 4</h1>
+          <div className="calendar-container">
+            <Calendar
+              locale={'fr'}
+              calendarType={'US'}
+              multiSelect
               maxView={'MONTH'}
               onMultiSelect={data => console.log(data)}
               onDateSelected={this.handleDateSelected}
@@ -130,7 +157,7 @@ class App extends Component {
         </div>
 
         <div className="container">
-          <h1>Calendar 4</h1>
+          <h1>Calendar 5</h1>
           <div className="calendar-container">
             <Calendar
               locale={'ddd'}
