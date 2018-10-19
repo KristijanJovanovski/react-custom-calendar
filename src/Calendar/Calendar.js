@@ -35,6 +35,8 @@ class Calendar extends Component {
   }
   static propTypes = {
     classNames: PropTypes.string,
+    selectedDate: PropTypes.instanceOf(Date),
+    selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
     locale: PropTypes.string,
     weekends: PropTypes.bool,
     calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
@@ -83,10 +85,12 @@ class Calendar extends Component {
         nextProps.maxDate &&
         checkMinMaxDate(nextProps.minDate, nextProps.maxDate)
       nextProps.disabledDates &&
+        Array.isArray(nextProps.disabledDates) &&
         nextProps.disabledDates.forEach(date => {
           checkDate(date)
         })
       nextProps.availableDates &&
+        Array.isArray(nextProps.availableDates) &&
         nextProps.availableDates.forEach(date => {
           checkDate(date)
         })
@@ -141,8 +145,18 @@ class Calendar extends Component {
         }
       }
     }
-
     return state
+  }
+  componentDidMount() {
+    const { selectedDate, selectedDates } = this.props
+    if (selectedDate) {
+      checkDate(selectedDate)
+      this.setState({ selectedDate })
+    }
+    if (selectedDates && Array.isArray(selectedDates)) {
+      selectedDates.forEach(selectedDateItem => checkDate(selectedDateItem))
+      this.setState({ selectedDates })
+    }
   }
 
   handleDrillUp = () => {

@@ -31,6 +31,7 @@ class App extends Component {
             <code className="calendar-code">
               {`
               <Calendar
+                selectedDate={new Date()}
                   locale={'mk'}
                   onDateSelected={this.handleDateSelected}
                   weekends
