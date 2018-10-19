@@ -2,8 +2,10 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 import {
-  afterDates,
-  beforeDates,
+  isDateGrayed,
+  isDateSelected,
+  isDateDisabled,
+  isWeekend,
   equalDates,
   getMonthViewDates
 } from '../utils/helpers'
@@ -33,51 +35,20 @@ const MonthView = ({
     calendarType,
     !!hideBeforeAndAfterDates
   ).map((item, idx) => {
-    const weekend = idx % 7
-    let blank, grayed, disabled, showWeekend, selected, hover
+    let hover, blank, showWeekend, grayed, disabled, selected
     if (item === null) {
       blank = true
     } else {
-      grayed =
-        currentViewDate.getFullYear() !== item.getFullYear() ||
-        currentViewDate.getMonth() !== item.getMonth()
-      selected =
-        (selectedDates &&
-          selectedDates.some(selectedItem => equalDates(item, selectedItem))) ||
-        (selectedDate && equalDates(item, selectedDate))
-
-      if (!availableDates) {
-        disabled =
-          (minDate && beforeDates(item, minDate)) ||
-          (maxDate && afterDates(item, maxDate)) ||
-          (disabledDates &&
-            disabledDates.some(disabledItems =>
-              equalDates(disabledItems, item)
-            ))
-      } else if (!minDate && !maxDate) {
-        disabled = !availableDates.some(availableItems =>
-          equalDates(availableItems, item)
-        )
-      } else {
-        disabled =
-          (!availableDates.some(availableItems =>
-            equalDates(availableItems, item)
-          ) &&
-            (minDate &&
-              maxDate &&
-              (beforeDates(item, minDate) || afterDates(item, maxDate)))) ||
-          (disabledDates &&
-            disabledDates.some(disabledItems =>
-              equalDates(disabledItems, item)
-            ))
-      }
-
-      if (weekends && calendarType === 'ISO 8601') {
-        showWeekend = weekend === 5 || weekend === 6
-      }
-      if (weekends && calendarType === 'US') {
-        showWeekend = weekend === 0 || weekend === 6
-      }
+      grayed = isDateGrayed(item, currentViewDate)
+      selected = isDateSelected(item, selectedDate, selectedDates)
+      disabled = isDateDisabled(
+        item,
+        availableDates,
+        minDate,
+        maxDate,
+        disabledDates
+      )
+      showWeekend = isWeekend(idx, weekends, calendarType)
       if (range && hoverDates && onHover && selectedDate) {
         hover = hoverDates.some(hoverItem => equalDates(hoverItem, item))
       }
@@ -87,16 +58,16 @@ const MonthView = ({
         key={idx}
         idx={idx}
         dateType
-        hover={hover}
-        onRangeHover={onHover}
-        range={range}
         blank={blank}
         weekend={showWeekend}
         grayed={grayed}
         onMouseEnter={onMouseEnterTile}
         onMouseLeave={onMouseLeaveTile}
         disabled={disabled}
+        range={range}
         selected={selected}
+        hover={hover}
+        onRangeHover={onHover}
         onDateSelected={onDateSelected}
         onDateSelect={selectHandler}
         value={item.getDate()}

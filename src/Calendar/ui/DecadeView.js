@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 import { YEAR } from '../utils/constants'
-import { getNewDate } from '../utils/helpers'
+import { getNewDate, isYearDisabled, isYearSelected } from '../utils/helpers'
 import Tile from './Tile'
 
 const DecadeView = ({
@@ -13,47 +13,40 @@ const DecadeView = ({
   onDrillDown,
   currentViewDate,
   onMouseEnterTile,
-  onMouseLeaveTile
+  onMouseLeaveTile,
+  range,
+  selectedDate,
+  selectedDates,
+  hover,
+  onHover,
+  onDateSelected,
+  selectHandler
 }) => {
   const data = Array(10)
     .fill()
     .map((item, idx) => getNewDate(currentViewDate, YEAR, idx))
     .map((item, idx) => {
-      let disabled
+      let disabled, selected
       if (disableableDecadeTiles) {
-        if (!availableDates) {
-          disabled =
-            (minDate && item.getFullYear() < minDate.getFullYear()) ||
-            (maxDate && item.getFullYear() > maxDate.getFullYear())
-        } else if (!minDate && !maxDate) {
-          disabled =
-            availableDates &&
-            !availableDates.some(
-              availableItem =>
-                availableItem.getFullYear() === item.getFullYear()
-            )
-        } else {
-          disabled =
-            !availableDates.some(
-              availableItem =>
-                availableItem.getFullYear() === item.getFullYear()
-            ) &&
-            (minDate &&
-              maxDate &&
-              (item.getFullYear() < minDate.getFullYear() ||
-                item.getFullYear() > maxDate.getFullYear()))
-        }
+        disabled = isYearDisabled(item, availableDates, minDate, maxDate)
+        selected = isYearSelected(item, selectedDate, selectedDates)
       }
       return (
         <Tile
           key={idx}
           onMouseEnter={onMouseEnterTile}
           onMouseLeave={onMouseLeaveTile}
-          onDrillDown={idx => onDrillDown(idx)}
+          onDrillDown={onDrillDown}
           value={item.getFullYear()}
           date={item}
           disabled={disabled}
           idx={idx}
+          range={range}
+          selected={selected}
+          hover={hover}
+          onRangeHover={onHover}
+          onDateSelected={onDateSelected}
+          onDateSelect={selectHandler}
         />
       )
     })

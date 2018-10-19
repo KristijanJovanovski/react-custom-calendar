@@ -3,18 +3,26 @@ import './CalendarView.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { CENTURY, DECADE, MONTH, YEAR } from '../utils/constants'
+import { CENTURY, DECADE, MONTH, YEAR, DATE } from '../utils/constants'
 import {
   afterDates,
   beforeDates,
   endOfMonthDate,
   equalDates,
   firstOfMonthDate,
-  getDateRange
+  getDateRange,
+  getChildView,
+  checkViewOrder,
+  isDateDisabled,
+  isMonthDisabled,
+  isYearDisabled,
+  isDecadeDisabled
 } from '../utils/helpers'
 import CenturyView from './CenturyView'
 import DecadeView from './DecadeView'
+import Header from './Header'
 import MonthView from './MonthView'
+import Navigation from './Navigation'
 import RangeHover from './RangeHover'
 import YearView from './YearView'
 
@@ -22,6 +30,8 @@ const CalendarView = ({
   locale,
   calendarType,
   currentView,
+  minView,
+  maxView,
   currentViewDate,
   weekends,
   onDrillDown,
@@ -45,17 +55,40 @@ const CalendarView = ({
   hideBeforeAndAfterDates,
   onMouseEnterTile,
   onMouseLeaveTile,
-  range
+  range,
+  drillUp,
+  onDoublePrev,
+  onDoubleNext,
+  navigationDisabled,
+  prevDisabled,
+  nextDisabled,
+  doublePrevDisabled,
+  doubleNextDisabled,
+  navigationHidden,
+  navigationClasses,
+  doublePrevClasses,
+  prevClasses,
+  labelClasses,
+  nextClasses,
+  doubleNextClasses
 }) => {
   const selectHandler = (date, selected) => {
+    const drillView = getChildView(currentView, minView)
+    if (drillView) {
+      onDrillDown(date, drillView)
+      return
+    }
     const selectFn = multiSelect ? onMultiSelect : onSingleSelect
+
     if (
       navigableBeforeAndAfterDates &&
+      currentView === MONTH &&
       beforeDates(date, firstOfMonthDate(currentViewDate))
     ) {
       onPrev && onPrev()
     } else if (
       navigableBeforeAndAfterDates &&
+      currentView === MONTH &&
       afterDates(date, endOfMonthDate(currentViewDate))
     ) {
       onNext && onNext()
@@ -64,7 +97,31 @@ const CalendarView = ({
       selectFn(date, selected)
     } else if (selectedDate && !equalDates(selectedDate, date)) {
       onSingleSelect(date, false)
-      onRangeSelect([...getDateRange(selectedDate, date)], selected)
+      let selectedRange
+      let isDisabledFn
+      if (currentView === MONTH) {
+        isDisabledFn = isDateDisabled
+        selectedRange = [...getDateRange(selectedDate, date, DATE)]
+      } else if (currentView === YEAR) {
+        isDisabledFn = isMonthDisabled
+        selectedRange = [...getDateRange(selectedDate, date, MONTH)]
+      } else if (currentView === DECADE) {
+        isDisabledFn = isYearDisabled
+        selectedRange = [...getDateRange(selectedDate, date, YEAR)]
+      } else if (currentView === CENTURY) {
+        isDisabledFn = isDecadeDisabled
+        selectedRange = [...getDateRange(selectedDate, date, DECADE)]
+      }
+      selectedRange = selectedRange.filter(selectedRangeDateItem => {
+        return !isDisabledFn(
+          selectedRangeDateItem,
+          availableDates,
+          minDate,
+          maxDate,
+          disabledDates
+        )
+      })
+      onRangeSelect(selectedRange, selected)
     } else if (selectedDates.length) {
       onRangeSelect([], false)
     } else {
@@ -73,110 +130,148 @@ const CalendarView = ({
   }
   const isMonthView = currentView === MONTH
 
-  let data
+  let gridView
   switch (currentView) {
     case MONTH:
-      if (range) {
-        data = (
-          <RangeHover selectedDate={selectedDate}>
-            {(hoverDates, onHover) => (
-              <MonthView
-                range={range}
-                hoverDates={hoverDates}
-                onHover={onHover}
-                calendarType={calendarType}
-                currentViewDate={currentViewDate}
-                weekends={weekends}
-                onDateSelected={onDateSelected}
-                minDate={minDate}
-                maxDate={maxDate}
-                disabledDates={disabledDates}
-                availableDates={availableDates}
-                selectedDates={selectedDates}
-                selectedDate={selectedDate}
-                selectHandler={selectHandler}
-                hideBeforeAndAfterDates={hideBeforeAndAfterDates}
-                onMouseEnterTile={onMouseEnterTile}
-                onMouseLeaveTile={onMouseLeaveTile}
-              />
-            )}
-          </RangeHover>
-        )
-      } else {
-        data = (
-          <MonthView
-            range={range}
-            calendarType={calendarType}
-            currentViewDate={currentViewDate}
-            weekends={weekends}
-            onDateSelected={onDateSelected}
-            minDate={minDate}
-            maxDate={maxDate}
-            disabledDates={disabledDates}
-            availableDates={availableDates}
-            selectedDates={selectedDates}
-            selectedDate={selectedDate}
-            selectHandler={selectHandler}
-            hideBeforeAndAfterDates={hideBeforeAndAfterDates}
-            onMouseEnterTile={onMouseEnterTile}
-            onMouseLeaveTile={onMouseLeaveTile}
-          />
-        )
-      }
-      break
-    case YEAR:
-      data = (
-        <YearView
-          disableableYearTiles={disableableYearTiles}
-          availableDates={availableDates}
+      gridView = (
+        <RangeHover
+          currentView={currentView}
+          range={range}
+          calendarType={calendarType}
+          currentViewDate={currentViewDate}
+          weekends={weekends}
+          onDateSelected={onDateSelected}
           minDate={minDate}
           maxDate={maxDate}
-          onDrillDown={onDrillDown}
+          disabledDates={disabledDates}
+          availableDates={availableDates}
+          selectedDates={selectedDates}
+          selectedDate={selectedDate}
+          selectHandler={selectHandler}
+          hideBeforeAndAfterDates={hideBeforeAndAfterDates}
+          onMouseEnterTile={onMouseEnterTile}
+          onMouseLeaveTile={onMouseLeaveTile}
+        >
+          {(hoverDates, onHover, rest) => (
+            <MonthView hoverDates={hoverDates} onHover={onHover} {...rest} />
+          )}
+        </RangeHover>
+      )
+
+      break
+
+    case YEAR:
+      gridView = (
+        <RangeHover
+          range={range}
+          currentView={currentView}
+          minDate={minDate}
+          maxDate={maxDate}
+          disabledDates={disabledDates}
+          availableDates={availableDates}
+          selectedDates={selectedDates}
+          selectedDate={selectedDate}
+          selectHandler={selectHandler}
+          disableableYearTiles={disableableYearTiles}
           locale={locale}
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
-        />
+        >
+          {(hoverDates, onHover, rest) => (
+            <YearView hoverDates={hoverDates} onHover={onHover} {...rest} />
+          )}
+        </RangeHover>
       )
+
       break
     case DECADE:
-      data = (
-        <DecadeView
-          disableableDecadeTiles={disableableDecadeTiles}
-          availableDates={availableDates}
+      gridView = (
+        <RangeHover
+          range={range}
+          currentView={currentView}
           minDate={minDate}
           maxDate={maxDate}
-          onDrillDown={onDrillDown}
+          disabledDates={disabledDates}
+          availableDates={availableDates}
+          selectedDate={selectedDate}
+          selectedDates={selectedDates}
+          selectHandler={selectHandler}
+          disableableDecadeTiles={disableableDecadeTiles}
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
-        />
+        >
+          {(hoverDates, onHover, rest) => (
+            <DecadeView hoverDates={hoverDates} onHover={onHover} {...rest} />
+          )}
+        </RangeHover>
       )
+
       break
     case CENTURY:
-      data = (
-        <CenturyView
-          disableableCenturyTiles={disableableCenturyTiles}
-          availableDates={availableDates}
+      gridView = (
+        <RangeHover
+          range={range}
+          currentView={currentView}
           minDate={minDate}
           maxDate={maxDate}
-          onDrillDown={onDrillDown}
+          disabledDates={disabledDates}
+          availableDates={availableDates}
+          selectedDate={selectedDate}
+          selectedDates={selectedDates}
+          selectHandler={selectHandler}
+          disableableCenturyTiles={disableableCenturyTiles}
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
-        />
+        >
+          {(hoverDates, onHover, rest) => (
+            <CenturyView hoverDates={hoverDates} onHover={onHover} {...rest} />
+          )}
+        </RangeHover>
       )
+
       break
 
     default:
       break
   }
+  const nav = (
+    <Navigation
+      locale={locale}
+      currentView={currentView}
+      currentViewDate={currentViewDate}
+      drillUp={drillUp}
+      onPrev={onPrev}
+      onNext={onNext}
+      onDoublePrev={onDoublePrev}
+      onDoubleNext={onDoubleNext}
+      navigationDisabled={navigationDisabled}
+      prevDisabled={prevDisabled}
+      nextDisabled={nextDisabled}
+      doublePrevDisabled={doublePrevDisabled}
+      doubleNextDisabled={doubleNextDisabled}
+      navigationHidden={navigationHidden}
+      navigationClasses={navigationClasses}
+      doublePrevClasses={doublePrevClasses}
+      prevClasses={prevClasses}
+      labelClasses={labelClasses}
+      nextClasses={nextClasses}
+      doubleNextClasses={doubleNextClasses}
+    />
+  )
+  const header = isMonthView ? (
+    <Header calendarType={calendarType} locale={locale} />
+  ) : null
   return (
-    <div
-      className={`grid${isMonthView ? ' grid-dates' : ' grid-months'} range`}
-    >
-      {data}
-    </div>
+    <>
+      {nav}
+      {header}
+      <div className={`grid${isMonthView ? ' grid-dates' : ' grid-months'}`}>
+        {gridView}
+      </div>
+    </>
   )
 }
 

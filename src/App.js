@@ -110,22 +110,34 @@ class App extends Component {
             <Calendar
               locale={'fr'}
               calendarType={'US'}
-              multiSelect
               range
-              maxView={'MONTH'}
+              minDate={new Date(2018, 9, 0)}
+              maxDate={new Date(2018, 9, 25)}
+              availableDates={[new Date(2020, 10, 2)]}
+              minView={'DECADE'}
               onMultiSelect={data => console.log(data)}
               onDateSelected={this.handleDateSelected}
+              disableableCenturyTiles
+              disableableDecadeTiles
+              disableableYearTiles
+              navigableBeforeAndAfterDates
             />
             <code className="calendar-code">
               {`
               <Calendar
                   locale={'fr'}
                   calendarType={'US'}
-                  multiSelect
                   range
-                  maxView={'MONTH'}
+                  minDate={new Date(2018,9,0)}
+                  maxDate={new Date(2018,9,25)}
+                  availableDates={[new Date(2018,10,2)]}
+                  minView={'DECADE'}
                   onMultiSelect={(data)=>console.log(data)}
                   onDateSelected={this.handleDateSelected}
+                  disableableCenturyTiles
+                  disableableDecadeTiles
+                  disableableYearTiles
+                  navigableBeforeAndAfterDates
               />`}
             </code>
           </div>
@@ -138,7 +150,7 @@ class App extends Component {
               locale={'fr'}
               calendarType={'US'}
               multiSelect
-              maxView={'MONTH'}
+              minView={'YEAR'}
               onMultiSelect={data => console.log(data)}
               onDateSelected={this.handleDateSelected}
             />
@@ -148,7 +160,7 @@ class App extends Component {
                   locale={'fr'}
                   calendarType={'US'}
                   multiSelect
-                  maxView={'MONTH'}
+                  minView={'YEAR'}
                   onMultiSelect={(data)=>console.log(data)}
                   onDateSelected={this.handleDateSelected}
               />`}

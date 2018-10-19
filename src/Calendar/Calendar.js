@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
 import CalendarView from './ui/CalendarView'
-import Header from './ui/Header'
-import Navigation from './ui/Navigation'
 import { CENTURY, DECADE, MONTH, YEAR } from './utils/constants'
 import {
   checkDate,
@@ -28,7 +26,7 @@ class Calendar extends Component {
     selectedDate: undefined
   }
   static defaultProps = {
-    startView: MONTH,
+    // startView: MONTH,
     startViewDate: new Date(),
     minView: MONTH,
     maxView: CENTURY,
@@ -112,22 +110,34 @@ class Calendar extends Component {
       ) {
         throw new Error('minView should lower than maxView')
       }
+
       if (
-        nextProps.minView &&
-        nextProps.maxView &&
-        !checkViewOrder(nextProps.minView, nextProps.maxView) &&
-        !checkViewOrder(nextProps.minView, nextProps.startView) &&
-        !checkViewOrder(nextProps.startView, nextProps.maxView)
+        (nextProps.minView &&
+          nextProps.maxView &&
+          !checkViewOrder(nextProps.minView, nextProps.maxView)) ||
+        (nextProps.startView &&
+          !checkViewOrder(nextProps.minView, nextProps.startView)) ||
+        (nextProps.startView &&
+          !checkViewOrder(nextProps.startView, nextProps.maxView))
       ) {
         throw new Error(
           'startView value shoud be beetween or equal to minView and maxView'
         )
       }
-      state = {
-        ...prevState,
-        ...state,
-        selectedDates: [...prevState.selectedDates],
-        currentView: nextProps.startView
+      if (!nextProps.startView) {
+        state = {
+          ...prevState,
+          ...state,
+          selectedDates: [...prevState.selectedDates],
+          currentView: nextProps.minView
+        }
+      } else {
+        state = {
+          ...prevState,
+          ...state,
+          selectedDates: [...prevState.selectedDates],
+          currentView: nextProps.startView
+        }
       }
     }
 
@@ -135,49 +145,32 @@ class Calendar extends Component {
   }
 
   handleDrillUp = () => {
-    const currentView = this.state.currentView
+    const { currentView, currentViewDate } = this.state
     const maxView = this.props.maxView
+    let newDate
     switch (currentView) {
       case MONTH:
-        checkViewOrder(currentView, maxView) &&
-          this.setState({ currentView: YEAR })
+        newDate = getNewDate(currentViewDate, YEAR, 1)
+        checkViewOrder(YEAR, maxView) &&
+          this.setState({ currentView: YEAR, currentViewDate: newDate })
         break
       case YEAR:
-        checkViewOrder(currentView, maxView) &&
-          this.setState({ currentView: DECADE })
+        newDate = getNewDate(currentViewDate, DECADE, 1)
+        checkViewOrder(DECADE, maxView) &&
+          this.setState({ currentView: DECADE, currentViewDate: newDate })
         break
       case DECADE:
-        checkViewOrder(currentView, maxView) &&
-          this.setState({ currentView: CENTURY })
+        newDate = getNewDate(currentViewDate, CENTURY, 1)
+        checkViewOrder(CENTURY, maxView) &&
+          this.setState({ currentView: CENTURY, currentViewDate: newDate })
         break
 
       default:
         break
     }
   }
-  handleDrillDown = idx => {
-    const { currentView, currentViewDate } = this.state
-    const minView = this.props.minView
-    let newDate
-    switch (currentView) {
-      case YEAR:
-        newDate = getNewDate(currentViewDate, MONTH, idx)
-        checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: MONTH, currentViewDate: newDate })
-        break
-      case DECADE:
-        newDate = getNewDate(currentViewDate, YEAR, idx)
-        checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: YEAR, currentViewDate: newDate })
-        break
-      case CENTURY:
-        newDate = getNewDate(currentViewDate, DECADE, idx)
-        checkViewOrder(minView, currentView) &&
-          this.setState({ currentView: DECADE, currentViewDate: newDate })
-        break
-      default:
-        break
-    }
+  handleDrillDown = (date, view) => {
+    this.setState({ currentView: view, currentViewDate: date })
   }
   handlePrev = () => {
     const { currentView, currentViewDate } = this.state
@@ -221,8 +214,11 @@ class Calendar extends Component {
     }
     onMultiSelect && onMultiSelect([...newSelectedDates])
   }
+  //
+  // FIXME: Can store too many dates in state
+  // TODO: store range boundaries and compute and return the dates
   handleRangeSelect = (dates, selected) => {
-    const { onMultiSelect } = this.props
+    const { onMultiSelect, range } = this.props
     let newSelectedDates
     if (selected) {
       newSelectedDates = [...dates]
@@ -233,7 +229,7 @@ class Calendar extends Component {
         selectedDates: newSelectedDates
       })
     }
-    onMultiSelect && onMultiSelect([...newSelectedDates])
+    range && onMultiSelect && onMultiSelect([...newSelectedDates])
   }
   handleSingleSelect = (date, selected) => {
     if (selected) {
@@ -245,80 +241,73 @@ class Calendar extends Component {
 
   render() {
     const {
-      selectedDate,
-      selectedDates,
       currentView,
-      currentViewDate
+      currentViewDate,
+      selectedDate,
+      selectedDates
     } = this.state
     const {
       classNames,
-      onDateSelected,
-      calendarType,
       locale,
       weekends,
+      calendarType,
+      onDateSelected,
+      multiSelect,
+      range,
       minDate,
       maxDate,
+      minView,
+      maxView,
       disabledDates,
       availableDates,
-      multiSelect,
       navigationDisabled,
       prevDisabled,
       nextDisabled,
       doublePrevDisabled,
       doubleNextDisabled,
       navigationHidden,
+      navigationClasses,
+      doublePrevClasses,
+      prevClasses,
+      labelClasses,
+      nextClasses,
+      doubleNextClasses,
       disableableYearTiles,
       disableableDecadeTiles,
       disableableCenturyTiles,
-      hideBeforeAndAfterDates,
       navigableBeforeAndAfterDates,
+      hideBeforeAndAfterDates,
       onMouseEnterTile,
-      onMouseLeaveTile,
-      range
+      onMouseLeaveTile
     } = this.props
 
     return (
       <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
-        <Navigation
-          locale={locale}
+        <CalendarView
           currentView={currentView}
           currentViewDate={currentViewDate}
+          selectedDate={selectedDate}
+          selectedDates={selectedDates}
+          onDrillDown={this.handleDrillDown}
+          onRangeSelect={this.handleRangeSelect}
+          onMultiSelect={this.handleMultiSelect}
+          onSingleSelect={this.handleSingleSelect}
+          onDateSelected={onDateSelected}
           drillUp={this.handleDrillUp}
           onPrev={this.handlePrev}
           onNext={this.handleNext}
           onDoublePrev={this.handleDoublePrev}
           onDoubleNext={this.handleDoubleNext}
-          navigationDisabled={navigationDisabled}
-          prevDisabled={prevDisabled}
-          nextDisabled={nextDisabled}
-          doublePrevDisabled={doublePrevDisabled}
-          doubleNextDisabled={doubleNextDisabled}
-          navigationHidden={navigationHidden}
-        />
-        {currentView === MONTH && (
-          <Header calendarType={calendarType} locale={locale} />
-        )}
-        <CalendarView
-          currentView={currentView}
-          calendarType={calendarType}
-          currentViewDate={currentViewDate}
           locale={locale}
+          calendarType={calendarType}
+          minView={minView}
+          maxView={maxView}
+          weekends={weekends}
           minDate={minDate}
           maxDate={maxDate}
-          selectedDate={selectedDate}
-          selectedDates={selectedDates}
           disabledDates={disabledDates}
           availableDates={availableDates}
           multiSelect={multiSelect}
-          weekends={weekends}
-          onDrillDown={this.handleDrillDown}
-          range={range}
-          onRangeSelect={this.handleRangeSelect}
-          onMultiSelect={this.handleMultiSelect}
-          onSingleSelect={this.handleSingleSelect}
-          onDateSelected={onDateSelected}
-          onPrev={this.handlePrev}
-          onNext={this.handleNext}
           disableableYearTiles={disableableYearTiles}
           disableableDecadeTiles={disableableDecadeTiles}
           disableableCenturyTiles={disableableCenturyTiles}
@@ -326,6 +315,19 @@ class Calendar extends Component {
           hideBeforeAndAfterDates={hideBeforeAndAfterDates}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
+          range={range}
+          navigationDisabled={navigationDisabled}
+          prevDisabled={prevDisabled}
+          nextDisabled={nextDisabled}
+          doublePrevDisabled={doublePrevDisabled}
+          doubleNextDisabled={doubleNextDisabled}
+          navigationHidden={navigationHidden}
+          navigationClasses={navigationClasses}
+          doublePrevClasses={doublePrevClasses}
+          prevClasses={prevClasses}
+          labelClasses={labelClasses}
+          nextClasses={nextClasses}
+          doubleNextClasses={doubleNextClasses}
         />
       </div>
     )

@@ -12,7 +12,6 @@ const Tile = ({
   weekend,
   dateType,
   date,
-  onDrillDown,
   idx,
   onDateSelected,
   onDateSelect,
@@ -29,24 +28,18 @@ const Tile = ({
   }${blank ? ' blank' : ''}${hover ? ' hover-range' : ''}`
 
   const handleSelectDate = () => {
-    if (dateType) {
-      if (!disabled && !blank) {
-        onDateSelect(date, !selected)
-        onDateSelected(date, !selected)
-      }
-    } else {
-      if (!disabled && !blank) {
-        onDrillDown(idx)
-      }
+    if (!disabled && !blank) {
+      onDateSelect && onDateSelect(date, !selected)
+      onDateSelected && onDateSelected(date, !selected)
     }
   }
   const handleMouseEnter = e => {
     onMouseEnter && onMouseEnter(e, date)
-    range && onRangeHover(date, true)
+    range && onRangeHover && onRangeHover(date, true)
   }
   const handleMouseLeave = e => {
     onMouseLeave && onMouseLeave(e, date)
-    range && onRangeHover(date, false)
+    range && onRangeHover && onRangeHover(date, false)
   }
 
   return (

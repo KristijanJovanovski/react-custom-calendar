@@ -6,7 +6,7 @@ import React from 'react'
 import { CENTURY, DECADE, MONTH, YEAR } from '../utils/constants'
 import {
   getCenturyRange,
-  getDecadeRange,
+  getDecadeRangeText,
   getMonthAndYear,
   getYear
 } from '../utils/helpers'
@@ -44,7 +44,7 @@ const Navigation = ({
   } else if (currentView === YEAR) {
     labelText = getYear(currentViewDate)
   } else if (currentView === DECADE) {
-    labelText = getDecadeRange(currentViewDate)
+    labelText = getDecadeRangeText(currentViewDate)
   } else if (currentView === CENTURY) {
     labelText = getCenturyRange(currentViewDate)
   }

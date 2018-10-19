@@ -21,6 +21,30 @@ export const checkDate = date => {
   }
   throw new Error('Not a date')
 }
+
+export const getChildView = (date, min = MONTH) => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
+  if (units.some(u => u === date) && units.some(u => u === min)) {
+    let idx = units.indexOf(date)
+
+    if (idx > units.indexOf(min)) {
+      return units[idx - 1]
+    }
+    return null
+  }
+  throw new Error('Not a vaild view unit')
+}
+export const getParentView = (date, max = CENTURY) => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
+  if (units.some(u => u === date) && units.some(u => u === max)) {
+    let idx = units.indexOf(date)
+    if (idx < units.indexOf(max)) {
+      return units[idx + 1]
+    }
+    return null
+  }
+  throw new Error('Not a vaild view unit')
+}
 export const checkViewOrder = (min, max) => {
   const units = [MONTH, YEAR, DECADE, CENTURY]
   if (units.some(u => u === min) && units.some(u => u === max)) {
@@ -43,6 +67,8 @@ export const checkMinMaxDate = (minDate, maxDate) => {
 }
 
 export const equalDates = (first, second) => {
+  checkDate(first)
+  checkDate(second)
   return (
     first.getFullYear() === second.getFullYear() &&
     first.getMonth() === second.getMonth() &&
@@ -51,6 +77,8 @@ export const equalDates = (first, second) => {
 }
 
 export const beforeDates = (first, second) => {
+  checkDate(first)
+  checkDate(second)
   return (
     first.getFullYear() < second.getFullYear() ||
     (first.getFullYear() === second.getFullYear() &&
@@ -60,6 +88,8 @@ export const beforeDates = (first, second) => {
   )
 }
 export const afterDates = (first, second) => {
+  checkDate(first)
+  checkDate(second)
   return (
     first.getFullYear() > second.getFullYear() ||
     (first.getFullYear() === second.getFullYear() &&
@@ -69,6 +99,8 @@ export const afterDates = (first, second) => {
   )
 }
 export const beforeMonths = (first, second) => {
+  checkDate(first)
+  checkDate(second)
   return (
     first.getFullYear() < second.getFullYear() ||
     (first.getFullYear() === second.getFullYear() &&
@@ -76,6 +108,8 @@ export const beforeMonths = (first, second) => {
   )
 }
 export const afterMonths = (first, second) => {
+  checkDate(first)
+  checkDate(second)
   return (
     first.getFullYear() > second.getFullYear() ||
     (first.getFullYear() === second.getFullYear() &&
@@ -149,12 +183,10 @@ export const getDecadeEndYear = date => {
   checkDate(date)
   const year = date.getFullYear()
   let upperBound
-  year % 10 === 0
-    ? (upperBound = year + 10)
-    : (upperBound = year + (10 - (year % 10)))
+  upperBound = year + (10 - (year % 10))
   return upperBound
 }
-export const getDecadeRange = date => {
+export const getDecadeRangeText = date => {
   checkDate(date)
   const bottomBound = getDecadeStartYear(date)
   const upperBound = getDecadeEndYear(date)
@@ -290,17 +322,37 @@ export const getDoubleNextDate = (date, type) => {
   return newDate
 }
 
-export const getDateRange = (dateOne, dateTwo) => {
+export const getDateRange = (dateOne, dateTwo, type = DATE) => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (beforeDates(dateOne, dateTwo)) {
-    return range(dateOne, dateTwo)
+    if (type === DATE) {
+      return rangeDate(dateOne, dateTwo)
+    } else if (type === MONTH) {
+      return rangeDate(dateOne, endOfMonthDate(dateTwo))
+    } else if (type === YEAR) {
+      return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 1, 0, 0))
+    } else if (type === DECADE) {
+      return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 10, 0, 0))
+    } else if (type === CENTURY) {
+      return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 100, 0, 0))
+    }
   } else if (afterDates(dateOne, dateTwo)) {
-    return range(dateTwo, dateOne)
+    if (type === DATE) {
+      return rangeDate(dateTwo, dateOne)
+    } else if (type === MONTH) {
+      return rangeDate(dateTwo, endOfMonthDate(dateOne))
+    } else if (type === YEAR) {
+      return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 1, 0, 0))
+    } else if (type === DECADE) {
+      return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 10, 0, 0))
+    } else if (type === CENTURY) {
+      return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 100, 0, 0))
+    }
   }
   return [dateOne, dateTwo]
 }
-export const range = (lowerBound, upperBound) => {
+export const rangeDate = (lowerBound, upperBound) => {
   checkDate(lowerBound)
   checkDate(upperBound)
   const timeDiff = Math.abs(upperBound.getTime() - lowerBound.getTime())
@@ -313,6 +365,85 @@ export const range = (lowerBound, upperBound) => {
         lowerBound.getFullYear(),
         lowerBound.getMonth(),
         lowerBound.getDate() + idx
+      )
+    })
+}
+export const getMonthRange = (dateOne, dateTwo) => {
+  checkDate(dateOne)
+  checkDate(dateTwo)
+  if (
+    dateOne.getFullYear() < dateTwo.getFullYear() ||
+    (dateOne.getFullYear() === dateTwo.getFullYear() &&
+      dateOne.getMonth() < dateTwo.getMonth())
+  ) {
+    return rangeMonth(dateOne, dateTwo)
+  } else if (
+    dateOne.getFullYear() > dateTwo.getFullYear() ||
+    (dateOne.getFullYear() === dateTwo.getFullYear() &&
+      dateOne.getMonth() > dateTwo.getMonth())
+  ) {
+    return rangeMonth(dateTwo, dateOne)
+  }
+  return [dateOne, dateTwo]
+}
+export const rangeMonth = (lowerBound, upperBound) => {
+  checkDate(lowerBound)
+  checkDate(upperBound)
+  const diffMonths =
+    (upperBound.getFullYear() - lowerBound.getFullYear()) * 12 +
+    (upperBound.getMonth() + 1 - (lowerBound.getMonth() + 1))
+  return Array(diffMonths + 1)
+    .fill()
+    .map((item, idx) => {
+      return new Date(lowerBound.getFullYear(), lowerBound.getMonth() + idx, 1)
+    })
+}
+export const getYearRange = (dateOne, dateTwo) => {
+  checkDate(dateOne)
+  checkDate(dateTwo)
+  if (dateOne.getFullYear() < dateTwo.getFullYear()) {
+    return rangeYear(dateOne, dateTwo)
+  } else if (dateOne.getFullYear() > dateTwo.getFullYear()) {
+    return rangeYear(dateTwo, dateOne)
+  }
+  return [dateOne, dateTwo]
+}
+
+export const rangeYear = (lowerBound, upperBound) => {
+  checkDate(lowerBound)
+  checkDate(upperBound)
+  const diffYears = upperBound.getFullYear() - lowerBound.getFullYear()
+  return Array(diffYears + 1)
+    .fill()
+    .map((item, idx) => {
+      return new Date(lowerBound.getFullYear() + idx, lowerBound.getMonth(), 1)
+    })
+}
+
+export const getDecadeRange = (dateOne, dateTwo) => {
+  checkDate(dateOne)
+  checkDate(dateTwo)
+  if (dateOne.getFullYear() < dateTwo.getFullYear()) {
+    return rangeDecade(dateOne, dateTwo)
+  } else if (dateOne.getFullYear() > dateTwo.getFullYear()) {
+    return rangeDecade(dateTwo, dateOne)
+  }
+  return [dateOne, dateTwo]
+}
+
+export const rangeDecade = (lowerBound, upperBound) => {
+  checkDate(lowerBound)
+  checkDate(upperBound)
+  const diffYears = Math.floor(
+    (upperBound.getFullYear() - lowerBound.getFullYear()) / 10
+  )
+  return Array(diffYears + 1)
+    .fill()
+    .map((item, idx) => {
+      return new Date(
+        lowerBound.getFullYear() + idx * 10,
+        lowerBound.getMonth(),
+        1
       )
     })
 }
@@ -335,6 +466,10 @@ export const getNewDate = (date, type, idx) => {
     case DECADE:
       year = getCentryStartYear(date) + idx * 10
       newDate = new Date(year, 0)
+      break
+    case CENTURY:
+      year = getCentryStartYear(date)
+      newDate = new Date(year, 0, idx)
       break
 
     default:
@@ -430,4 +565,220 @@ export const getMonthViewDates = (
     .reduce((prev, curr) => [...prev, curr], viewDates)
 
   return viewDates
+}
+
+export const isDateGrayed = (date, currentViewDate) => {
+  if (date === null) return
+
+  const grayed =
+    currentViewDate.getFullYear() !== date.getFullYear() ||
+    currentViewDate.getMonth() !== date.getMonth()
+  return grayed
+}
+
+export const isDateSelected = (date, selectedDate, selectedDates) => {
+  if (date === null) return
+
+  const selected =
+    (selectedDates &&
+      selectedDates.some(selectedDateItem =>
+        equalDates(date, selectedDateItem)
+      )) ||
+    (selectedDate && equalDates(date, selectedDate))
+  return selected
+}
+export const isMonthSelected = (dateMonth, selectedDate, selectedDates) => {
+  if (dateMonth === null) return
+
+  const selected =
+    (selectedDates &&
+      selectedDates.some(
+        selectedDateItem =>
+          selectedDateItem.getMonth() === dateMonth.getMonth() &&
+          selectedDateItem.getFullYear() === dateMonth.getFullYear()
+      )) ||
+    (selectedDate &&
+      selectedDate.getMonth() === dateMonth.getMonth() &&
+      selectedDate.getFullYear() === dateMonth.getFullYear())
+  return selected
+}
+export const isYearSelected = (dateYear, selectedDate, selectedDates) => {
+  if (dateYear === null) return
+
+  const selected =
+    (selectedDates &&
+      selectedDates.some(
+        selectedDateItem =>
+          selectedDateItem.getFullYear() === dateYear.getFullYear()
+      )) ||
+    (selectedDate && selectedDate.getFullYear() === dateYear.getFullYear())
+  return selected
+}
+export const isDecadeSelected = (dateDecade, selectedDate, selectedDates) => {
+  if (dateDecade === null) return
+
+  const selected =
+    (selectedDates &&
+      selectedDates.some(
+        selectedDateItem =>
+          getDecadeStartYear(selectedDateItem) ===
+            getDecadeStartYear(dateDecade) &&
+          getDecadeEndYear(selectedDateItem) === getDecadeEndYear(dateDecade)
+      )) ||
+    (selectedDate &&
+      getDecadeStartYear(selectedDate) === getDecadeStartYear(dateDecade) &&
+      getDecadeEndYear(selectedDate) === getDecadeEndYear(dateDecade))
+  return selected
+}
+
+export const isDateDisabled = (
+  date,
+  availableDates,
+  minDate,
+  maxDate,
+  disabledDates,
+  ...rest
+) => {
+  if (date === null) return
+  let disabled
+  if (!availableDates) {
+    disabled =
+      (minDate && beforeDates(date, minDate)) ||
+      (maxDate && afterDates(date, maxDate)) ||
+      (disabledDates &&
+        disabledDates.some(disabledDateItem =>
+          equalDates(disabledDateItem, date)
+        ))
+  } else if (!minDate && !maxDate) {
+    disabled = !availableDates.some(availableDateItem =>
+      equalDates(availableDateItem, date)
+    )
+  } else {
+    disabled =
+      (!availableDates.some(availableDateItem =>
+        equalDates(availableDateItem, date)
+      ) &&
+        (minDate &&
+          maxDate &&
+          (beforeDates(date, minDate) || afterDates(date, maxDate)))) ||
+      (disabledDates &&
+        disabledDates.some(disabledDateItem =>
+          equalDates(disabledDateItem, date)
+        ))
+  }
+  return disabled
+}
+
+export const isMonthDisabled = (
+  dateMonth,
+  availableDates,
+  minDate,
+  maxDate,
+  ...rest
+) => {
+  let disabled
+  if (!availableDates) {
+    disabled =
+      (minDate && beforeMonths(dateMonth, minDate)) ||
+      (maxDate && afterMonths(dateMonth, maxDate))
+  } else if (!minDate && !maxDate) {
+    disabled = !availableDates.some(
+      availableItem =>
+        availableItem.getMonth() === dateMonth.getMonth() &&
+        availableItem.getFullYear() === dateMonth.getFullYear()
+    )
+  } else {
+    disabled =
+      !availableDates.some(
+        availableItem =>
+          availableItem.getMonth() === dateMonth.getMonth() &&
+          availableItem.getFullYear() === dateMonth.getFullYear()
+      ) &&
+      (minDate &&
+        maxDate &&
+        (beforeMonths(dateMonth, minDate) || afterMonths(dateMonth, maxDate)))
+  }
+  return disabled
+}
+
+export const isYearDisabled = (
+  dateYear,
+  availableDates,
+  minDate,
+  maxDate,
+  ...rest
+) => {
+  let disabled
+  if (!availableDates) {
+    disabled =
+      (minDate && dateYear.getFullYear() < minDate.getFullYear()) ||
+      (maxDate && dateYear.getFullYear() > maxDate.getFullYear())
+  } else if (!minDate && !maxDate) {
+    disabled =
+      availableDates &&
+      !availableDates.some(
+        availableItem => availableItem.getFullYear() === dateYear.getFullYear()
+      )
+  } else {
+    disabled =
+      !availableDates.some(
+        availableItem => availableItem.getFullYear() === dateYear.getFullYear()
+      ) &&
+      (minDate &&
+        maxDate &&
+        (dateYear.getFullYear() < minDate.getFullYear() ||
+          dateYear.getFullYear() > maxDate.getFullYear()))
+  }
+  return disabled
+}
+
+export const isDecadeDisabled = (
+  dateDecade,
+  availableDates,
+  minDate,
+  maxDate,
+  ...rest
+) => {
+  let disabled
+  const startYear = getDecadeStartYear(dateDecade)
+  const endYear = getDecadeEndYear(dateDecade)
+  if (!availableDates) {
+    disabled =
+      (minDate && startYear > minDate.getFullYear()) ||
+      (minDate && endYear < minDate.getFullYear()) ||
+      ((maxDate && startYear > maxDate.getFullYear()) ||
+        (maxDate && endYear < maxDate.getFullYear()))
+  } else if (!minDate && !maxDate) {
+    disabled =
+      availableDates &&
+      !availableDates.some(
+        availableItem =>
+          startYear < availableItem.getFullYear() &&
+          endYear > availableItem.getFullYear()
+      )
+  } else {
+    disabled =
+      !availableDates.some(
+        availableItem =>
+          startYear < availableItem.getFullYear() &&
+          endYear > availableItem.getFullYear()
+      ) &&
+      ((minDate && startYear > minDate.getFullYear()) ||
+        (minDate && endYear < minDate.getFullYear()) ||
+        ((maxDate && startYear > maxDate.getFullYear()) ||
+          (maxDate && endYear < maxDate.getFullYear())))
+  }
+  return disabled
+}
+
+export const isWeekend = (idx, weekends, calendarType) => {
+  let showWeekend
+  const weekend = idx % 7
+  if (weekends && calendarType === 'ISO 8601') {
+    showWeekend = weekend === 5 || weekend === 6
+  }
+  if (weekends && calendarType === 'US') {
+    showWeekend = weekend === 0 || weekend === 6
+  }
+  return showWeekend
 }

@@ -3,10 +3,10 @@ import React from 'react'
 
 import { DECADE } from '../utils/constants'
 import {
-  getDecadeEndYear,
-  getDecadeRange,
-  getDecadeStartYear,
-  getNewDate
+  getDecadeRangeText,
+  isDecadeDisabled,
+  getNewDate,
+  isDecadeSelected
 } from '../utils/helpers'
 import Tile from './Tile'
 
@@ -18,42 +18,23 @@ const CenturyView = ({
   onDrillDown,
   currentViewDate,
   onMouseEnterTile,
-  onMouseLeaveTile
+  onMouseLeaveTile,
+  range,
+  hover,
+  onHover,
+  onDateSelected,
+  selectHandler,
+  selectedDate,
+  selectedDates
 }) => {
   const data = Array(10)
     .fill()
     .map((item, idx) => getNewDate(currentViewDate, DECADE, idx))
     .map((item, idx) => {
-      let disabled
+      let disabled, selected
       if (disableableCenturyTiles) {
-        const startYear = getDecadeStartYear(item)
-        const endYear = getDecadeEndYear(item)
-        if (!availableDates) {
-          disabled =
-            (minDate && startYear > minDate.getFullYear()) ||
-            (minDate && endYear < minDate.getFullYear()) ||
-            ((maxDate && startYear > maxDate.getFullYear()) ||
-              (maxDate && endYear < maxDate.getFullYear()))
-        } else if (!minDate && !maxDate) {
-          disabled =
-            availableDates &&
-            !availableDates.some(
-              availableItem =>
-                startYear < availableItem.getFullYear() &&
-                endYear > availableItem.getFullYear()
-            )
-        } else {
-          disabled =
-            !availableDates.some(
-              availableItem =>
-                startYear < availableItem.getFullYear() &&
-                endYear > availableItem.getFullYear()
-            ) &&
-            ((minDate && startYear > minDate.getFullYear()) ||
-              (minDate && endYear < minDate.getFullYear()) ||
-              ((maxDate && startYear > maxDate.getFullYear()) ||
-                (maxDate && endYear < maxDate.getFullYear())))
-        }
+        disabled = isDecadeDisabled(item, availableDates, minDate, maxDate)
+        selected = isDecadeSelected(item, selectedDate, selectedDates)
       }
       return (
         <Tile
@@ -61,10 +42,16 @@ const CenturyView = ({
           disabled={disabled}
           onMouseEnter={onMouseEnterTile}
           onMouseLeave={onMouseLeaveTile}
-          onDrillDown={idx => onDrillDown(idx)}
-          value={getDecadeRange(item)}
+          onDrillDown={onDrillDown}
+          value={getDecadeRangeText(item)}
           date={item}
           idx={idx}
+          range={range}
+          selected={selected}
+          hover={hover}
+          onRangeHover={onHover}
+          onDateSelected={onDateSelected}
+          onDateSelect={selectHandler}
         />
       )
     })

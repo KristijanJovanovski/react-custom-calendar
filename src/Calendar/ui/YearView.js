@@ -3,10 +3,10 @@ import React from 'react'
 
 import { LONG } from '../utils/constants'
 import {
-  afterMonths,
-  beforeMonths,
   getMonthFormated,
-  getMonthsArray
+  getMonthsArray,
+  isMonthSelected,
+  isMonthDisabled
 } from '../utils/helpers'
 import Tile from './Tile'
 
@@ -19,30 +19,22 @@ const YearView = ({
   locale,
   currentViewDate,
   onMouseEnterTile,
-  onMouseLeaveTile
+  onMouseLeaveTile,
+  selectedDate,
+  selectedDates,
+  range,
+  hover,
+  onHover,
+  onDateSelected,
+  selectHandler
 }) => {
   const data = getMonthsArray(currentViewDate).map((item, idx) => {
-    let disabled
+    let disabled, selected
     const month = getMonthFormated(item, locale, LONG)
     if (disableableYearTiles) {
-      if (!availableDates) {
-        disabled =
-          (minDate && beforeMonths(item, minDate)) ||
-          (maxDate && afterMonths(item, maxDate))
-      } else if (!minDate && !maxDate) {
-        disabled = !availableDates.some(
-          availableItem => availableItem.getMonth() === item.getMonth()
-        )
-      } else {
-        disabled =
-          !availableDates.some(
-            availableItem => availableItem.getMonth() === item.getMonth()
-          ) &&
-          (minDate &&
-            maxDate &&
-            (beforeMonths(item, minDate) || afterMonths(item, maxDate)))
-      }
+      disabled = isMonthDisabled(item, availableDates, minDate, maxDate)
     }
+    selected = isMonthSelected(item, selectedDate, selectedDates)
 
     return (
       <Tile
@@ -50,10 +42,16 @@ const YearView = ({
         disabled={disabled}
         onMouseEnter={onMouseEnterTile}
         onMouseLeave={onMouseLeaveTile}
-        onDrillDown={idx => onDrillDown(idx)}
+        onDrillDown={onDrillDown}
         value={month}
         date={item}
         idx={idx}
+        range={range}
+        selected={selected}
+        hover={hover}
+        onRangeHover={onHover}
+        onDateSelected={onDateSelected}
+        onDateSelect={selectHandler}
       />
     )
   })
