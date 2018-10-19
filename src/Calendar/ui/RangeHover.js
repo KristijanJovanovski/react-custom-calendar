@@ -1,16 +1,17 @@
 import React from 'react'
 
+import { CENTURY, DECADE, MONTH, YEAR } from '../utils/constants'
 import {
   getDateRange,
-  isDateDisabled,
-  isMonthDisabled,
-  isYearDisabled,
-  isDecadeDisabled,
+  getDecadeRange,
   getMonthRange,
   getYearRange,
-  getDecadeRange
+  isDateDisabled,
+  isDecadeDisabled,
+  isMonthDisabled,
+  isYearDisabled
 } from '../utils/helpers'
-import { MONTH, YEAR, DECADE, CENTURY } from '../utils/constants'
+
 export default class RangeHover extends React.Component {
   state = {
     hoverDates: []

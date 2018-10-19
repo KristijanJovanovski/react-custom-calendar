@@ -3,8 +3,8 @@ import './Header.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { transformWeekDays } from '../utils/helpers'
 import { SHORT } from '../utils/constants'
+import { transformWeekDays } from '../utils/helpers'
 
 const Header = ({ locale = 'en', calendarType = 'ISO 8601' }) => {
   const days = transformWeekDays(SHORT, locale, calendarType)

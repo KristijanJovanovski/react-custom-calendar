@@ -5,8 +5,8 @@ import { LONG } from '../utils/constants'
 import {
   getMonthFormated,
   getMonthsArray,
-  isMonthSelected,
-  isMonthDisabled
+  isMonthDisabled,
+  isMonthSelected
 } from '../utils/helpers'
 import Tile from './Tile'
 
@@ -34,7 +34,7 @@ const YearView = ({
     if (disableableYearTiles) {
       disabled = isMonthDisabled(item, availableDates, minDate, maxDate)
     }
-    selected = isMonthSelected(item, selectedDate, selectedDates)
+    selected = isMonthSelected(item, selectedDate, selectedDates, range)
 
     return (
       <Tile
@@ -47,7 +47,7 @@ const YearView = ({
         date={item}
         idx={idx}
         range={range}
-        selected={selected}
+        selected={selected && !disabled}
         hover={hover}
         onRangeHover={onHover}
         onDateSelected={onDateSelected}
@@ -58,7 +58,14 @@ const YearView = ({
   return <>{data}</>
 }
 YearView.propTypes = {
-  disabledYearTiles: PropTypes.bool,
+  selectedDate: PropTypes.instanceOf(Date),
+  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  range: PropTypes.bool,
+  hover: PropTypes.bool,
+  onHover: PropTypes.func,
+  onDateSelected: PropTypes.func,
+  selectHandler: PropTypes.func,
+  disableableYearTiles: PropTypes.bool,
   availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   minDate: PropTypes.instanceOf(Date),
   maxDate: PropTypes.instanceOf(Date),

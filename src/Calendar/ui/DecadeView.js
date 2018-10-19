@@ -29,8 +29,8 @@ const DecadeView = ({
       let disabled, selected
       if (disableableDecadeTiles) {
         disabled = isYearDisabled(item, availableDates, minDate, maxDate)
-        selected = isYearSelected(item, selectedDate, selectedDates)
       }
+      selected = isYearSelected(item, selectedDate, selectedDates, range)
       return (
         <Tile
           key={idx}
@@ -42,7 +42,7 @@ const DecadeView = ({
           disabled={disabled}
           idx={idx}
           range={range}
-          selected={selected}
+          selected={selected && !disabled}
           hover={hover}
           onRangeHover={onHover}
           onDateSelected={onDateSelected}
@@ -54,6 +54,13 @@ const DecadeView = ({
 }
 
 DecadeView.propTypes = {
+  range: PropTypes.bool,
+  selectedDate: PropTypes.instanceOf(Date),
+  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  hover: PropTypes.bool,
+  onHover: PropTypes.func,
+  onDateSelected: PropTypes.func,
+  selectHandler: PropTypes.func,
   disableableDecadeTiles: PropTypes.bool,
   availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   minDate: PropTypes.instanceOf(Date),

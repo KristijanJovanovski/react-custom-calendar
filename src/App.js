@@ -111,10 +111,11 @@ class App extends Component {
               locale={'fr'}
               calendarType={'US'}
               range
-              minDate={new Date(2018, 9, 0)}
-              maxDate={new Date(2018, 9, 25)}
-              availableDates={[new Date(2020, 10, 2)]}
-              minView={'DECADE'}
+              // minDate={new Date(2018, 9, 0)}
+              // maxDate={new Date(2018, 9, 25)}
+              // availableDates={[new Date(2019, 10, 2)]}
+              minView={'CENTURY'}
+              onRangeMultiSelect={data => console.log(data)}
               onMultiSelect={data => console.log(data)}
               onDateSelected={this.handleDateSelected}
               disableableCenturyTiles
@@ -128,10 +129,11 @@ class App extends Component {
                   locale={'fr'}
                   calendarType={'US'}
                   range
-                  minDate={new Date(2018,9,0)}
-                  maxDate={new Date(2018,9,25)}
-                  availableDates={[new Date(2018,10,2)]}
-                  minView={'DECADE'}
+                  // minDate={new Date(2018,9,0)}
+                  // maxDate={new Date(2018,9,25)}
+                  // availableDates={[new Date(2019,10,2)]}
+                  minView={'CENTURY'}
+                  onRangeMultiSelect={data => console.log(data)}
                   onMultiSelect={(data)=>console.log(data)}
                   onDateSelected={this.handleDateSelected}
                   disableableCenturyTiles

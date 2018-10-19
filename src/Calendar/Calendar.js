@@ -40,6 +40,7 @@ class Calendar extends Component {
     calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
     onDateSelected: PropTypes.func,
     onMultiSelect: PropTypes.func,
+    onRangeMultiSelect: PropTypes.func,
     multiSelect: PropTypes.bool,
     range: PropTypes.bool,
     startViewDate: PropTypes.instanceOf(Date),
@@ -150,7 +151,7 @@ class Calendar extends Component {
     let newDate
     switch (currentView) {
       case MONTH:
-        newDate = getNewDate(currentViewDate, YEAR, 1)
+        newDate = getNewDate(currentViewDate, MONTH, 1)
         checkViewOrder(YEAR, maxView) &&
           this.setState({ currentView: YEAR, currentViewDate: newDate })
         break
@@ -214,17 +215,27 @@ class Calendar extends Component {
     }
     onMultiSelect && onMultiSelect([...newSelectedDates])
   }
-  //
-  // FIXME: Can store too many dates in state
-  // TODO: store range boundaries and compute and return the dates
+
   handleRangeSelect = (dates, selected) => {
-    const { onMultiSelect, range } = this.props
+    const { onMultiSelect, range, onRangeMultiSelect } = this.props
     let newSelectedDates
     if (selected) {
       newSelectedDates = [...dates]
-      this.setState({ selectedDates: newSelectedDates })
+      this.setState({
+        selectedDates: [
+          newSelectedDates[0],
+          newSelectedDates[newSelectedDates.length - 1]
+        ]
+      })
+      range &&
+        onRangeMultiSelect &&
+        onRangeMultiSelect([
+          newSelectedDates[0],
+          newSelectedDates[newSelectedDates.length - 1]
+        ])
     } else {
       newSelectedDates = []
+      range && onRangeMultiSelect && onRangeMultiSelect([])
       this.setState({
         selectedDates: newSelectedDates
       })
@@ -282,54 +293,56 @@ class Calendar extends Component {
     } = this.props
 
     return (
-      <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
-        <CalendarView
-          currentView={currentView}
-          currentViewDate={currentViewDate}
-          selectedDate={selectedDate}
-          selectedDates={selectedDates}
-          onDrillDown={this.handleDrillDown}
-          onRangeSelect={this.handleRangeSelect}
-          onMultiSelect={this.handleMultiSelect}
-          onSingleSelect={this.handleSingleSelect}
-          onDateSelected={onDateSelected}
-          drillUp={this.handleDrillUp}
-          onPrev={this.handlePrev}
-          onNext={this.handleNext}
-          onDoublePrev={this.handleDoublePrev}
-          onDoubleNext={this.handleDoubleNext}
-          locale={locale}
-          calendarType={calendarType}
-          minView={minView}
-          maxView={maxView}
-          weekends={weekends}
-          minDate={minDate}
-          maxDate={maxDate}
-          disabledDates={disabledDates}
-          availableDates={availableDates}
-          multiSelect={multiSelect}
-          disableableYearTiles={disableableYearTiles}
-          disableableDecadeTiles={disableableDecadeTiles}
-          disableableCenturyTiles={disableableCenturyTiles}
-          navigableBeforeAndAfterDates={navigableBeforeAndAfterDates}
-          hideBeforeAndAfterDates={hideBeforeAndAfterDates}
-          onMouseEnterTile={onMouseEnterTile}
-          onMouseLeaveTile={onMouseLeaveTile}
-          range={range}
-          navigationDisabled={navigationDisabled}
-          prevDisabled={prevDisabled}
-          nextDisabled={nextDisabled}
-          doublePrevDisabled={doublePrevDisabled}
-          doubleNextDisabled={doubleNextDisabled}
-          navigationHidden={navigationHidden}
-          navigationClasses={navigationClasses}
-          doublePrevClasses={doublePrevClasses}
-          prevClasses={prevClasses}
-          labelClasses={labelClasses}
-          nextClasses={nextClasses}
-          doubleNextClasses={doubleNextClasses}
-        />
-      </div>
+      <>
+        <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
+          <CalendarView
+            currentView={currentView}
+            currentViewDate={currentViewDate}
+            selectedDate={selectedDate}
+            selectedDates={selectedDates}
+            onDrillDown={this.handleDrillDown}
+            onRangeSelect={this.handleRangeSelect}
+            onMultiSelect={this.handleMultiSelect}
+            onSingleSelect={this.handleSingleSelect}
+            onDateSelected={onDateSelected}
+            drillUp={this.handleDrillUp}
+            onPrev={this.handlePrev}
+            onNext={this.handleNext}
+            onDoublePrev={this.handleDoublePrev}
+            onDoubleNext={this.handleDoubleNext}
+            locale={locale}
+            calendarType={calendarType}
+            minView={minView}
+            maxView={maxView}
+            weekends={weekends}
+            minDate={minDate}
+            maxDate={maxDate}
+            disabledDates={disabledDates}
+            availableDates={availableDates}
+            multiSelect={multiSelect}
+            disableableYearTiles={disableableYearTiles}
+            disableableDecadeTiles={disableableDecadeTiles}
+            disableableCenturyTiles={disableableCenturyTiles}
+            navigableBeforeAndAfterDates={navigableBeforeAndAfterDates}
+            hideBeforeAndAfterDates={hideBeforeAndAfterDates}
+            onMouseEnterTile={onMouseEnterTile}
+            onMouseLeaveTile={onMouseLeaveTile}
+            range={range}
+            navigationDisabled={navigationDisabled}
+            prevDisabled={prevDisabled}
+            nextDisabled={nextDisabled}
+            doublePrevDisabled={doublePrevDisabled}
+            doubleNextDisabled={doubleNextDisabled}
+            navigationHidden={navigationHidden}
+            navigationClasses={navigationClasses}
+            doublePrevClasses={doublePrevClasses}
+            prevClasses={prevClasses}
+            labelClasses={labelClasses}
+            nextClasses={nextClasses}
+            doubleNextClasses={doubleNextClasses}
+          />
+        </div>
+      </>
     )
   }
 }

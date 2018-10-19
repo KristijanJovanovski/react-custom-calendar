@@ -576,7 +576,12 @@ export const isDateGrayed = (date, currentViewDate) => {
   return grayed
 }
 
-export const isDateSelected = (date, selectedDate, selectedDates) => {
+export const isDateSelected = (
+  date,
+  selectedDate,
+  selectedDates,
+  range = false
+) => {
   if (date === null) return
 
   const selected =
@@ -584,10 +589,20 @@ export const isDateSelected = (date, selectedDate, selectedDates) => {
       selectedDates.some(selectedDateItem =>
         equalDates(date, selectedDateItem)
       )) ||
-    (selectedDate && equalDates(date, selectedDate))
+    (selectedDate && equalDates(date, selectedDate)) ||
+    (range &&
+      selectedDates &&
+      selectedDates.length >= 2 &&
+      afterDates(date, selectedDates[0]) &&
+      beforeDates(date, selectedDates[selectedDates.length - 1]))
   return selected
 }
-export const isMonthSelected = (dateMonth, selectedDate, selectedDates) => {
+export const isMonthSelected = (
+  dateMonth,
+  selectedDate,
+  selectedDates,
+  range = false
+) => {
   if (dateMonth === null) return
 
   const selected =
@@ -599,10 +614,22 @@ export const isMonthSelected = (dateMonth, selectedDate, selectedDates) => {
       )) ||
     (selectedDate &&
       selectedDate.getMonth() === dateMonth.getMonth() &&
-      selectedDate.getFullYear() === dateMonth.getFullYear())
+      selectedDate.getFullYear() === dateMonth.getFullYear()) ||
+    (range &&
+      selectedDates &&
+      selectedDates.length >= 2 &&
+      ((afterDates(dateMonth, selectedDates[0]) &&
+        beforeDates(dateMonth, selectedDates[selectedDates.length - 1])) ||
+        (equalDates(dateMonth, selectedDates[0]) &&
+          equalDates(dateMonth, selectedDates[selectedDates.length - 1]))))
   return selected
 }
-export const isYearSelected = (dateYear, selectedDate, selectedDates) => {
+export const isYearSelected = (
+  dateYear,
+  selectedDate,
+  selectedDates,
+  range
+) => {
   if (dateYear === null) return
 
   const selected =
@@ -611,10 +638,17 @@ export const isYearSelected = (dateYear, selectedDate, selectedDates) => {
         selectedDateItem =>
           selectedDateItem.getFullYear() === dateYear.getFullYear()
       )) ||
-    (selectedDate && selectedDate.getFullYear() === dateYear.getFullYear())
+    (selectedDate && selectedDate.getFullYear() === dateYear.getFullYear()) ||
+    (range &&
+      selectedDates &&
+      selectedDates.length >= 2 &&
+      ((afterDates(dateYear, selectedDates[0]) &&
+        beforeDates(dateYear, selectedDates[selectedDates.length - 1])) ||
+        (equalDates(dateYear, selectedDates[0]) &&
+          equalDates(dateYear, selectedDates[selectedDates.length - 1]))))
   return selected
 }
-export const isDecadeSelected = (dateDecade, selectedDate, selectedDates) => {
+export const isDecadeSelected = (dateDecade, selectedDate, selectedDates, range) => {
   if (dateDecade === null) return
 
   const selected =
@@ -627,7 +661,14 @@ export const isDecadeSelected = (dateDecade, selectedDate, selectedDates) => {
       )) ||
     (selectedDate &&
       getDecadeStartYear(selectedDate) === getDecadeStartYear(dateDecade) &&
-      getDecadeEndYear(selectedDate) === getDecadeEndYear(dateDecade))
+      getDecadeEndYear(selectedDate) === getDecadeEndYear(dateDecade)) ||
+    (range &&
+      selectedDates &&
+      selectedDates.length >= 2 &&
+      ((afterDates(dateDecade, selectedDates[0]) &&
+        beforeDates(dateDecade, selectedDates[selectedDates.length - 1])) ||
+        (equalDates(dateDecade, selectedDates[0]) &&
+          equalDates(dateDecade, selectedDates[selectedDates.length - 1]))))
   return selected
 }
 

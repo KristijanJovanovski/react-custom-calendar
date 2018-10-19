@@ -2,12 +2,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 import {
+  equalDates,
+  getMonthViewDates,
+  isDateDisabled,
   isDateGrayed,
   isDateSelected,
-  isDateDisabled,
-  isWeekend,
-  equalDates,
-  getMonthViewDates
+  isWeekend
 } from '../utils/helpers'
 import Tile from './Tile'
 
@@ -40,7 +40,7 @@ const MonthView = ({
       blank = true
     } else {
       grayed = isDateGrayed(item, currentViewDate)
-      selected = isDateSelected(item, selectedDate, selectedDates)
+      selected = isDateSelected(item, selectedDate, selectedDates, range)
       disabled = isDateDisabled(
         item,
         availableDates,
@@ -65,7 +65,7 @@ const MonthView = ({
         onMouseLeave={onMouseLeaveTile}
         disabled={disabled}
         range={range}
-        selected={selected}
+        selected={selected && !disabled}
         hover={hover}
         onRangeHover={onHover}
         onDateSelected={onDateSelected}
@@ -93,7 +93,9 @@ MonthView.propTypes = {
   selectHandler: PropTypes.func,
   hideBeforeAndAfterDates: PropTypes.bool,
   onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func
+  onMouseLeaveTile: PropTypes.func,
+  onHover: PropTypes.func,
+  hoverDates: PropTypes.arrayOf(PropTypes.instanceOf(Date))
 }
 MonthView.defaultProps = {
   calendarType: 'ISO 8601'

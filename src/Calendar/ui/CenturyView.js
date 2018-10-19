@@ -4,8 +4,8 @@ import React from 'react'
 import { DECADE } from '../utils/constants'
 import {
   getDecadeRangeText,
-  isDecadeDisabled,
   getNewDate,
+  isDecadeDisabled,
   isDecadeSelected
 } from '../utils/helpers'
 import Tile from './Tile'
@@ -34,8 +34,8 @@ const CenturyView = ({
       let disabled, selected
       if (disableableCenturyTiles) {
         disabled = isDecadeDisabled(item, availableDates, minDate, maxDate)
-        selected = isDecadeSelected(item, selectedDate, selectedDates)
       }
+      selected = isDecadeSelected(item, selectedDate, selectedDates, range)
       return (
         <Tile
           key={idx}
@@ -47,7 +47,7 @@ const CenturyView = ({
           date={item}
           idx={idx}
           range={range}
-          selected={selected}
+          selected={selected && !disabled}
           hover={hover}
           onRangeHover={onHover}
           onDateSelected={onDateSelected}
@@ -59,6 +59,13 @@ const CenturyView = ({
 }
 
 CenturyView.propTypes = {
+  range: PropTypes.bool,
+  hover: PropTypes.bool,
+  onHover: PropTypes.func,
+  onDateSelected: PropTypes.func,
+  selectHandler: PropTypes.func,
+  selectedDate: PropTypes.instanceOf(Date),
+  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   disableableCenturyTiles: PropTypes.bool,
   availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
   minDate: PropTypes.instanceOf(Date),
