@@ -50,12 +50,12 @@ h1 {
   font-weight: 700;
   background-color: cyan;
 }
-.tile.rounded-tile {
+.tile.tile-date.rounded-tile {
   width: 35px;
   height: 35px;
   border-radius: 50%;
   margin: auto 0;
 }
-.tile.rounded-tile:hover {
+.tile.tile-date.rounded-tile:hover {
   border-radius: 50%;
 }
