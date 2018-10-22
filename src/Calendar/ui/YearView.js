@@ -26,7 +26,8 @@ const YearView = ({
   hover,
   onHover,
   onDateSelected,
-  selectHandler
+  selectHandler,
+  tileClasses
 }) => {
   const data = getMonthsArray(currentViewDate).map((item, idx) => {
     let disabled, selected
@@ -52,6 +53,7 @@ const YearView = ({
         onRangeHover={onHover}
         onDateSelected={onDateSelected}
         onDateSelect={selectHandler}
+        tileClasses={tileClasses}
       />
     )
   })
@@ -71,6 +73,7 @@ YearView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
+  tileClasses: PropTypes.string,
   currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func

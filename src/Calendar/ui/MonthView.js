@@ -28,7 +28,8 @@ const MonthView = ({
   onMouseEnterTile,
   onMouseLeaveTile,
   onHover,
-  hoverDates
+  hoverDates,
+  tileClasses
 }) => {
   const data = getMonthViewDates(
     currentViewDate,
@@ -70,8 +71,9 @@ const MonthView = ({
         onRangeHover={onHover}
         onDateSelected={onDateSelected}
         onDateSelect={selectHandler}
-        value={item.getDate()}
+        value={(item && item.getDate()) || ''}
         date={item}
+        tileClasses={tileClasses}
       />
     )
   })
@@ -95,7 +97,8 @@ MonthView.propTypes = {
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func,
   onHover: PropTypes.func,
-  hoverDates: PropTypes.arrayOf(PropTypes.instanceOf(Date))
+  hoverDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  tileClasses: PropTypes.string
 }
 MonthView.defaultProps = {
   calendarType: 'ISO 8601'

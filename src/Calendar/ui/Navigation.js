@@ -165,6 +165,7 @@ Navigation.propTypes = {
   prevClasses: PropTypes.string,
   labelClasses: PropTypes.string,
   nextClasses: PropTypes.string,
-  doubleNextClasses: PropTypes.string
+  doubleNextClasses: PropTypes.string,
+  navLabelShortFormat: PropTypes.bool
 }
 export default Navigation

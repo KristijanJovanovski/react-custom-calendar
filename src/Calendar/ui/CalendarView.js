@@ -3,19 +3,19 @@ import './CalendarView.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { CENTURY, DECADE, MONTH, YEAR, DATE } from '../utils/constants'
+import { CENTURY, DATE, DECADE, MONTH, YEAR } from '../utils/constants'
 import {
   afterDates,
   beforeDates,
   endOfMonthDate,
   equalDates,
   firstOfMonthDate,
-  getDateRange,
   getChildView,
+  getDateRange,
   isDateDisabled,
+  isDecadeDisabled,
   isMonthDisabled,
-  isYearDisabled,
-  isDecadeDisabled
+  isYearDisabled
 } from '../utils/helpers'
 import CenturyView from './CenturyView'
 import DecadeView from './DecadeView'
@@ -68,7 +68,13 @@ const CalendarView = ({
   prevClasses,
   labelClasses,
   nextClasses,
-  doubleNextClasses
+  doubleNextClasses,
+  doubleNextLabel,
+  nextLabel,
+  prevLabel,
+  doublePrevLabel,
+  labelShortFormat,
+  tileClasses
 }) => {
   const selectHandler = (date, selected) => {
     const drillView = getChildView(currentView, minView)
@@ -149,6 +155,7 @@ const CalendarView = ({
           hideBeforeAndAfterDates={hideBeforeAndAfterDates}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
+          tileClasses={tileClasses}
         >
           {(hoverDates, onHover, rest) => (
             <MonthView hoverDates={hoverDates} onHover={onHover} {...rest} />
@@ -175,6 +182,7 @@ const CalendarView = ({
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
+          tileClasses={tileClasses}
         >
           {(hoverDates, onHover, rest) => (
             <YearView hoverDates={hoverDates} onHover={onHover} {...rest} />
@@ -199,6 +207,7 @@ const CalendarView = ({
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
+          tileClasses={tileClasses}
         >
           {(hoverDates, onHover, rest) => (
             <DecadeView hoverDates={hoverDates} onHover={onHover} {...rest} />
@@ -223,6 +232,7 @@ const CalendarView = ({
           currentViewDate={currentViewDate}
           onMouseEnterTile={onMouseEnterTile}
           onMouseLeaveTile={onMouseLeaveTile}
+          tileClasses={tileClasses}
         >
           {(hoverDates, onHover, rest) => (
             <CenturyView hoverDates={hoverDates} onHover={onHover} {...rest} />
@@ -257,6 +267,11 @@ const CalendarView = ({
       labelClasses={labelClasses}
       nextClasses={nextClasses}
       doubleNextClasses={doubleNextClasses}
+      doubleNextLabel={doubleNextLabel}
+      nextLabel={nextLabel}
+      prevLabel={prevLabel}
+      doublePrevLabel={doublePrevLabel}
+      labelShortFormat={labelShortFormat}
     />
   )
   const header = isMonthView ? (
@@ -322,7 +337,13 @@ CalendarView.propTypes = {
   prevClasses: PropTypes.string,
   labelClasses: PropTypes.string,
   nextClasses: PropTypes.string,
-  doubleNextClasses: PropTypes.string
+  doubleNextClasses: PropTypes.string,
+  doubleNextLabel: PropTypes.string,
+  nextLabel: PropTypes.string,
+  prevLabel: PropTypes.string,
+  doublePrevLabel: PropTypes.string,
+  labelShortFormat: PropTypes.bool,
+  tileClasses: PropTypes.string
 }
 
 export default CalendarView

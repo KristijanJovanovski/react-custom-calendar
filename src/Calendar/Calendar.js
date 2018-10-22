@@ -26,7 +26,6 @@ class Calendar extends Component {
     selectedDate: undefined
   }
   static defaultProps = {
-    // startView: MONTH,
     startViewDate: new Date(),
     minView: MONTH,
     maxView: CENTURY,
@@ -63,19 +62,24 @@ class Calendar extends Component {
     doublePrevClasses: PropTypes.string,
     prevClasses: PropTypes.string,
     labelClasses: PropTypes.string,
+    doubleNextLabel: PropTypes.string,
+    nextLabel: PropTypes.string,
+    prevLabel: PropTypes.string,
+    doublePrevLabel: PropTypes.string,
     nextClasses: PropTypes.string,
     doubleNextClasses: PropTypes.string,
+    navLabelShortFormat: PropTypes.bool,
     disableableYearTiles: PropTypes.bool,
     disableableDecadeTiles: PropTypes.bool,
     disableableCenturyTiles: PropTypes.bool,
     navigableBeforeAndAfterDates: PropTypes.bool,
     hideBeforeAndAfterDates: PropTypes.bool,
     onMouseEnterTile: PropTypes.func,
-    onMouseLeaveTile: PropTypes.func
+    onMouseLeaveTile: PropTypes.func,
+    tileClasses: PropTypes.string
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    // before first render
     let state = null
     if (prevState.currentViewDate === undefined) {
       nextProps.startViewDate && checkDate(nextProps.startViewDate)
@@ -297,13 +301,19 @@ class Calendar extends Component {
       labelClasses,
       nextClasses,
       doubleNextClasses,
+      doublePrevLabel,
+      prevLabel,
+      nextLabel,
+      doubleNextLabel,
       disableableYearTiles,
       disableableDecadeTiles,
       disableableCenturyTiles,
       navigableBeforeAndAfterDates,
       hideBeforeAndAfterDates,
       onMouseEnterTile,
-      onMouseLeaveTile
+      onMouseLeaveTile,
+      navLabelShortFormat,
+      tileClasses
     } = this.props
 
     return (
@@ -354,6 +364,12 @@ class Calendar extends Component {
             labelClasses={labelClasses}
             nextClasses={nextClasses}
             doubleNextClasses={doubleNextClasses}
+            doubleNextLabel={doubleNextLabel}
+            nextLabel={nextLabel}
+            prevLabel={prevLabel}
+            doublePrevLabel={doublePrevLabel}
+            labelShortFormat={navLabelShortFormat}
+            tileClasses={tileClasses}
           />
         </div>
       </>

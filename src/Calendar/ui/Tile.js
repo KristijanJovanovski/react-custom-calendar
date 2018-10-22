@@ -19,13 +19,16 @@ const Tile = ({
   onMouseEnter,
   onMouseLeave,
   onRangeHover,
-  hover
+  hover,
+  tileClasses
 }) => {
   const classes = `tile${disabled || blank ? ' disabled' : ''}${
     selected ? ' selected' : ''
   }${grayed ? ' grayed' : ''}${weekend ? ' weekend' : ''}${
     dateType ? ' tile-date' : ' tile-month'
-  }${blank ? ' blank' : ''}${hover ? ' hover-range' : ''}`
+  }${blank ? ' blank' : ''}${hover ? ' hover-range' : ''}${
+    tileClasses ? ' ' + tileClasses : ''
+  }`
 
   const handleSelectDate = () => {
     if (!disabled && !blank) {
@@ -43,23 +46,21 @@ const Tile = ({
   }
 
   return (
-    <>
-      <div
-        index={idx}
-        className={classes}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleSelectDate}
-      >
-        {value}
-      </div>
-    </>
+    <div
+      index={idx}
+      className={classes}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleSelectDate}
+    >
+      {value}
+    </div>
   )
 }
 
 Tile.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  date: PropTypes.instanceOf(Date),
   idx: PropTypes.PropTypes.number.isRequired,
   onDateSelect: PropTypes.func,
   onDrillDown: PropTypes.func,
@@ -72,6 +73,7 @@ Tile.propTypes = {
   range: PropTypes.bool,
   hover: PropTypes.bool,
   blank: PropTypes.bool,
+  tileClasses: PropTypes.string,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
   onRangeHover: PropTypes.func

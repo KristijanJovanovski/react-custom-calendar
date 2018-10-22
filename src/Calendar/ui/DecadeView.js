@@ -20,6 +20,7 @@ const DecadeView = ({
   hover,
   onHover,
   onDateSelected,
+  tileClasses,
   selectHandler
 }) => {
   const data = Array(10)
@@ -47,6 +48,7 @@ const DecadeView = ({
           onRangeHover={onHover}
           onDateSelected={onDateSelected}
           onDateSelect={selectHandler}
+          tileClasses={tileClasses}
         />
       )
     })
@@ -67,6 +69,7 @@ DecadeView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
+  tileClasses: PropTypes.string,
   currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func

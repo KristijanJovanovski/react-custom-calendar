@@ -26,6 +26,12 @@
   background-color: #e6e6e6;
   color: #555;
 }
+.tile.blank,
+.tile.blank:hover {
+  background-color: #fff !important;
+  color: #555 !important;
+  cursor: default;
+}
 
 .tile.selected {
   background-color: #4093e0 !important;

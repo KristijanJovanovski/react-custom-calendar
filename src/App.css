@@ -1,5 +1,6 @@
 .App {
   display: flex;
+  width: 100%;
   flex-direction: column;
   min-height: 100vh;
   justify-content: center;
@@ -12,6 +13,7 @@ h1 {
 }
 .container {
   flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,13 +21,41 @@ h1 {
   margin-bottom: 30px;
 }
 .calendar-container {
+  width: 100%;
   flex: 1;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 }
 .calendar-code {
+  margin-left: 50px;
+  width: 500px;
   white-space: pre-wrap;
   font-size: 1.3rem;
+}
+.nav-example-class {
+  color: red;
+  font-weight: 700;
+  background-color: aquamarine;
+}
+
+.tile.tile-example-class {
+  color: red;
+  background-color: aquamarine;
+}
+.tile.tile-example-class:hover {
+  color: purple;
+  font-weight: 700;
+  background-color: cyan;
+}
+.tile.rounded-tile {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin: auto 0;
+}
+.tile.rounded-tile:hover {
+  border-radius: 50%;
 }

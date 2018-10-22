@@ -25,7 +25,8 @@ const CenturyView = ({
   onDateSelected,
   selectHandler,
   selectedDate,
-  selectedDates
+  selectedDates,
+  tileClasses
 }) => {
   const data = Array(10)
     .fill()
@@ -52,6 +53,7 @@ const CenturyView = ({
           onRangeHover={onHover}
           onDateSelected={onDateSelected}
           onDateSelect={selectHandler}
+          tileClasses={tileClasses}
         />
       )
     })
@@ -72,6 +74,7 @@ CenturyView.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   onDrillDown: PropTypes.func,
   locale: PropTypes.string,
+  tileClasses: PropTypes.string,
   currentViewDate: PropTypes.instanceOf(Date),
   onMouseEnterTile: PropTypes.func,
   onMouseLeaveTile: PropTypes.func
