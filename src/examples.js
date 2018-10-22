@@ -445,22 +445,19 @@ const Examples = () => {
       <div className="container">
         <h1> Calendar example with rounded tile class</h1>
         <div className="calendar-container">
-          <Calendar
-            range
-            tileClasses={'rounded-tile'}
-            onMouseEnterTile={(e, date) => console.log(date)}
-          />
+          <Calendar tileClasses={'rounded-tile'} />
           <code className="calendar-code">
             {`
               .tile.rounded-tile {
-                color: red;
-                background-color: aquamarine;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                margin: auto 0;
               }
               .tile.rounded-tile:hover {
-                color: purple;
-                font-weight: 700;
-                background-color: cyan;
+                border-radius: 50%;
               }
+              
             
               <Calendar range
                 tileClasses={'rounded-tile'}
