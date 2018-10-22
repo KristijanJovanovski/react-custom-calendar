@@ -355,7 +355,12 @@ export const getDateRange = (dateOne, dateTwo, type = DATE) => {
 export const rangeDate = (lowerBound, upperBound) => {
   checkDate(lowerBound)
   checkDate(upperBound)
-  const timeDiff = Math.abs(upperBound.getTime() - lowerBound.getTime())
+  const timeDiff = Math.abs(
+    upperBound.getTime() -
+      lowerBound.getTime() -
+      (upperBound.getTimezoneOffset() * 1000 * 60 -
+        lowerBound.getTimezoneOffset() * 1000 * 60)
+  )
   const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
 
   return Array(diffDays + 1)
