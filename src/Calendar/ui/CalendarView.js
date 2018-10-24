@@ -3,7 +3,20 @@ import './CalendarView.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { CENTURY, DATE, DECADE, MONTH, YEAR } from '../utils/constants'
+import {
+  CENTURY,
+  DATE,
+  DECADE,
+  MONTH,
+  YEAR,
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY
+} from '../utils/constants'
 import {
   afterDates,
   beforeDates,
@@ -74,7 +87,9 @@ const CalendarView = ({
   prevLabel,
   doublePrevLabel,
   labelShortFormat,
-  tileClasses
+  tileClasses,
+  headerClasses,
+  disableWeekdays
 }) => {
   const selectHandler = (date, selected) => {
     const drillView = getChildView(currentView, minView)
@@ -139,6 +154,7 @@ const CalendarView = ({
     case MONTH:
       gridView = (
         <RangeHover
+          disableWeekdays={disableWeekdays}
           currentView={currentView}
           range={range}
           calendarType={calendarType}
@@ -168,6 +184,7 @@ const CalendarView = ({
     case YEAR:
       gridView = (
         <RangeHover
+          disableWeekdays={disableWeekdays}
           range={range}
           currentView={currentView}
           minDate={minDate}
@@ -194,6 +211,7 @@ const CalendarView = ({
     case DECADE:
       gridView = (
         <RangeHover
+          disableWeekdays={disableWeekdays}
           range={range}
           currentView={currentView}
           minDate={minDate}
@@ -219,6 +237,7 @@ const CalendarView = ({
     case CENTURY:
       gridView = (
         <RangeHover
+          disableWeekdays={disableWeekdays}
           range={range}
           currentView={currentView}
           minDate={minDate}
@@ -275,7 +294,11 @@ const CalendarView = ({
     />
   )
   const header = isMonthView ? (
-    <Header calendarType={calendarType} locale={locale} />
+    <Header
+      calendarType={calendarType}
+      locale={locale}
+      headerClasses={headerClasses}
+    />
   ) : null
   return (
     <>
@@ -343,7 +366,19 @@ CalendarView.propTypes = {
   prevLabel: PropTypes.string,
   doublePrevLabel: PropTypes.string,
   labelShortFormat: PropTypes.bool,
-  tileClasses: PropTypes.string
+  tileClasses: PropTypes.string,
+  headerClasses: PropTypes.string,
+  disableWeekdays: PropTypes.arrayOf(
+    PropTypes.oneOf([
+      SUNDAY,
+      MONDAY,
+      TUESDAY,
+      WEDNESDAY,
+      THURSDAY,
+      FRIDAY,
+      SATURDAY
+    ])
+  )
 }
 
 export default CalendarView

@@ -29,7 +29,8 @@ const MonthView = ({
   onMouseLeaveTile,
   onHover,
   hoverDates,
-  tileClasses
+  tileClasses,
+  disableWeekdays
 }) => {
   const data = getMonthViewDates(
     currentViewDate,
@@ -47,7 +48,8 @@ const MonthView = ({
         availableDates,
         minDate,
         maxDate,
-        disabledDates
+        disabledDates,
+        disableWeekdays
       )
       showWeekend = isWeekend(idx, weekends, calendarType)
       if (range && hoverDates && onHover && selectedDate) {

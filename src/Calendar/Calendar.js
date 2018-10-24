@@ -4,7 +4,19 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
 import CalendarView from './ui/CalendarView'
-import { CENTURY, DECADE, MONTH, YEAR } from './utils/constants'
+import {
+  CENTURY,
+  DECADE,
+  MONTH,
+  YEAR,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY,
+  SUNDAY
+} from './utils/constants'
 import {
   checkDate,
   checkMinMaxDate,
@@ -52,6 +64,17 @@ class Calendar extends Component {
     startView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
     disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
     availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+    disableWeekdays: PropTypes.arrayOf(
+      PropTypes.oneOf([
+        SUNDAY,
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY
+      ])
+    ),
     navigationDisabled: PropTypes.bool,
     prevDisabled: PropTypes.bool,
     nextDisabled: PropTypes.bool,
@@ -76,7 +99,9 @@ class Calendar extends Component {
     hideBeforeAndAfterDates: PropTypes.bool,
     onMouseEnterTile: PropTypes.func,
     onMouseLeaveTile: PropTypes.func,
-    tileClasses: PropTypes.string
+    tileClasses: PropTypes.string,
+    headerClasses: PropTypes.string,
+    freezeSelection: PropTypes.bool
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -213,58 +238,70 @@ class Calendar extends Component {
   }
 
   handleMultiSelect = (date, selected) => {
-    const { onMultiSelect } = this.props
+    const { onMultiSelect, freezeSelection } = this.props
+
     const selectedDates = this.state.selectedDates
     let newSelectedDates
-    if (selected) {
-      newSelectedDates = [...selectedDates, date]
-      this.setState({ selectedDates: newSelectedDates })
-    } else {
-      const index = selectedDates.findIndex(stateDate =>
-        equalDates(stateDate, date)
-      )
-      newSelectedDates = [
-        ...selectedDates.slice(0, index),
-        ...selectedDates.slice(index + 1)
-      ]
-      this.setState({
-        selectedDates: newSelectedDates
-      })
+    if (!freezeSelection) {
+      if (selected) {
+        newSelectedDates = [...selectedDates, date]
+        this.setState({ selectedDates: newSelectedDates })
+      } else {
+        const index = selectedDates.findIndex(stateDate =>
+          equalDates(stateDate, date)
+        )
+        newSelectedDates = [
+          ...selectedDates.slice(0, index),
+          ...selectedDates.slice(index + 1)
+        ]
+        this.setState({
+          selectedDates: newSelectedDates
+        })
+      }
+      onMultiSelect && onMultiSelect([...newSelectedDates])
     }
-    onMultiSelect && onMultiSelect([...newSelectedDates])
   }
 
   handleRangeSelect = (dates, selected) => {
-    const { onMultiSelect, range, onRangeMultiSelect } = this.props
+    const {
+      onMultiSelect,
+      range,
+      onRangeMultiSelect,
+      freezeSelection
+    } = this.props
     let newSelectedDates
-    if (selected) {
-      newSelectedDates = [...dates]
-      this.setState({
-        selectedDates: [
-          newSelectedDates[0],
-          newSelectedDates[newSelectedDates.length - 1]
-        ]
-      })
-      range &&
-        onRangeMultiSelect &&
-        onRangeMultiSelect([
-          newSelectedDates[0],
-          newSelectedDates[newSelectedDates.length - 1]
-        ])
-    } else {
-      newSelectedDates = []
-      range && onRangeMultiSelect && onRangeMultiSelect([])
-      this.setState({
-        selectedDates: newSelectedDates
-      })
+    if (!freezeSelection) {
+      if (selected) {
+        newSelectedDates = [...dates]
+        this.setState({
+          selectedDates: [
+            newSelectedDates[0],
+            newSelectedDates[newSelectedDates.length - 1]
+          ]
+        })
+        range &&
+          onRangeMultiSelect &&
+          onRangeMultiSelect([
+            newSelectedDates[0],
+            newSelectedDates[newSelectedDates.length - 1]
+          ])
+      } else {
+        newSelectedDates = []
+        range && onRangeMultiSelect && onRangeMultiSelect([])
+        this.setState({
+          selectedDates: newSelectedDates
+        })
+      }
+      range && onMultiSelect && onMultiSelect([...newSelectedDates])
     }
-    range && onMultiSelect && onMultiSelect([...newSelectedDates])
   }
   handleSingleSelect = (date, selected) => {
-    if (selected) {
-      this.setState({ selectedDate: date })
-    } else {
-      this.setState({ selectedDate: undefined })
+    if (!this.props.freezeSelection) {
+      if (selected) {
+        this.setState({ selectedDate: date })
+      } else {
+        this.setState({ selectedDate: undefined })
+      }
     }
   }
 
@@ -313,7 +350,9 @@ class Calendar extends Component {
       onMouseEnterTile,
       onMouseLeaveTile,
       navLabelShortFormat,
-      tileClasses
+      tileClasses,
+      headerClasses,
+      disableWeekdays
     } = this.props
 
     return (
@@ -344,6 +383,7 @@ class Calendar extends Component {
             disabledDates={disabledDates}
             availableDates={availableDates}
             multiSelect={multiSelect}
+            disableWeekdays={disableWeekdays}
             disableableYearTiles={disableableYearTiles}
             disableableDecadeTiles={disableableDecadeTiles}
             disableableCenturyTiles={disableableCenturyTiles}
@@ -370,6 +410,7 @@ class Calendar extends Component {
             doublePrevLabel={doublePrevLabel}
             labelShortFormat={navLabelShortFormat}
             tileClasses={tileClasses}
+            headerClasses={headerClasses}
           />
         </div>
       </>

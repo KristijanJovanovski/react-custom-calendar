@@ -1,6 +1,13 @@
 import React from 'react'
 
 import Calendar from './Calendar/Calendar'
+import {
+  MONDAY,
+  SUNDAY,
+  THURSDAY,
+  TUESDAY,
+  WEDNESDAY
+} from './Calendar/utils/constants'
 
 const Examples = () => {
   const handleMultiSelect = dates => {
@@ -18,6 +25,46 @@ const Examples = () => {
           <code className="calendar-code">
             {`
               <Calendar
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className="container">
+        <h1>Calendar with preselected date</h1>
+        <div className="calendar-container">
+          <Calendar selectedDate={new Date()} />
+          <code className="calendar-code">
+            {`
+              <Calendar
+                selectedDate={new Date()}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className="container">
+        <h1> Calendar with preselected dates</h1>
+        <div className="calendar-container">
+          <Calendar selectedDates={[new Date(2018, 9, 25), new Date()]} />
+          <code className="calendar-code">
+            {`
+              <Calendar
+                selectedDates={[new Date(2018, 9, 25), new Date()]}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className="container">
+        <h1> Frozen Calendar with preselected dates</h1>
+        <div className="calendar-container">
+          <Calendar
+            freezeSelection
+            selectedDates={[new Date(2018, 9, 25), new Date()]}
+          />
+          <code className="calendar-code">
+            {`
+              <Calendar
+                freezeSelection
+                selectedDates={[new Date(2018, 9, 25), new Date()]}
               />`}
           </code>
         </div>
@@ -113,7 +160,21 @@ const Examples = () => {
         </div>
       </div>
       <div className="container">
-        <h1> Calendar with styleds weekends</h1>
+        <h1> Calendar with disabled weekdays</h1>
+        <div className="calendar-container">
+          <Calendar
+            disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
+          />
+          <code className="calendar-code">
+            {`
+              <Calendar
+                disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className="container">
+        <h1> Calendar with styled weekends</h1>
         <div className="calendar-container">
           <Calendar weekends />
           <code className="calendar-code">
@@ -137,7 +198,7 @@ const Examples = () => {
         </div>
       </div>
       <div className="container">
-        <h1> Calendar vith startView</h1>
+        <h1> Calendar with startView</h1>
         <div className="calendar-container">
           <Calendar startView={'CENTURY'} />
           <code className="calendar-code">

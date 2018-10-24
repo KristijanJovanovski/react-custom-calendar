@@ -7,7 +7,14 @@ import {
   DECADE,
   CENTURY,
   SHORT,
-  LONG
+  LONG,
+  SATURDAY,
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY
 } from './constants'
 export const capitalizeFirst = str =>
   str
@@ -122,6 +129,11 @@ export const getMonthsArray = date => {
   return Array(12)
     .fill()
     .map((i, idx) => new Date(date.getFullYear(), idx))
+}
+
+export const getDayIndex = day => {
+  const days = [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY]
+  return days.indexOf(day)
 }
 
 export const transformWeekDays = (
@@ -358,8 +370,10 @@ export const rangeDate = (lowerBound, upperBound) => {
   const timeDiff = Math.abs(
     upperBound.getTime() -
       lowerBound.getTime() -
-      (upperBound.getTimezoneOffset() * 1000 * 60 -
-        lowerBound.getTimezoneOffset() * 1000 * 60)
+      Math.abs(
+        upperBound.getTimezoneOffset() * 1000 * 60 -
+          lowerBound.getTimezoneOffset() * 1000 * 60
+      )
   )
   const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
 
@@ -653,7 +667,12 @@ export const isYearSelected = (
           equalDates(dateYear, selectedDates[selectedDates.length - 1]))))
   return selected
 }
-export const isDecadeSelected = (dateDecade, selectedDate, selectedDates, range) => {
+export const isDecadeSelected = (
+  dateDecade,
+  selectedDate,
+  selectedDates,
+  range
+) => {
   if (dateDecade === null) return
 
   const selected =
@@ -683,6 +702,7 @@ export const isDateDisabled = (
   minDate,
   maxDate,
   disabledDates,
+  disableWeekdays,
   ...rest
 ) => {
   if (date === null) return
@@ -694,11 +714,16 @@ export const isDateDisabled = (
       (disabledDates &&
         disabledDates.some(disabledDateItem =>
           equalDates(disabledDateItem, date)
-        ))
+        )) ||
+      (disableWeekdays &&
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
   } else if (!minDate && !maxDate) {
-    disabled = !availableDates.some(availableDateItem =>
-      equalDates(availableDateItem, date)
-    )
+    disabled =
+      !availableDates.some(availableDateItem =>
+        equalDates(availableDateItem, date)
+      ) ||
+      (disableWeekdays &&
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
   } else {
     disabled =
       (!availableDates.some(availableDateItem =>
@@ -710,7 +735,9 @@ export const isDateDisabled = (
       (disabledDates &&
         disabledDates.some(disabledDateItem =>
           equalDates(disabledDateItem, date)
-        ))
+        )) ||
+      (disableWeekdays &&
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
   }
   return disabled
 }
