@@ -13,6 +13,10 @@ export const WEDNESDAY = 'WEDNESDAY'
 export const THURSDAY = 'THURSDAY'
 export const FRIDAY = 'FRIDAY'
 export const SATURDAY = 'SATURDAY'
+export const MINUTE = 'MINUTE'
+export const HOUR = 'HOUR'
+export const US = 'US'
+export const ISO_8601 = 'ISO 8601'
 
 export const months = {
   en: {

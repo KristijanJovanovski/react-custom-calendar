@@ -3,14 +3,10 @@ import './Header.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { SHORT } from '../utils/constants'
+import { SHORT, US, ISO_8601 } from '../utils/constants'
 import { transformWeekDays } from '../utils/helpers'
 
-const Header = ({
-  locale = 'en',
-  calendarType = 'ISO 8601',
-  headerClasses
-}) => {
+const Header = ({ locale = 'en', calendarType = ISO_8601, headerClasses }) => {
   const days = transformWeekDays(SHORT, locale, calendarType)
   const classes = `header ${headerClasses ? headerClasses : ''}`
   return (
@@ -26,6 +22,6 @@ const Header = ({
 Header.propTypes = {
   locale: PropTypes.string,
   headerClasses: PropTypes.string,
-  calendarType: PropTypes.oneOf(['US', 'ISO 8601'])
+  calendarType: PropTypes.oneOf([US, ISO_8601])
 }
 export default Header

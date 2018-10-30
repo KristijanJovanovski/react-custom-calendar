@@ -1,0 +1,11 @@
+.time-container {
+  width: 150px;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex: 1 1;
+  overflow: hidden;
+  justify-content: space-between;
+  border-left: 1px solid #aaa;
+  box-sizing: content-box;
+}

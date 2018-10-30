@@ -14,7 +14,9 @@ import {
   TUESDAY,
   WEDNESDAY,
   THURSDAY,
-  FRIDAY
+  FRIDAY,
+  US,
+  ISO_8601
 } from './constants'
 export const capitalizeFirst = str =>
   str
@@ -139,10 +141,10 @@ export const getDayIndex = day => {
 export const transformWeekDays = (
   format = SHORT,
   locale = 'en',
-  calendarType = 'ISO 8601'
+  calendarType = ISO_8601
 ) => {
   let dayFormat = format === LONG ? 'long' : 'short'
-  if (calendarType === 'ISO 8601') {
+  if (calendarType === ISO_8601) {
     if (locale !== 'mk') {
       return Array(7)
         .fill()
@@ -157,7 +159,7 @@ export const transformWeekDays = (
       days[locale][dayFormat][0]
     ].map(d => capitalizeFirst(d))
   }
-  if (calendarType === 'US') {
+  if (calendarType === US) {
     if (locale !== 'mk') {
       return Array(7)
         .fill()
@@ -509,10 +511,11 @@ export const endOfMonthDate = date => {
 
 export const getMonthViewDates = (
   date,
-  type = 'ISO 8601',
+  type = ISO_8601,
   hideBeforeAndAfterDates = false
 ) => {
   checkDate(date)
+  const totalDates = 42
   let viewDates = []
   const month = date.getMonth()
   const year = date.getFullYear()
@@ -530,13 +533,15 @@ export const getMonthViewDates = (
 
   let trailingDates, prependDates
 
-  if (type === 'ISO 8601') {
+  if (type === ISO_8601) {
     trailingDates = (6 - currMonthLastDay + 1) % 7
     prependDates = (currMonthFirstDay + 6) % 7
-  } else if (type === 'US') {
+  } else if (type === US) {
     prependDates = currMonthFirstDay
     trailingDates = (6 - currMonthLastDay) % 7
   }
+  prependDates = prependDates === 0 ? 7 : prependDates
+  trailingDates = totalDates - prependDates - currMonthLastDate
 
   if (prependDates !== 0) {
     const prevMonthStartLastDates = prevMonthLastDate - prependDates + 1
@@ -639,7 +644,7 @@ export const isMonthSelected = (
       selectedDates.length >= 2 &&
       ((afterDates(dateMonth, selectedDates[0]) &&
         beforeDates(dateMonth, selectedDates[selectedDates.length - 1])) ||
-        (equalDates(dateMonth, selectedDates[0]) &&
+        (equalDates(dateMonth, selectedDates[0]) ||
           equalDates(dateMonth, selectedDates[selectedDates.length - 1]))))
   return selected
 }
@@ -663,7 +668,7 @@ export const isYearSelected = (
       selectedDates.length >= 2 &&
       ((afterDates(dateYear, selectedDates[0]) &&
         beforeDates(dateYear, selectedDates[selectedDates.length - 1])) ||
-        (equalDates(dateYear, selectedDates[0]) &&
+        (equalDates(dateYear, selectedDates[0]) ||
           equalDates(dateYear, selectedDates[selectedDates.length - 1]))))
   return selected
 }
@@ -691,7 +696,7 @@ export const isDecadeSelected = (
       selectedDates.length >= 2 &&
       ((afterDates(dateDecade, selectedDates[0]) &&
         beforeDates(dateDecade, selectedDates[selectedDates.length - 1])) ||
-        (equalDates(dateDecade, selectedDates[0]) &&
+        (equalDates(dateDecade, selectedDates[0]) ||
           equalDates(dateDecade, selectedDates[selectedDates.length - 1]))))
   return selected
 }
@@ -847,11 +852,41 @@ export const isDecadeDisabled = (
 export const isWeekend = (idx, weekends, calendarType) => {
   let showWeekend
   const weekend = idx % 7
-  if (weekends && calendarType === 'ISO 8601') {
+  if (weekends && calendarType === ISO_8601) {
     showWeekend = weekend === 5 || weekend === 6
   }
-  if (weekends && calendarType === 'US') {
+  if (weekends && calendarType === US) {
     showWeekend = weekend === 0 || weekend === 6
   }
   return showWeekend
+}
+
+export const getHours = (format = ISO_8601) => {
+  const date = new Date()
+  const hours = Array(24)
+    .fill()
+    .map((item, idx) => {
+      date.setHours(idx)
+      return date.toLocaleTimeString(
+        {},
+        { hour12: format !== ISO_8601, hour: '2-digit' }
+      )
+    })
+  return hours
+}
+
+export const getMinutes = (step = 1) => {
+  const roundedStep = Math.round(step)
+  const steps = Math.ceil(60 / roundedStep)
+  return Array(steps)
+    .fill()
+    .map((item, idx) => idx * roundedStep)
+    .map(item => `${item >= 10 ? item : '0' + item}`)
+}
+
+export const getDateTimeFormated = (date, locale = US, format = ISO_8601) => {
+  return date.toLocaleTimeString(
+    { locale },
+    { hour12: format !== ISO_8601, hour: '2-digit', minute: '2-digit' }
+  )
 }

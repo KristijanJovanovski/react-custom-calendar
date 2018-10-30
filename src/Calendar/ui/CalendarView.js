@@ -15,7 +15,9 @@ import {
   WEDNESDAY,
   THURSDAY,
   FRIDAY,
-  SATURDAY
+  SATURDAY,
+  US,
+  ISO_8601
 } from '../utils/constants'
 import {
   afterDates,
@@ -37,8 +39,11 @@ import MonthView from './MonthView'
 import Navigation from './Navigation'
 import RangeHover from './RangeHover'
 import YearView from './YearView'
+import TimeView from './TimeView'
 
 const CalendarView = ({
+  withTime,
+  classNames,
   locale,
   calendarType,
   currentView,
@@ -89,8 +94,22 @@ const CalendarView = ({
   labelShortFormat,
   tileClasses,
   headerClasses,
-  disableWeekdays
+  disableWeekdays,
+  hourLabel,
+  hourTileClasses,
+  hourHeaderClasses,
+  hourListClasses,
+  hourFormat,
+  minuteLabel,
+  minuteTileClasses,
+  minuteHeaderClasses,
+  minuteListClasses,
+  minuteStep
 }) => {
+  const onTimeSelected = date => {
+    onSingleSelect(date, true)
+    onDateSelected && onDateSelected(date, true)
+  }
   const selectHandler = (date, selected) => {
     const drillView = getChildView(currentView, minView)
     if (drillView) {
@@ -300,25 +319,56 @@ const CalendarView = ({
       headerClasses={headerClasses}
     />
   ) : null
+  const calendarWrapperClasses = `calendar${
+    classNames ? ' ' + classNames : ''
+  }${
+    isMonthView && withTime && !range && !multiSelect && selectedDate
+      ? ' calendar-with-time'
+      : ''
+  }`
   return (
-    <>
-      {nav}
-      {header}
-      <div className={`grid${isMonthView ? ' grid-dates' : ' grid-months'}`}>
-        {gridView}
+    <div className={calendarWrapperClasses}>
+      <div className={'calendar-container'}>
+        {nav}
+        {header}
+        <div className={`grid${isMonthView ? ' grid-dates' : ' grid-months'}`}>
+          {gridView}
+        </div>
       </div>
-    </>
+      {isMonthView &&
+        withTime &&
+        !range &&
+        !multiSelect &&
+        selectedDate && (
+          <TimeView
+            selectedDate={selectedDate}
+            onTimeSelected={onTimeSelected}
+            hourLabel={hourLabel}
+            hourTileClasses={hourTileClasses}
+            hourHeaderClasses={hourHeaderClasses}
+            hourListClasses={hourListClasses}
+            hourFormat={hourFormat}
+            minuteLabel={minuteLabel}
+            minuteTileClasses={minuteTileClasses}
+            minuteHeaderClasses={minuteHeaderClasses}
+            minuteListClasses={minuteListClasses}
+            minuteStep={minuteStep}
+          />
+        )}
+    </div>
   )
 }
 
 CalendarView.defaultProps = {
   locale: 'en',
-  calendarType: 'ISO 8601'
+  calendarType: ISO_8601
 }
 
 CalendarView.propTypes = {
+  classNames: PropTypes.string,
+  withTime: PropTypes.bool,
   locale: PropTypes.string,
-  calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
+  calendarType: PropTypes.oneOf([US, ISO_8601]),
   currentView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]).isRequired,
   minView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
   maxView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
@@ -378,7 +428,17 @@ CalendarView.propTypes = {
       FRIDAY,
       SATURDAY
     ])
-  )
+  ),
+  hourLabel: PropTypes.string,
+  hourTileClasses: PropTypes.string,
+  hourHeaderClasses: PropTypes.string,
+  hourListClasses: PropTypes.string,
+  hourFormat: PropTypes.oneOf([US, ISO_8601]),
+  minuteLabel: PropTypes.string,
+  minuteTileClasses: PropTypes.string,
+  minuteHeaderClasses: PropTypes.string,
+  minuteListClasses: PropTypes.string,
+  minuteStep: PropTypes.number
 }
 
 export default CalendarView

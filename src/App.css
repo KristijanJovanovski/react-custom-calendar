@@ -20,7 +20,7 @@ h1 {
   align-items: center;
   margin-bottom: 30px;
 }
-.calendar-container {
+.my-calendar-container {
   width: 100%;
   flex: 1;
   display: flex;

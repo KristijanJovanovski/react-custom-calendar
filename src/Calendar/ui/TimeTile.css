@@ -1,0 +1,16 @@
+.time-tile {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.time-tile:hover {
+  background-color: #aeefe8;
+}
+.time-tile.selected {
+  background-color: #4093e0 !important;
+  color: #fff;
+}

@@ -6,7 +6,9 @@ import {
   SUNDAY,
   THURSDAY,
   TUESDAY,
-  WEDNESDAY
+  WEDNESDAY,
+  US,
+  ISO_8601
 } from './Calendar/utils/constants'
 
 const Examples = () => {
@@ -19,8 +21,24 @@ const Examples = () => {
   return (
     <>
       <div className="container">
+        <h1>Default Calendar with time</h1>
+        <div className="my-calendar-container">
+          <Calendar
+            withTime
+            onDateSelected={(date, selected) => console.log(date, selected)}
+          />
+          <code className="calendar-code">
+            {`
+              <Calendar
+                withTime 
+                onDateSelected={(date, selected) => console.log(date,selected)}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className="container">
         <h1>Default Calendar</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar />
           <code className="calendar-code">
             {`
@@ -31,7 +49,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with preselected date</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar selectedDate={new Date()} />
           <code className="calendar-code">
             {`
@@ -43,7 +61,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with preselected dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar selectedDates={[new Date(2018, 9, 25), new Date()]} />
           <code className="calendar-code">
             {`
@@ -55,7 +73,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Frozen Calendar with preselected dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             freezeSelection
             selectedDates={[new Date(2018, 9, 25), new Date()]}
@@ -71,7 +89,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with min date </h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar minDate={new Date(2018, 8, 1)} />
           <code className="calendar-code">
             {`
@@ -83,7 +101,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with max date</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar maxDate={new Date(2018, 11, 1)} />
           <code className="calendar-code">
             {`
@@ -95,7 +113,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with min and max date</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             minDate={new Date(2018, 8, 1)}
             maxDate={new Date(2018, 11, 1)}
@@ -111,7 +129,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with min & max date and disableable top view tiles</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             disableableYearTiles
             disableableDecadeTiles
@@ -133,27 +151,27 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Default US Calendar </h1>
-        <div className="calendar-container">
-          <div className="calendar-container">
-            <Calendar calendarType={'US'} />
+        <div className="my-calendar-container">
+          <div className="my-calendar-container">
+            <Calendar calendarType={US} />
             <code className="calendar-code">
               {`
               <Calendar
-                calendarType={'US'}
+                calendarType={US}
               />`}
             </code>
           </div>
         </div>
       </div>
       <div className="container">
-        <h1>Default ISO 8601 Calendar </h1>
-        <div className="calendar-container">
-          <div className="calendar-container">
-            <Calendar calendarType={'ISO 8601'} />
+        <h1>Default ISO_8601 Calendar </h1>
+        <div className="my-calendar-container">
+          <div className="my-calendar-container">
+            <Calendar calendarType={ISO_8601} />
             <code className="calendar-code">
               {`
               <Calendar
-                calendarType={'ISO 8601'}
+                calendarType={ISO_8601}
               />`}
             </code>
           </div>
@@ -161,7 +179,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with disabled weekdays</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
           />
@@ -175,7 +193,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with styled weekends</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar weekends />
           <code className="calendar-code">
             {`
@@ -187,7 +205,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with locale</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar locale={'mk'} />
           <code className="calendar-code">
             {`
@@ -199,7 +217,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with startView</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar startView={'CENTURY'} />
           <code className="calendar-code">
             {`
@@ -211,7 +229,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with min view</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar minView={'YEAR'} />
           <code className="calendar-code">
             {`
@@ -223,7 +241,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with max view</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar maxView={'DECADE'} />
           <code className="calendar-code">
             {`
@@ -235,7 +253,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with min & max view</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar minView={'YEAR'} maxView={'DECADE'} />
           <code className="calendar-code">
             {`
@@ -248,7 +266,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with start view date</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar startViewDate={new Date(2020, 0, 1)} />
           <code className="calendar-code">
             {`
@@ -261,7 +279,7 @@ const Examples = () => {
 
       <div className="container">
         <h1> Calendar with disabled dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             disabledDates={[new Date(2018, 10, 1), new Date(2018, 10, 2)]}
           />
@@ -275,7 +293,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar min, max and disabled dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             minDate={new Date()}
             maxDate={new Date(2019, 0, 0)}
@@ -293,7 +311,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with available dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             availableDates={[new Date(2018, 10, 1), new Date(2018, 10, 2)]}
           />
@@ -307,7 +325,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with min, max and available dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             minDate={new Date()}
             maxDate={new Date(2018, 10, 25)}
@@ -326,7 +344,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Calendar with min, max, disabled and available dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             minDate={new Date()}
             maxDate={new Date(2018, 10, 25)}
@@ -349,7 +367,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Multi select Calendar</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar multiSelect onMultiSelect={handleMultiSelect} />
           <code className="calendar-code">
             {`
@@ -362,7 +380,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1>Range select Calendar</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar
             range
             onMultiSelect={handleMultiSelect}
@@ -380,7 +398,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with hidden navigation</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navigationHidden />
           <code className="calendar-code">
             {`
@@ -392,7 +410,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with disabled navigation</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navigationDisabled />
           <code className="calendar-code">
             {`
@@ -404,7 +422,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with hidden and disabled navigation</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navigationHidden navigationDisabled />
           <code className="calendar-code">
             {`
@@ -417,7 +435,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with disabled next nav button </h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar nextDisabled />
           <code className="calendar-code">
             {`
@@ -429,7 +447,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with enabled before and after month dates navigation</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navigableBeforeAndAfterDates />
           <code className="calendar-code">
             {`
@@ -441,7 +459,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with hidden before and after month dates</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar hideBeforeAndAfterDates />
           <code className="calendar-code">
             {`
@@ -453,7 +471,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with nav label in short format</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navLabelShortFormat />
           <code className="calendar-code">
             {`
@@ -465,7 +483,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with nav classes</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar navigationClasses={'nav-example-class'} />
           <code className="calendar-code">
             {`
@@ -483,7 +501,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar with tile classes</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar tileClasses={'tile-example-class'} />
           <code className="calendar-code">
             {`
@@ -505,7 +523,7 @@ const Examples = () => {
       </div>
       <div className="container">
         <h1> Calendar example with rounded tile class</h1>
-        <div className="calendar-container">
+        <div className="my-calendar-container">
           <Calendar tileClasses={'rounded-tile'} />
           <code className="calendar-code">
             {`

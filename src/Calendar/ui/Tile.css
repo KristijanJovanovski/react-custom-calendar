@@ -7,6 +7,7 @@
 }
 .tile.tile-date {
   padding: 5px;
+  height: 30px;
 }
 .tile.weekend,
 .tile.weekend:hover {
@@ -14,6 +15,7 @@
 }
 .tile.tile-month {
   padding: 15px 10px;
+  height: 51px;
 }
 .tile:hover {
   cursor: pointer;
@@ -46,4 +48,12 @@
 }
 .tile.hover-range {
   background-color: #aeefe8;
+}
+
+.tile:nth-last-child(1) {
+  border-bottom-right-radius: 5px;
+}
+
+.tile:nth-last-child(7) {
+  border-bottom-left-radius: 5px;
 }

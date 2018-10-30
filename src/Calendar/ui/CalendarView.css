@@ -1,3 +1,22 @@
+.calendar {
+  width: 300px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-sizing: content-box;
+}
+.calendar.calendar-with-time {
+  width: 450px;
+  height: 253px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.calendar-container {
+  width: 300px;
+
+  height: auto;
+}
 .grid {
   min-width: 300px;
   width: 100%;

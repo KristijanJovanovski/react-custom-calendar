@@ -9,6 +9,7 @@ import {
   isDateSelected,
   isWeekend
 } from '../utils/helpers'
+import { US, ISO_8601 } from '../utils/constants'
 import Tile from './Tile'
 
 const MonthView = ({
@@ -83,7 +84,7 @@ const MonthView = ({
 }
 
 MonthView.propTypes = {
-  calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
+  calendarType: PropTypes.oneOf([US, ISO_8601]),
   currentViewDate: PropTypes.instanceOf(Date).isRequired,
   weekends: PropTypes.bool,
   range: PropTypes.bool,
@@ -103,6 +104,6 @@ MonthView.propTypes = {
   tileClasses: PropTypes.string
 }
 MonthView.defaultProps = {
-  calendarType: 'ISO 8601'
+  calendarType: ISO_8601
 }
 export default MonthView

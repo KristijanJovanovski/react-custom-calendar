@@ -15,7 +15,9 @@ import {
   THURSDAY,
   FRIDAY,
   SATURDAY,
-  SUNDAY
+  SUNDAY,
+  US,
+  ISO_8601
 } from './utils/constants'
 import {
   checkDate,
@@ -42,15 +44,16 @@ class Calendar extends Component {
     minView: MONTH,
     maxView: CENTURY,
     locale: 'en',
-    calendarType: 'US'
+    calendarType: US
   }
   static propTypes = {
     classNames: PropTypes.string,
+    withTime: PropTypes.bool,
     selectedDate: PropTypes.instanceOf(Date),
     selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
     locale: PropTypes.string,
     weekends: PropTypes.bool,
-    calendarType: PropTypes.oneOf(['US', 'ISO 8601']),
+    calendarType: PropTypes.oneOf([US, ISO_8601]),
     onDateSelected: PropTypes.func,
     onMultiSelect: PropTypes.func,
     onRangeMultiSelect: PropTypes.func,
@@ -101,7 +104,17 @@ class Calendar extends Component {
     onMouseLeaveTile: PropTypes.func,
     tileClasses: PropTypes.string,
     headerClasses: PropTypes.string,
-    freezeSelection: PropTypes.bool
+    freezeSelection: PropTypes.bool,
+    hourLabel: PropTypes.string,
+    hourTileClasses: PropTypes.string,
+    hourHeaderClasses: PropTypes.string,
+    hourListClasses: PropTypes.string,
+    hourFormat: PropTypes.oneOf([US, ISO_8601]),
+    minuteLabel: PropTypes.string,
+    minuteTileClasses: PropTypes.string,
+    minuteHeaderClasses: PropTypes.string,
+    minuteListClasses: PropTypes.string,
+    minuteStep: PropTypes.number
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -352,68 +365,88 @@ class Calendar extends Component {
       navLabelShortFormat,
       tileClasses,
       headerClasses,
-      disableWeekdays
+      disableWeekdays,
+      withTime,
+
+      hourLabel,
+      hourTileClasses,
+      hourHeaderClasses,
+      hourListClasses,
+      hourFormat,
+      minuteLabel,
+      minuteTileClasses,
+      minuteHeaderClasses,
+      minuteListClasses,
+      minuteStep
     } = this.props
 
     return (
-      <>
-        <div className={`calendar${classNames ? ' ' + classNames : ''}`}>
-          <CalendarView
-            currentView={currentView}
-            currentViewDate={currentViewDate}
-            selectedDate={selectedDate}
-            selectedDates={selectedDates}
-            onDrillDown={this.handleDrillDown}
-            onRangeSelect={this.handleRangeSelect}
-            onMultiSelect={this.handleMultiSelect}
-            onSingleSelect={this.handleSingleSelect}
-            onDateSelected={onDateSelected}
-            drillUp={this.handleDrillUp}
-            onPrev={this.handlePrev}
-            onNext={this.handleNext}
-            onDoublePrev={this.handleDoublePrev}
-            onDoubleNext={this.handleDoubleNext}
-            locale={locale}
-            calendarType={calendarType}
-            minView={minView}
-            maxView={maxView}
-            weekends={weekends}
-            minDate={minDate}
-            maxDate={maxDate}
-            disabledDates={disabledDates}
-            availableDates={availableDates}
-            multiSelect={multiSelect}
-            disableWeekdays={disableWeekdays}
-            disableableYearTiles={disableableYearTiles}
-            disableableDecadeTiles={disableableDecadeTiles}
-            disableableCenturyTiles={disableableCenturyTiles}
-            navigableBeforeAndAfterDates={navigableBeforeAndAfterDates}
-            hideBeforeAndAfterDates={hideBeforeAndAfterDates}
-            onMouseEnterTile={onMouseEnterTile}
-            onMouseLeaveTile={onMouseLeaveTile}
-            range={range}
-            navigationDisabled={navigationDisabled}
-            prevDisabled={prevDisabled}
-            nextDisabled={nextDisabled}
-            doublePrevDisabled={doublePrevDisabled}
-            doubleNextDisabled={doubleNextDisabled}
-            navigationHidden={navigationHidden}
-            navigationClasses={navigationClasses}
-            doublePrevClasses={doublePrevClasses}
-            prevClasses={prevClasses}
-            labelClasses={labelClasses}
-            nextClasses={nextClasses}
-            doubleNextClasses={doubleNextClasses}
-            doubleNextLabel={doubleNextLabel}
-            nextLabel={nextLabel}
-            prevLabel={prevLabel}
-            doublePrevLabel={doublePrevLabel}
-            labelShortFormat={navLabelShortFormat}
-            tileClasses={tileClasses}
-            headerClasses={headerClasses}
-          />
-        </div>
-      </>
+      <CalendarView
+        classNames={classNames}
+        currentView={currentView}
+        currentViewDate={currentViewDate}
+        selectedDate={selectedDate}
+        selectedDates={selectedDates}
+        onDrillDown={this.handleDrillDown}
+        onRangeSelect={this.handleRangeSelect}
+        onMultiSelect={this.handleMultiSelect}
+        onSingleSelect={this.handleSingleSelect}
+        onDateSelected={onDateSelected}
+        drillUp={this.handleDrillUp}
+        onPrev={this.handlePrev}
+        onNext={this.handleNext}
+        onDoublePrev={this.handleDoublePrev}
+        onDoubleNext={this.handleDoubleNext}
+        locale={locale}
+        calendarType={calendarType}
+        minView={minView}
+        maxView={maxView}
+        weekends={weekends}
+        minDate={minDate}
+        maxDate={maxDate}
+        disabledDates={disabledDates}
+        availableDates={availableDates}
+        multiSelect={multiSelect}
+        disableWeekdays={disableWeekdays}
+        disableableYearTiles={disableableYearTiles}
+        disableableDecadeTiles={disableableDecadeTiles}
+        disableableCenturyTiles={disableableCenturyTiles}
+        navigableBeforeAndAfterDates={navigableBeforeAndAfterDates}
+        hideBeforeAndAfterDates={hideBeforeAndAfterDates}
+        onMouseEnterTile={onMouseEnterTile}
+        onMouseLeaveTile={onMouseLeaveTile}
+        range={range}
+        navigationDisabled={navigationDisabled}
+        prevDisabled={prevDisabled}
+        nextDisabled={nextDisabled}
+        doublePrevDisabled={doublePrevDisabled}
+        doubleNextDisabled={doubleNextDisabled}
+        navigationHidden={navigationHidden}
+        navigationClasses={navigationClasses}
+        doublePrevClasses={doublePrevClasses}
+        prevClasses={prevClasses}
+        labelClasses={labelClasses}
+        nextClasses={nextClasses}
+        doubleNextClasses={doubleNextClasses}
+        doubleNextLabel={doubleNextLabel}
+        nextLabel={nextLabel}
+        prevLabel={prevLabel}
+        doublePrevLabel={doublePrevLabel}
+        labelShortFormat={navLabelShortFormat}
+        tileClasses={tileClasses}
+        headerClasses={headerClasses}
+        withTime={withTime}
+        hourLabel={hourLabel}
+        hourTileClasses={hourTileClasses}
+        hourHeaderClasses={hourHeaderClasses}
+        hourListClasses={hourListClasses}
+        hourFormat={hourFormat}
+        minuteLabel={minuteLabel}
+        minuteTileClasses={minuteTileClasses}
+        minuteHeaderClasses={minuteHeaderClasses}
+        minuteListClasses={minuteListClasses}
+        minuteStep={minuteStep}
+      />
     )
   }
 }
