@@ -1,21 +1,13 @@
 import React from 'react'
 
 import Calendar from './Calendar/Calendar'
-import {
-  MONDAY,
-  SUNDAY,
-  THURSDAY,
-  TUESDAY,
-  WEDNESDAY,
-  US,
-  ISO_8601
-} from './Calendar/utils/constants'
+import { DATE_TYPES, DAYS, CALENDAR_TYPE} from './Calendar/utils/constants'
 
 const Examples = () => {
-  const handleMultiSelect = dates => {
+  const handleMultiSelect = (dates: Date[]) => {
     console.log(dates)
   }
-  const handleRangeSelect = dates => {
+  const handleRangeSelect = (dates: Date[]) => {
     console.log(dates)
   }
   return (
@@ -153,7 +145,7 @@ const Examples = () => {
         <h1>Default US Calendar </h1>
         <div className="my-calendar-container">
           <div className="my-calendar-container">
-            <Calendar calendarType={US} />
+            <Calendar calendarType={CALENDAR_TYPE.US} />
             <code className="calendar-code">
               {`
               <Calendar
@@ -167,7 +159,7 @@ const Examples = () => {
         <h1>Default ISO_8601 Calendar </h1>
         <div className="my-calendar-container">
           <div className="my-calendar-container">
-            <Calendar calendarType={ISO_8601} />
+            <Calendar calendarType={CALENDAR_TYPE.ISO_8601} />
             <code className="calendar-code">
               {`
               <Calendar
@@ -181,12 +173,12 @@ const Examples = () => {
         <h1> Calendar with disabled weekdays</h1>
         <div className="my-calendar-container">
           <Calendar
-            disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
+            disableWeekdays={[DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY]}
           />
           <code className="calendar-code">
             {`
               <Calendar
-                disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
+                disableWeekdays={[DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY]}
               />`}
           </code>
         </div>
@@ -218,11 +210,11 @@ const Examples = () => {
       <div className="container">
         <h1> Calendar with startView</h1>
         <div className="my-calendar-container">
-          <Calendar startView={'CENTURY'} />
+          <Calendar startView={DATE_TYPES.CENTURY} />
           <code className="calendar-code">
             {`
               <Calendar
-                startView={'CENTURY'}
+                startView={DATE_TYPES.CENTURY}
               />`}
           </code>
         </div>
@@ -230,11 +222,11 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with min view</h1>
         <div className="my-calendar-container">
-          <Calendar minView={'YEAR'} />
+          <Calendar minView={DATE_TYPES.YEAR} />
           <code className="calendar-code">
             {`
               <Calendar
-                minView={'YEAR'}
+                minView={DATE_TYPES.YEAR}
               />`}
           </code>
         </div>
@@ -242,11 +234,11 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with max view</h1>
         <div className="my-calendar-container">
-          <Calendar maxView={'DECADE'} />
+          <Calendar maxView={DATE_TYPES.DECADE} />
           <code className="calendar-code">
             {`
               <Calendar
-                maxView={'DECADE'}
+                maxView={DATE_TYPES.DECADE}
               />`}
           </code>
         </div>
@@ -254,12 +246,12 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with min & max view</h1>
         <div className="my-calendar-container">
-          <Calendar minView={'YEAR'} maxView={'DECADE'} />
+          <Calendar minView={DATE_TYPES.YEAR} maxView={DATE_TYPES.DECADE} />
           <code className="calendar-code">
             {`
               <Calendar
-                minView={'YEAR'}
-                maxView={'DECADE'}
+                minView={DATE_TYPES.YEAR}
+                maxView{DATE_TYPES.DECADE}
               />`}
           </code>
         </div>

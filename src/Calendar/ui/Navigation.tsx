@@ -1,18 +1,17 @@
 import './Navigation.css'
 
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
-import { CENTURY, DECADE, MONTH, YEAR } from '../utils/constants'
+import { DATE_TYPES, MONTH_FORMAT } from '../utils/constants'
 import {
-  getCenturyRange,
+  getCenturyRangeText,
   getDecadeRangeText,
   getMonthAndYear,
   getYear
 } from '../utils/helpers'
 
-const Navigation = ({
-  locale = 'en',
+const Navigation: SFC<INavigationProps> = ({
+  locale,
   currentView,
   currentViewDate,
   drillUp,
@@ -36,17 +35,21 @@ const Navigation = ({
   prevLabel,
   nextLabel,
   doubleNextLabel,
-  labelShortFormat
-}) => {
+  navLabelShortFormat
+}: INavigationProps) => {
   let labelText
-  if (currentView === MONTH) {
-    labelText = getMonthAndYear(currentViewDate, locale, labelShortFormat)
-  } else if (currentView === YEAR) {
+  if (currentView === DATE_TYPES.MONTH) {
+    labelText = getMonthAndYear(
+      currentViewDate,
+      locale,
+      navLabelShortFormat ? MONTH_FORMAT.SHORT : MONTH_FORMAT.LONG
+    )
+  } else if (currentView === DATE_TYPES.YEAR) {
     labelText = getYear(currentViewDate)
-  } else if (currentView === DECADE) {
+  } else if (currentView === DATE_TYPES.DECADE) {
     labelText = getDecadeRangeText(currentViewDate)
-  } else if (currentView === CENTURY) {
-    labelText = getCenturyRange(currentViewDate)
+  } else if (currentView === DATE_TYPES.CENTURY) {
+    labelText = getCenturyRangeText(currentViewDate)
   }
   const doublePrev =
     navigationDisabled || doublePrevDisabled ? (
@@ -133,39 +136,52 @@ const Navigation = ({
 
   return (
     <div
-      className={`navigation${currentView === CENTURY ? ' century' : ''}${
-        navigationHidden ? ' hidden' : ''
-      }${navigationClasses ? ' ' + navigationClasses : ''}`}
+      className={`navigation${
+        currentView === DATE_TYPES.CENTURY ? ' century' : ''
+      }${navigationHidden ? ' hidden' : ''}${
+        navigationClasses ? ' ' + navigationClasses : ''
+      }`}
     >
-      {!navigationHidden && currentView !== CENTURY && doublePrev}
+      {!navigationHidden && currentView !== DATE_TYPES.CENTURY && doublePrev}
       {!navigationHidden && prev}
       {label}
       {!navigationHidden && next}
-      {!navigationHidden && currentView !== CENTURY && doubleNext}
+      {!navigationHidden && currentView !== DATE_TYPES.CENTURY && doubleNext}
     </div>
   )
 }
-Navigation.propTypes = {
-  drillUp: PropTypes.func.isRequired,
-  onPrev: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
-  onDoublePrev: PropTypes.func.isRequired,
-  onDoubleNext: PropTypes.func.isRequired,
-  locale: PropTypes.string,
-  currentView: PropTypes.string,
-  currentViewDate: PropTypes.instanceOf(Date),
-  navigationDisabled: PropTypes.bool,
-  prevDisabled: PropTypes.bool,
-  nextDisabled: PropTypes.bool,
-  doublePrevDisabled: PropTypes.bool,
-  doubleNextDisabled: PropTypes.bool,
-  navigationHidden: PropTypes.bool,
-  navigationClasses: PropTypes.string,
-  doublePrevClasses: PropTypes.string,
-  prevClasses: PropTypes.string,
-  labelClasses: PropTypes.string,
-  nextClasses: PropTypes.string,
-  doubleNextClasses: PropTypes.string,
-  navLabelShortFormat: PropTypes.bool
+
+export type INavigationProps = {
+  drillUp: () => void
+  onPrev: () => void
+  onNext: () => void
+  onDoublePrev: () => void
+  onDoubleNext: () => void
+  currentViewDate: Date
+  locale?: string
+  currentView?: string
+  navigationDisabled?: boolean
+  prevDisabled?: boolean
+  nextDisabled?: boolean
+  doublePrevDisabled?: boolean
+  doubleNextDisabled?: boolean
+  navigationHidden?: boolean
+  navigationClasses?: string
+  doublePrevClasses?: string
+  prevClasses?: string
+  labelClasses?: string
+  nextClasses?: string
+  doubleNextClasses?: string
+  navLabelShortFormat?: boolean
+  doublePrevLabel?: string
+  prevLabel?: string
+  nextLabel?: string
+  doubleNextLabel?: string
 }
+
+Navigation.defaultProps = {
+  locale: 'en',
+  navLabelShortFormat: false
+}
+
 export default Navigation

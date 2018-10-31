@@ -1,40 +1,29 @@
 import {
   days,
   months,
-  DATE,
-  MONTH,
-  YEAR,
-  DECADE,
-  CENTURY,
-  SHORT,
-  LONG,
-  SATURDAY,
-  SUNDAY,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  US,
-  ISO_8601
+  CALENDAR_TYPE,
+  DATE_TYPES,
+  DAYS,
+  MONTH_FORMAT,
 } from './constants'
-export const capitalizeFirst = str =>
+
+export const capitalizeFirst = (str: string): string =>
   str
     .split('')
     .map((c, idx) => (idx ? c.toLowerCase() : c.toUpperCase()))
     .join('')
 
-export const checkDate = date => {
+export const checkDate = (date: Object): void => {
   if (date instanceof Date) {
     return
   }
   throw new Error('Not a date')
 }
 
-export const getChildView = (date, min = MONTH) => {
-  const units = [MONTH, YEAR, DECADE, CENTURY]
-  if (units.some(u => u === date) && units.some(u => u === min)) {
-    let idx = units.indexOf(date)
+export const getChildView = (view: DATE_TYPES, min: DATE_TYPES = DATE_TYPES.MONTH): DATE_TYPES | null => {
+  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+  if (units.some(u => u === view) && units.some(u => u === min)) {
+    let idx = units.indexOf(view)
 
     if (idx > units.indexOf(min)) {
       return units[idx - 1]
@@ -43,10 +32,11 @@ export const getChildView = (date, min = MONTH) => {
   }
   throw new Error('Not a vaild view unit')
 }
-export const getParentView = (date, max = CENTURY) => {
-  const units = [MONTH, YEAR, DECADE, CENTURY]
-  if (units.some(u => u === date) && units.some(u => u === max)) {
-    let idx = units.indexOf(date)
+
+export const getParentView = (view: DATE_TYPES, max: DATE_TYPES = DATE_TYPES.CENTURY): DATE_TYPES | null => {
+  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+  if (units.some(u => u === view) && units.some(u => u === max)) {
+    let idx = units.indexOf(view)
     if (idx < units.indexOf(max)) {
       return units[idx + 1]
     }
@@ -54,28 +44,31 @@ export const getParentView = (date, max = CENTURY) => {
   }
   throw new Error('Not a vaild view unit')
 }
-export const checkViewOrder = (min, max) => {
-  const units = [MONTH, YEAR, DECADE, CENTURY]
+
+export const checkViewOrder = (min: DATE_TYPES, max: DATE_TYPES): boolean => {
+  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
   if (units.some(u => u === min) && units.some(u => u === max)) {
     return units.indexOf(min) <= units.indexOf(max)
   }
   throw new Error('Not a vaild view unit')
 }
-export const checkView = date => {
-  const units = [MONTH, YEAR, DECADE, CENTURY]
-  if (units.some(u => u === date)) {
+
+export const checkView = (view: DATE_TYPES): boolean => {
+  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+  if (units.some(u => u === view)) {
     return true
   }
   throw new Error('Not a vaild view unit')
 }
-export const checkMinMaxDate = (minDate, maxDate) => {
+
+export const checkMinMaxDate = (minDate: Date, maxDate: Date): void => {
   checkDate(minDate)
   checkDate(maxDate)
   if (afterDates(minDate, maxDate))
     throw new Error('Min Date cannot be after Max Date')
 }
 
-export const equalDates = (first, second) => {
+export const equalDates = (first: Date, second: Date): boolean => {
   checkDate(first)
   checkDate(second)
   return (
@@ -85,7 +78,7 @@ export const equalDates = (first, second) => {
   )
 }
 
-export const beforeDates = (first, second) => {
+export const beforeDates = (first: Date, second: Date): boolean => {
   checkDate(first)
   checkDate(second)
   return (
@@ -96,7 +89,8 @@ export const beforeDates = (first, second) => {
           first.getDate() < second.getDate())))
   )
 }
-export const afterDates = (first, second) => {
+
+export const afterDates = (first: Date, second: Date): boolean => {
   checkDate(first)
   checkDate(second)
   return (
@@ -107,7 +101,8 @@ export const afterDates = (first, second) => {
           first.getDate() > second.getDate())))
   )
 }
-export const beforeMonths = (first, second) => {
+
+export const beforeMonths = (first: Date, second: Date): boolean => {
   checkDate(first)
   checkDate(second)
   return (
@@ -116,7 +111,8 @@ export const beforeMonths = (first, second) => {
       first.getMonth() < second.getMonth())
   )
 }
-export const afterMonths = (first, second) => {
+
+export const afterMonths = (first: Date, second: Date): boolean => {
   checkDate(first)
   checkDate(second)
   return (
@@ -126,28 +122,29 @@ export const afterMonths = (first, second) => {
   )
 }
 
-export const getMonthsArray = date => {
+export const getMonthsArray = (date: Date): Date[] => {
   checkDate(date)
   return Array(12)
-    .fill()
+    .fill(null)
     .map((i, idx) => new Date(date.getFullYear(), idx))
 }
 
-export const getDayIndex = day => {
-  const days = [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY]
+
+export const getDayIndex = (day: DAYS): number => {
+  const days = [DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY, DAYS.FRIDAY, DAYS.SATURDAY]
   return days.indexOf(day)
 }
 
 export const transformWeekDays = (
-  format = SHORT,
+  format: MONTH_FORMAT = MONTH_FORMAT.SHORT,
   locale = 'en',
-  calendarType = ISO_8601
-) => {
-  let dayFormat = format === LONG ? 'long' : 'short'
-  if (calendarType === ISO_8601) {
+  calendarType: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+): string[] => {
+  let dayFormat = format === MONTH_FORMAT.LONG ? 'long' : 'short'
+  if (calendarType === CALENDAR_TYPE.ISO_8601) {
     if (locale !== 'mk') {
       return Array(7)
-        .fill()
+        .fill(null)
         .map((i, idx) =>
           new Intl.DateTimeFormat([locale], {
             weekday: dayFormat
@@ -159,10 +156,10 @@ export const transformWeekDays = (
       days[locale][dayFormat][0]
     ].map(d => capitalizeFirst(d))
   }
-  if (calendarType === US) {
+  if (calendarType === CALENDAR_TYPE.US) {
     if (locale !== 'mk') {
       return Array(7)
-        .fill()
+        .fill(null)
         .map((i, idx) =>
           new Intl.DateTimeFormat([locale], {
             weekday: dayFormat
@@ -171,20 +168,25 @@ export const transformWeekDays = (
     }
     return [...days[locale][dayFormat]].map(d => capitalizeFirst(d))
   }
+  return []
 }
 
-export const getMonthAndYear = (date, locale = 'en', format = LONG) => {
+export const getMonthAndYear = (
+  date: Date,
+  locale = 'en',
+  format = MONTH_FORMAT.LONG
+): string => {
   checkDate(date)
   const month = getMonthFormated(date, locale, format)
   const year = getYear(date)
   return `${month} ${year}`
 }
 
-export const getYear = date => {
+export const getYear = (date: Date): number => {
   checkDate(date)
   return date.getFullYear()
 }
-export const getDecadeStartYear = date => {
+export const getDecadeStartYear = (date: Date): number => {
   checkDate(date)
   const year = date.getFullYear()
   let bottomBound
@@ -193,27 +195,27 @@ export const getDecadeStartYear = date => {
     : (bottomBound = year - (year % 10) + 1)
   return bottomBound
 }
-export const getDecadeEndYear = date => {
+export const getDecadeEndYear = (date: Date): number => {
   checkDate(date)
   const year = date.getFullYear()
   let upperBound
   upperBound = year + (10 - (year % 10))
   return upperBound
 }
-export const getDecadeRangeText = date => {
+export const getDecadeRangeText = (date: Date): string => {
   checkDate(date)
   const bottomBound = getDecadeStartYear(date)
   const upperBound = getDecadeEndYear(date)
   return `${bottomBound}-${upperBound}`
 }
 
-export const getCenturyRange = date => {
+export const getCenturyRangeText = (date: Date): string => {
   checkDate(date)
   const bottomBound = getCentryStartYear(date)
   const upperBound = getCentryEndYear(date)
   return `${bottomBound}-${upperBound}`
 }
-export const getCentryStartYear = date => {
+export const getCentryStartYear = (date: Date): number => {
   checkDate(date)
   const year = date.getFullYear()
   const century = Math.floor(year / 100)
@@ -224,7 +226,7 @@ export const getCentryStartYear = date => {
     : (bottomBound = century * 100 + 1)
   return bottomBound
 }
-export const getCentryEndYear = date => {
+export const getCentryEndYear = (date: Date): number => {
   checkDate(date)
   const year = date.getFullYear()
   const century = Math.floor(year / 100)
@@ -236,30 +238,35 @@ export const getCentryEndYear = date => {
   return upperBound
 }
 
-export const getMonthFormated = (date, locale = 'en', format = LONG) => {
+export const getMonthFormated = (
+  date: Date,
+  locale = 'en',
+  format: MONTH_FORMAT = MONTH_FORMAT.LONG
+): string => {
   checkDate(date)
   if (locale === 'mk') {
     return months[locale][date.getMonth() + 1]
   }
   return new Intl.DateTimeFormat(locale, {
-    month: `${format === LONG ? 'long' : 'short'}`
+    month: `${format === MONTH_FORMAT.LONG ? 'long' : 'short'}`
   }).format(date)
 }
 
-export const getPrevDate = (date, type) => {
+
+export const getPrevDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case MONTH:
+    case DATE_TYPES.MONTH:
       newDate = new Date(date.getFullYear(), date.getMonth() - 1)
       break
-    case YEAR:
+    case DATE_TYPES.YEAR:
       newDate = new Date(date.getFullYear() - 1, date.getMonth())
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       newDate = new Date(date.getFullYear() - 10, date.getMonth())
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       newDate = new Date(date.getFullYear() - 100, date.getMonth())
       break
     default:
@@ -268,20 +275,21 @@ export const getPrevDate = (date, type) => {
   return newDate
 }
 
-export const getNextDate = (date, type) => {
+
+export const getNextDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case MONTH:
+    case DATE_TYPES.MONTH:
       newDate = new Date(date.getFullYear(), date.getMonth() + 1)
       break
-    case YEAR:
+    case DATE_TYPES.YEAR:
       newDate = new Date(date.getFullYear() + 1, date.getMonth())
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       newDate = new Date(date.getFullYear() + 10, date.getMonth())
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       newDate = new Date(date.getFullYear() + 100, date.getMonth())
       break
     default:
@@ -290,20 +298,21 @@ export const getNextDate = (date, type) => {
   return newDate
 }
 
-export const getDoublePrevDate = (date, type) => {
+
+export const getDoublePrevDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case MONTH:
+    case DATE_TYPES.MONTH:
       newDate = new Date(date.getFullYear() - 1, date.getMonth())
       break
-    case YEAR:
+    case DATE_TYPES.YEAR:
       newDate = new Date(date.getFullYear() - 10, date.getMonth())
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       newDate = new Date(date.getFullYear() - 100, date.getMonth())
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       newDate = new Date(date.getFullYear() - 1000, date.getMonth())
       break
 
@@ -313,20 +322,21 @@ export const getDoublePrevDate = (date, type) => {
   return newDate
 }
 
-export const getDoubleNextDate = (date, type) => {
+
+export const getDoubleNextDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case MONTH:
+    case DATE_TYPES.MONTH:
       newDate = new Date(date.getFullYear() + 1, date.getMonth())
       break
-    case YEAR:
+    case DATE_TYPES.YEAR:
       newDate = new Date(date.getFullYear() + 10, date.getMonth())
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       newDate = new Date(date.getFullYear() + 100, date.getMonth())
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       newDate = new Date(date.getFullYear() + 1000, date.getMonth())
       break
 
@@ -336,37 +346,42 @@ export const getDoubleNextDate = (date, type) => {
   return newDate
 }
 
-export const getDateRange = (dateOne, dateTwo, type = DATE) => {
+export const getDateRange = (
+  dateOne: Date,
+  dateTwo: Date,
+  type: DATE_TYPES = DATE_TYPES.DATE
+): Date[] => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (beforeDates(dateOne, dateTwo)) {
-    if (type === DATE) {
+    if (type === DATE_TYPES.DATE) {
       return rangeDate(dateOne, dateTwo)
-    } else if (type === MONTH) {
+    } else if (type === DATE_TYPES.MONTH) {
       return rangeDate(dateOne, endOfMonthDate(dateTwo))
-    } else if (type === YEAR) {
+    } else if (type === DATE_TYPES.YEAR) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 1, 0, 0))
-    } else if (type === DECADE) {
+    } else if (type === DATE_TYPES.DECADE) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 10, 0, 0))
-    } else if (type === CENTURY) {
+    } else if (type === DATE_TYPES.CENTURY) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 100, 0, 0))
     }
   } else if (afterDates(dateOne, dateTwo)) {
-    if (type === DATE) {
+    if (type === DATE_TYPES.DATE) {
       return rangeDate(dateTwo, dateOne)
-    } else if (type === MONTH) {
+    } else if (type === DATE_TYPES.MONTH) {
       return rangeDate(dateTwo, endOfMonthDate(dateOne))
-    } else if (type === YEAR) {
+    } else if (type === DATE_TYPES.YEAR) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 1, 0, 0))
-    } else if (type === DECADE) {
+    } else if (type === DATE_TYPES.DECADE) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 10, 0, 0))
-    } else if (type === CENTURY) {
+    } else if (type === DATE_TYPES.CENTURY) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 100, 0, 0))
     }
   }
   return [dateOne, dateTwo]
 }
-export const rangeDate = (lowerBound, upperBound) => {
+
+export const rangeDate = (lowerBound: Date, upperBound: Date): Date[] => {
   checkDate(lowerBound)
   checkDate(upperBound)
   const timeDiff = Math.abs(
@@ -380,7 +395,7 @@ export const rangeDate = (lowerBound, upperBound) => {
   const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
 
   return Array(diffDays + 1)
-    .fill()
+    .fill(null)
     .map((item, idx) => {
       return new Date(
         lowerBound.getFullYear(),
@@ -389,7 +404,8 @@ export const rangeDate = (lowerBound, upperBound) => {
       )
     })
 }
-export const getMonthRange = (dateOne, dateTwo) => {
+
+export const getMonthRange = (dateOne: Date, dateTwo: Date): Date[] => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (
@@ -407,19 +423,21 @@ export const getMonthRange = (dateOne, dateTwo) => {
   }
   return [dateOne, dateTwo]
 }
-export const rangeMonth = (lowerBound, upperBound) => {
+
+export const rangeMonth = (lowerBound: Date, upperBound: Date): Date[] => {
   checkDate(lowerBound)
   checkDate(upperBound)
   const diffMonths =
     (upperBound.getFullYear() - lowerBound.getFullYear()) * 12 +
     (upperBound.getMonth() + 1 - (lowerBound.getMonth() + 1))
   return Array(diffMonths + 1)
-    .fill()
+    .fill(null)
     .map((item, idx) => {
       return new Date(lowerBound.getFullYear(), lowerBound.getMonth() + idx, 1)
     })
 }
-export const getYearRange = (dateOne, dateTwo) => {
+
+export const getYearRange = (dateOne: Date, dateTwo: Date): Date[] => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (dateOne.getFullYear() < dateTwo.getFullYear()) {
@@ -430,18 +448,18 @@ export const getYearRange = (dateOne, dateTwo) => {
   return [dateOne, dateTwo]
 }
 
-export const rangeYear = (lowerBound, upperBound) => {
+export const rangeYear = (lowerBound: Date, upperBound: Date): Date[] => {
   checkDate(lowerBound)
   checkDate(upperBound)
   const diffYears = upperBound.getFullYear() - lowerBound.getFullYear()
   return Array(diffYears + 1)
-    .fill()
+    .fill(null)
     .map((item, idx) => {
       return new Date(lowerBound.getFullYear() + idx, lowerBound.getMonth(), 1)
     })
 }
 
-export const getDecadeRange = (dateOne, dateTwo) => {
+export const getDecadeRange = (dateOne: Date, dateTwo: Date): Date[] => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (dateOne.getFullYear() < dateTwo.getFullYear()) {
@@ -452,14 +470,14 @@ export const getDecadeRange = (dateOne, dateTwo) => {
   return [dateOne, dateTwo]
 }
 
-export const rangeDecade = (lowerBound, upperBound) => {
+export const rangeDecade = (lowerBound: Date, upperBound: Date): Date[] => {
   checkDate(lowerBound)
   checkDate(upperBound)
   const diffYears = Math.floor(
     (upperBound.getFullYear() - lowerBound.getFullYear()) / 10
   )
   return Array(diffYears + 1)
-    .fill()
+    .fill(null)
     .map((item, idx) => {
       return new Date(
         lowerBound.getFullYear() + idx * 10,
@@ -469,26 +487,27 @@ export const rangeDecade = (lowerBound, upperBound) => {
     })
 }
 
-export const getNewDate = (date, type, idx) => {
+
+export const getNewDate = (date: Date, type: DATE_TYPES, idx: number): Date => {
   checkDate(date)
   let year,
     newDate = date
   switch (type) {
-    case DATE:
+    case DATE_TYPES.DATE:
       newDate = new Date(date.getFullYear(), date.getMonth(), idx)
       break
-    case MONTH:
+    case DATE_TYPES.MONTH:
       newDate = new Date(date.getFullYear(), idx)
       break
-    case YEAR:
+    case DATE_TYPES.YEAR:
       year = getDecadeStartYear(date) + idx
       newDate = new Date(year, 0)
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       year = getCentryStartYear(date) + idx * 10
       newDate = new Date(year, 0)
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       year = getCentryStartYear(date)
       newDate = new Date(year, 0, idx)
       break
@@ -498,25 +517,27 @@ export const getNewDate = (date, type, idx) => {
   }
   return newDate
 }
-export const firstOfMonthDate = date => {
+
+export const firstOfMonthDate = (date: Date): Date => {
   const month = date.getMonth()
   const year = date.getFullYear()
   return new Date(year, month, 1)
 }
-export const endOfMonthDate = date => {
+
+export const endOfMonthDate = (date: Date): Date => {
   const month = date.getMonth()
   const year = date.getFullYear()
   return new Date(year, month + 1, 0)
 }
 
 export const getMonthViewDates = (
-  date,
-  type = ISO_8601,
+  date: Date,
+  type: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601,
   hideBeforeAndAfterDates = false
-) => {
+): (Date | null)[] => {
   checkDate(date)
   const totalDates = 42
-  let viewDates = []
+  let viewDates: (Date | null)[] = []
   const month = date.getMonth()
   const year = date.getFullYear()
 
@@ -531,12 +552,13 @@ export const getMonthViewDates = (
 
   const nextMonthStartDateObj = new Date(year, month + 1, 1)
 
-  let trailingDates, prependDates
+  let trailingDates = 0,
+    prependDates = 0
 
-  if (type === ISO_8601) {
+  if (type === CALENDAR_TYPE.ISO_8601) {
     trailingDates = (6 - currMonthLastDay + 1) % 7
     prependDates = (currMonthFirstDay + 6) % 7
-  } else if (type === US) {
+  } else if (type === CALENDAR_TYPE.US) {
     prependDates = currMonthFirstDay
     trailingDates = (6 - currMonthLastDay) % 7
   }
@@ -546,7 +568,7 @@ export const getMonthViewDates = (
   if (prependDates !== 0) {
     const prevMonthStartLastDates = prevMonthLastDate - prependDates + 1
     viewDates = Array(prependDates)
-      .fill()
+      .fill(null)
       .map((item, idx) => idx + prevMonthStartLastDates)
       .map(
         date =>
@@ -561,7 +583,7 @@ export const getMonthViewDates = (
       .reduce((prev, curr) => [...prev, curr], viewDates)
   }
   viewDates = Array(currMonthLastDate)
-    .fill()
+    .fill(null)
     .map((item, idx) => idx + 1)
     .map(
       date =>
@@ -574,7 +596,7 @@ export const getMonthViewDates = (
     .reduce((prev, curr) => [...prev, curr], viewDates)
 
   viewDates = Array(trailingDates)
-    .fill()
+    .fill(null)
     .map((item, idx) => idx + 1)
     .map(
       date =>
@@ -591,9 +613,10 @@ export const getMonthViewDates = (
   return viewDates
 }
 
-export const isDateGrayed = (date, currentViewDate) => {
-  if (date === null) return
-
+export const isDateGrayed = (
+  date: Date,
+  currentViewDate: Date
+): boolean => {
   const grayed =
     currentViewDate.getFullYear() !== date.getFullYear() ||
     currentViewDate.getMonth() !== date.getMonth()
@@ -601,14 +624,13 @@ export const isDateGrayed = (date, currentViewDate) => {
 }
 
 export const isDateSelected = (
-  date,
-  selectedDate,
-  selectedDates,
+  date: Date,
+  selectedDate?: Date,
+  selectedDates?: Date[],
   range = false
-) => {
-  if (date === null) return
+): boolean => {
+  const selected: boolean = !!(
 
-  const selected =
     (selectedDates &&
       selectedDates.some(selectedDateItem =>
         equalDates(date, selectedDateItem)
@@ -618,18 +640,17 @@ export const isDateSelected = (
       selectedDates &&
       selectedDates.length >= 2 &&
       afterDates(date, selectedDates[0]) &&
-      beforeDates(date, selectedDates[selectedDates.length - 1]))
+      beforeDates(date, selectedDates[selectedDates.length - 1])) )
+
   return selected
 }
 export const isMonthSelected = (
-  dateMonth,
-  selectedDate,
-  selectedDates,
+  dateMonth: Date,
+  selectedDate?: Date,
+  selectedDates?: Date[],
   range = false
-) => {
-  if (dateMonth === null) return
-
-  const selected =
+): boolean => {
+  const selected = !!(
     (selectedDates &&
       selectedDates.some(
         selectedDateItem =>
@@ -645,18 +666,17 @@ export const isMonthSelected = (
       ((afterDates(dateMonth, selectedDates[0]) &&
         beforeDates(dateMonth, selectedDates[selectedDates.length - 1])) ||
         (equalDates(dateMonth, selectedDates[0]) ||
-          equalDates(dateMonth, selectedDates[selectedDates.length - 1]))))
+          equalDates(dateMonth, selectedDates[selectedDates.length - 1])))))
   return selected
 }
 export const isYearSelected = (
-  dateYear,
-  selectedDate,
-  selectedDates,
-  range
-) => {
-  if (dateYear === null) return
+  dateYear: Date,
+  selectedDate?: Date,
+  selectedDates?: Date[],
+  range = false
+): boolean => {
 
-  const selected =
+  const selected = !!(
     (selectedDates &&
       selectedDates.some(
         selectedDateItem =>
@@ -670,17 +690,17 @@ export const isYearSelected = (
         beforeDates(dateYear, selectedDates[selectedDates.length - 1])) ||
         (equalDates(dateYear, selectedDates[0]) ||
           equalDates(dateYear, selectedDates[selectedDates.length - 1]))))
+  )
   return selected
 }
 export const isDecadeSelected = (
-  dateDecade,
-  selectedDate,
-  selectedDates,
-  range
-) => {
-  if (dateDecade === null) return
+  dateDecade: Date,
+  selectedDate?: Date,
+  selectedDates?: Date[],
+  range = false
+): boolean => {
 
-  const selected =
+  const selected = !!(
     (selectedDates &&
       selectedDates.some(
         selectedDateItem =>
@@ -697,23 +717,22 @@ export const isDecadeSelected = (
       ((afterDates(dateDecade, selectedDates[0]) &&
         beforeDates(dateDecade, selectedDates[selectedDates.length - 1])) ||
         (equalDates(dateDecade, selectedDates[0]) ||
-          equalDates(dateDecade, selectedDates[selectedDates.length - 1]))))
+          equalDates(dateDecade, selectedDates[selectedDates.length - 1])))))
   return selected
 }
 
 export const isDateDisabled = (
-  date,
-  availableDates,
-  minDate,
-  maxDate,
-  disabledDates,
-  disableWeekdays,
-  ...rest
-) => {
-  if (date === null) return
-  let disabled
+  date: Date,
+  availableDates?: Date[],
+  minDate?: Date,
+  maxDate?: Date,
+  disabledDates?: Date[],
+  disableWeekdays?: DAYS[]
+): boolean => {
+  
+  let disabled: boolean
   if (!availableDates) {
-    disabled =
+    disabled = !!(
       (minDate && beforeDates(date, minDate)) ||
       (maxDate && afterDates(date, maxDate)) ||
       (disabledDates &&
@@ -721,16 +740,16 @@ export const isDateDisabled = (
           equalDates(disabledDateItem, date)
         )) ||
       (disableWeekdays &&
-        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay())))
   } else if (!minDate && !maxDate) {
-    disabled =
+    disabled = !!(
       !availableDates.some(availableDateItem =>
         equalDates(availableDateItem, date)
       ) ||
       (disableWeekdays &&
-        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay())))
   } else {
-    disabled =
+    disabled = !!(
       (!availableDates.some(availableDateItem =>
         equalDates(availableDateItem, date)
       ) &&
@@ -742,23 +761,22 @@ export const isDateDisabled = (
           equalDates(disabledDateItem, date)
         )) ||
       (disableWeekdays &&
-        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay()))
+        disableWeekdays.some(weekDay => getDayIndex(weekDay) === date.getDay())))
   }
   return disabled
 }
 
 export const isMonthDisabled = (
-  dateMonth,
-  availableDates,
-  minDate,
-  maxDate,
-  ...rest
-) => {
-  let disabled
+  dateMonth: Date,
+  availableDates?: Date[],
+  minDate?: Date,
+  maxDate?: Date
+):  boolean => {
+  let disabled: boolean
   if (!availableDates) {
-    disabled =
+    disabled = !!(
       (minDate && beforeMonths(dateMonth, minDate)) ||
-      (maxDate && afterMonths(dateMonth, maxDate))
+      (maxDate && afterMonths(dateMonth, maxDate)))
   } else if (!minDate && !maxDate) {
     disabled = !availableDates.some(
       availableItem =>
@@ -766,7 +784,7 @@ export const isMonthDisabled = (
         availableItem.getFullYear() === dateMonth.getFullYear()
     )
   } else {
-    disabled =
+    disabled = !!(
       !availableDates.some(
         availableItem =>
           availableItem.getMonth() === dateMonth.getMonth() &&
@@ -774,23 +792,22 @@ export const isMonthDisabled = (
       ) &&
       (minDate &&
         maxDate &&
-        (beforeMonths(dateMonth, minDate) || afterMonths(dateMonth, maxDate)))
+        (beforeMonths(dateMonth, minDate) || afterMonths(dateMonth, maxDate))) )
   }
   return disabled
 }
 
 export const isYearDisabled = (
-  dateYear,
-  availableDates,
-  minDate,
-  maxDate,
-  ...rest
-) => {
-  let disabled
+  dateYear: Date,
+  availableDates?: Date[],
+  minDate?: Date,
+  maxDate?: Date
+): boolean => {
+  let disabled: boolean
   if (!availableDates) {
-    disabled =
+    disabled = !!(
       (minDate && dateYear.getFullYear() < minDate.getFullYear()) ||
-      (maxDate && dateYear.getFullYear() > maxDate.getFullYear())
+      (maxDate && dateYear.getFullYear() > maxDate.getFullYear()))
   } else if (!minDate && !maxDate) {
     disabled =
       availableDates &&
@@ -798,44 +815,43 @@ export const isYearDisabled = (
         availableItem => availableItem.getFullYear() === dateYear.getFullYear()
       )
   } else {
-    disabled =
+    disabled = !!(
       !availableDates.some(
         availableItem => availableItem.getFullYear() === dateYear.getFullYear()
       ) &&
       (minDate &&
         maxDate &&
         (dateYear.getFullYear() < minDate.getFullYear() ||
-          dateYear.getFullYear() > maxDate.getFullYear()))
+          dateYear.getFullYear() > maxDate.getFullYear())) )
   }
   return disabled
 }
 
 export const isDecadeDisabled = (
-  dateDecade,
-  availableDates,
-  minDate,
-  maxDate,
-  ...rest
-) => {
-  let disabled
+  dateDecade: Date,
+  availableDates?: Date[],
+  minDate?: Date,
+  maxDate?: Date
+):  boolean => {
+  let disabled: boolean
   const startYear = getDecadeStartYear(dateDecade)
   const endYear = getDecadeEndYear(dateDecade)
   if (!availableDates) {
-    disabled =
+    disabled = !!(
       (minDate && startYear > minDate.getFullYear()) ||
       (minDate && endYear < minDate.getFullYear()) ||
       ((maxDate && startYear > maxDate.getFullYear()) ||
-        (maxDate && endYear < maxDate.getFullYear()))
+        (maxDate && endYear < maxDate.getFullYear())) )
   } else if (!minDate && !maxDate) {
-    disabled =
+    disabled = !!(
       availableDates &&
       !availableDates.some(
         availableItem =>
           startYear < availableItem.getFullYear() &&
           endYear > availableItem.getFullYear()
-      )
+      ))
   } else {
-    disabled =
+    disabled = !!(
       !availableDates.some(
         availableItem =>
           startYear < availableItem.getFullYear() &&
@@ -844,49 +860,58 @@ export const isDecadeDisabled = (
       ((minDate && startYear > minDate.getFullYear()) ||
         (minDate && endYear < minDate.getFullYear()) ||
         ((maxDate && startYear > maxDate.getFullYear()) ||
-          (maxDate && endYear < maxDate.getFullYear())))
+          (maxDate && endYear < maxDate.getFullYear()))))
   }
   return disabled
 }
 
-export const isWeekend = (idx, weekends, calendarType) => {
-  let showWeekend
+export const isWeekend = (
+  idx: number,
+  weekends: boolean = false,
+  calendarType: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+) => {
+  let showWeekend= false
   const weekend = idx % 7
-  if (weekends && calendarType === ISO_8601) {
+  if (weekends && calendarType === CALENDAR_TYPE.ISO_8601) {
     showWeekend = weekend === 5 || weekend === 6
   }
-  if (weekends && calendarType === US) {
+  if (weekends && calendarType === CALENDAR_TYPE.US) {
     showWeekend = weekend === 0 || weekend === 6
   }
   return showWeekend
 }
 
-export const getHours = (format = ISO_8601) => {
+export const getHours = (format = CALENDAR_TYPE.ISO_8601): string[] => {
   const date = new Date()
   const hours = Array(24)
-    .fill()
+    .fill(null)
     .map((item, idx) => {
       date.setHours(idx)
-      return date.toLocaleTimeString(
-        {},
-        { hour12: format !== ISO_8601, hour: '2-digit' }
-      )
+      return date.toLocaleTimeString(undefined, {
+        hour12: format !== CALENDAR_TYPE.ISO_8601,
+        hour: '2-digit'
+      })
     })
   return hours
 }
 
-export const getMinutes = (step = 1) => {
+export const getMinutes = (step = 1): string[] => {
   const roundedStep = Math.round(step)
   const steps = Math.ceil(60 / roundedStep)
   return Array(steps)
-    .fill()
+    .fill(null)
     .map((item, idx) => idx * roundedStep)
     .map(item => `${item >= 10 ? item : '0' + item}`)
 }
 
-export const getDateTimeFormated = (date, locale = US, format = ISO_8601) => {
-  return date.toLocaleTimeString(
-    { locale },
-    { hour12: format !== ISO_8601, hour: '2-digit', minute: '2-digit' }
-  )
+export const getDateTimeFormated = (
+  date: Date,
+  locale = CALENDAR_TYPE.US,
+  format = CALENDAR_TYPE.ISO_8601
+): string => {
+  return date.toLocaleTimeString(locale, {
+    hour12: format !== CALENDAR_TYPE.ISO_8601,
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }

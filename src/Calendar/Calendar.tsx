@@ -1,24 +1,9 @@
 import './Calendar.css'
 
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
 import CalendarView from './ui/CalendarView'
-import {
-  CENTURY,
-  DECADE,
-  MONTH,
-  YEAR,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  SUNDAY,
-  US,
-  ISO_8601
-} from './utils/constants'
+import { DATE_TYPES, DAYS, CALENDAR_TYPE } from './utils/constants'
 import {
   checkDate,
   checkMinMaxDate,
@@ -32,93 +17,26 @@ import {
   getPrevDate
 } from './utils/helpers'
 
-class Calendar extends Component {
-  state = {
+class Calendar extends Component<ICalendarProps, ICalendarState> {
+  state: ICalendarState = {
     currentView: undefined,
     currentViewDate: undefined,
     selectedDates: [],
     selectedDate: undefined
   }
-  static defaultProps = {
+  static defaultProps: Partial<ICalendarProps> = {
     startViewDate: new Date(),
-    minView: MONTH,
-    maxView: CENTURY,
+    minView: DATE_TYPES.MONTH,
+    maxView: DATE_TYPES.CENTURY,
     locale: 'en',
-    calendarType: US
-  }
-  static propTypes = {
-    classNames: PropTypes.string,
-    withTime: PropTypes.bool,
-    selectedDate: PropTypes.instanceOf(Date),
-    selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-    locale: PropTypes.string,
-    weekends: PropTypes.bool,
-    calendarType: PropTypes.oneOf([US, ISO_8601]),
-    onDateSelected: PropTypes.func,
-    onMultiSelect: PropTypes.func,
-    onRangeMultiSelect: PropTypes.func,
-    multiSelect: PropTypes.bool,
-    range: PropTypes.bool,
-    startViewDate: PropTypes.instanceOf(Date),
-    minDate: PropTypes.instanceOf(Date),
-    maxDate: PropTypes.instanceOf(Date),
-    minView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-    maxView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-    startView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-    disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-    availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-    disableWeekdays: PropTypes.arrayOf(
-      PropTypes.oneOf([
-        SUNDAY,
-        MONDAY,
-        TUESDAY,
-        WEDNESDAY,
-        THURSDAY,
-        FRIDAY,
-        SATURDAY
-      ])
-    ),
-    navigationDisabled: PropTypes.bool,
-    prevDisabled: PropTypes.bool,
-    nextDisabled: PropTypes.bool,
-    doublePrevDisabled: PropTypes.bool,
-    doubleNextDisabled: PropTypes.bool,
-    navigationHidden: PropTypes.bool,
-    navigationClasses: PropTypes.string,
-    doublePrevClasses: PropTypes.string,
-    prevClasses: PropTypes.string,
-    labelClasses: PropTypes.string,
-    doubleNextLabel: PropTypes.string,
-    nextLabel: PropTypes.string,
-    prevLabel: PropTypes.string,
-    doublePrevLabel: PropTypes.string,
-    nextClasses: PropTypes.string,
-    doubleNextClasses: PropTypes.string,
-    navLabelShortFormat: PropTypes.bool,
-    disableableYearTiles: PropTypes.bool,
-    disableableDecadeTiles: PropTypes.bool,
-    disableableCenturyTiles: PropTypes.bool,
-    navigableBeforeAndAfterDates: PropTypes.bool,
-    hideBeforeAndAfterDates: PropTypes.bool,
-    onMouseEnterTile: PropTypes.func,
-    onMouseLeaveTile: PropTypes.func,
-    tileClasses: PropTypes.string,
-    headerClasses: PropTypes.string,
-    freezeSelection: PropTypes.bool,
-    hourLabel: PropTypes.string,
-    hourTileClasses: PropTypes.string,
-    hourHeaderClasses: PropTypes.string,
-    hourListClasses: PropTypes.string,
-    hourFormat: PropTypes.oneOf([US, ISO_8601]),
-    minuteLabel: PropTypes.string,
-    minuteTileClasses: PropTypes.string,
-    minuteHeaderClasses: PropTypes.string,
-    minuteListClasses: PropTypes.string,
-    minuteStep: PropTypes.number
+    calendarType: CALENDAR_TYPE.US
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let state = null
+  static getDerivedStateFromProps(
+    nextProps: ICalendarProps,
+    prevState: ICalendarState
+  ) {
+    let state = {}
     if (prevState.currentViewDate === undefined) {
       nextProps.startViewDate && checkDate(nextProps.startViewDate)
       nextProps.minDate && checkDate(nextProps.minDate)
@@ -140,7 +58,9 @@ class Calendar extends Component {
       state = {
         ...prevState,
         ...state,
-        selectedDates: [...prevState.selectedDates],
+        selectedDates: prevState.selectedDates
+          ? [...prevState.selectedDates]
+          : [],
         currentViewDate: nextProps.startViewDate
       }
     }
@@ -162,9 +82,11 @@ class Calendar extends Component {
         (nextProps.minView &&
           nextProps.maxView &&
           !checkViewOrder(nextProps.minView, nextProps.maxView)) ||
-        (nextProps.startView &&
+        (nextProps.minView &&
+          nextProps.startView &&
           !checkViewOrder(nextProps.minView, nextProps.startView)) ||
-        (nextProps.startView &&
+        (nextProps.maxView &&
+          nextProps.startView &&
           !checkViewOrder(nextProps.startView, nextProps.maxView))
       ) {
         throw new Error(
@@ -175,14 +97,18 @@ class Calendar extends Component {
         state = {
           ...prevState,
           ...state,
-          selectedDates: [...prevState.selectedDates],
+          selectedDates: prevState.selectedDates
+            ? [...prevState.selectedDates]
+            : [],
           currentView: nextProps.minView
         }
       } else {
         state = {
           ...prevState,
           ...state,
-          selectedDates: [...prevState.selectedDates],
+          selectedDates: prevState.selectedDates
+            ? [...prevState.selectedDates]
+            : [],
           currentView: nextProps.startView
         }
       }
@@ -206,51 +132,64 @@ class Calendar extends Component {
     const maxView = this.props.maxView
     let newDate
     switch (currentView) {
-      case MONTH:
-        newDate = getNewDate(currentViewDate, MONTH, 1)
-        checkViewOrder(YEAR, maxView) &&
-          this.setState({ currentView: YEAR, currentViewDate: newDate })
+      case DATE_TYPES.MONTH:
+        newDate = getNewDate(currentViewDate!, DATE_TYPES.MONTH, 1)
+        checkViewOrder(DATE_TYPES.YEAR, maxView!) &&
+          this.setState({
+            currentView: DATE_TYPES.YEAR,
+            currentViewDate: newDate
+          })
         break
-      case YEAR:
-        newDate = getNewDate(currentViewDate, DECADE, 1)
-        checkViewOrder(DECADE, maxView) &&
-          this.setState({ currentView: DECADE, currentViewDate: newDate })
+      case DATE_TYPES.YEAR:
+        newDate = getNewDate(currentViewDate!, DATE_TYPES.DECADE, 1)
+        checkViewOrder(DATE_TYPES.DECADE, maxView!) &&
+          this.setState({
+            currentView: DATE_TYPES.DECADE,
+            currentViewDate: newDate
+          })
         break
-      case DECADE:
-        newDate = getNewDate(currentViewDate, CENTURY, 1)
-        checkViewOrder(CENTURY, maxView) &&
-          this.setState({ currentView: CENTURY, currentViewDate: newDate })
+      case DATE_TYPES.DECADE:
+        newDate = getNewDate(currentViewDate!, DATE_TYPES.CENTURY, 1)
+        checkViewOrder(DATE_TYPES.CENTURY, maxView!) &&
+          this.setState({
+            currentView: DATE_TYPES.CENTURY,
+            currentViewDate: newDate
+          })
         break
 
       default:
         break
     }
   }
-  handleDrillDown = (date, view) => {
+  handleDrillDown = (date: Date, view: DATE_TYPES) => {
     this.setState({ currentView: view, currentViewDate: date })
   }
+
   handlePrev = () => {
     const { currentView, currentViewDate } = this.state
-    const newDate = getPrevDate(currentViewDate, currentView)
-    this.setState({ currentViewDate: newDate })
-  }
-  handleNext = () => {
-    const { currentView, currentViewDate } = this.state
-    const newDate = getNextDate(currentViewDate, currentView)
-    this.setState({ currentViewDate: newDate })
-  }
-  handleDoublePrev = () => {
-    const { currentView, currentViewDate } = this.state
-    const newDate = getDoublePrevDate(currentViewDate, currentView)
-    this.setState({ currentViewDate: newDate })
-  }
-  handleDoubleNext = () => {
-    const { currentView, currentViewDate } = this.state
-    const newDate = getDoubleNextDate(currentViewDate, currentView)
+    const newDate = getPrevDate(currentViewDate!, currentView!)
     this.setState({ currentViewDate: newDate })
   }
 
-  handleMultiSelect = (date, selected) => {
+  handleNext = () => {
+    const { currentView, currentViewDate } = this.state
+    const newDate = getNextDate(currentViewDate!, currentView!)
+    this.setState({ currentViewDate: newDate })
+  }
+
+  handleDoublePrev = () => {
+    const { currentView, currentViewDate } = this.state
+    const newDate = getDoublePrevDate(currentViewDate!, currentView!)
+    this.setState({ currentViewDate: newDate })
+  }
+
+  handleDoubleNext = () => {
+    const { currentView, currentViewDate } = this.state
+    const newDate = getDoubleNextDate(currentViewDate!, currentView!)
+    this.setState({ currentViewDate: newDate })
+  }
+
+  handleMultiSelect = (date: Date, selected: boolean) => {
     const { onMultiSelect, freezeSelection } = this.props
 
     const selectedDates = this.state.selectedDates
@@ -275,14 +214,14 @@ class Calendar extends Component {
     }
   }
 
-  handleRangeSelect = (dates, selected) => {
+  handleRangeSelect = (dates: Date[], selected: boolean) => {
     const {
       onMultiSelect,
       range,
       onRangeMultiSelect,
       freezeSelection
     } = this.props
-    let newSelectedDates
+    let newSelectedDates: Date[] = []
     if (!freezeSelection) {
       if (selected) {
         newSelectedDates = [...dates]
@@ -300,7 +239,7 @@ class Calendar extends Component {
           ])
       } else {
         newSelectedDates = []
-        range && onRangeMultiSelect && onRangeMultiSelect([])
+        range && onRangeMultiSelect && onRangeMultiSelect(newSelectedDates)
         this.setState({
           selectedDates: newSelectedDates
         })
@@ -308,7 +247,7 @@ class Calendar extends Component {
       range && onMultiSelect && onMultiSelect([...newSelectedDates])
     }
   }
-  handleSingleSelect = (date, selected) => {
+  handleSingleSelect = (date: Date, selected: boolean) => {
     if (!this.props.freezeSelection) {
       if (selected) {
         this.setState({ selectedDate: date })
@@ -367,7 +306,6 @@ class Calendar extends Component {
       headerClasses,
       disableWeekdays,
       withTime,
-
       hourLabel,
       hourTileClasses,
       hourHeaderClasses,
@@ -383,8 +321,8 @@ class Calendar extends Component {
     return (
       <CalendarView
         classNames={classNames}
-        currentView={currentView}
-        currentViewDate={currentViewDate}
+        currentView={currentView!}
+        currentViewDate={currentViewDate!}
         selectedDate={selectedDate}
         selectedDates={selectedDates}
         onDrillDown={this.handleDrillDown}
@@ -398,9 +336,9 @@ class Calendar extends Component {
         onDoublePrev={this.handleDoublePrev}
         onDoubleNext={this.handleDoubleNext}
         locale={locale}
-        calendarType={calendarType}
-        minView={minView}
-        maxView={maxView}
+        calendarType={calendarType!}
+        minView={minView!}
+        maxView={maxView!}
         weekends={weekends}
         minDate={minDate}
         maxDate={maxDate}
@@ -432,7 +370,7 @@ class Calendar extends Component {
         nextLabel={nextLabel}
         prevLabel={prevLabel}
         doublePrevLabel={doublePrevLabel}
-        labelShortFormat={navLabelShortFormat}
+        navLabelShortFormat={navLabelShortFormat}
         tileClasses={tileClasses}
         headerClasses={headerClasses}
         withTime={withTime}
@@ -449,6 +387,80 @@ class Calendar extends Component {
       />
     )
   }
+}
+
+type ICalendarState = {
+  currentView?: DATE_TYPES
+  currentViewDate?: Date
+  selectedDates: Date[]
+  selectedDate?: Date
+}
+
+type ICalendarProps = {
+  classNames?: string
+  withTime?: boolean
+  selectedDate?: Date
+  selectedDates?: Date[]
+  locale?: string
+  weekends?: boolean
+  calendarType?: CALENDAR_TYPE
+  onDateSelected?: (date: Date, selected: boolean) => void
+  onMultiSelect?: (dates: Date[]) => void
+  onRangeMultiSelect?: (dates: Date[]) => void
+  multiSelect?: boolean
+  range?: boolean
+  startViewDate?: Date
+  minDate?: Date
+  maxDate?: Date
+  minView?: DATE_TYPES
+  maxView?: DATE_TYPES
+  startView?: DATE_TYPES
+  disabledDates?: Date[]
+  availableDates?: Date[]
+  disableWeekdays?: DAYS[]
+  navigationDisabled?: boolean
+  prevDisabled?: boolean
+  nextDisabled?: boolean
+  doublePrevDisabled?: boolean
+  doubleNextDisabled?: boolean
+  navigationHidden?: boolean
+  navigationClasses?: string
+  doublePrevClasses?: string
+  prevClasses?: string
+  labelClasses?: string
+  doubleNextLabel?: string
+  nextLabel?: string
+  prevLabel?: string
+  doublePrevLabel?: string
+  nextClasses?: string
+  doubleNextClasses?: string
+  navLabelShortFormat?: boolean
+  disableableYearTiles?: boolean
+  disableableDecadeTiles?: boolean
+  disableableCenturyTiles?: boolean
+  navigableBeforeAndAfterDates?: boolean
+  hideBeforeAndAfterDates?: boolean
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  tileClasses?: string
+  headerClasses?: string
+  freezeSelection?: boolean
+  hourLabel?: string
+  hourTileClasses?: string
+  hourHeaderClasses?: string
+  hourListClasses?: string
+  hourFormat?: CALENDAR_TYPE
+  minuteLabel?: string
+  minuteTileClasses?: string
+  minuteHeaderClasses?: string
+  minuteListClasses?: string
+  minuteStep?: number
 }
 
 export default Calendar

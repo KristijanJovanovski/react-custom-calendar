@@ -1,24 +1,8 @@
 import './CalendarView.css'
 
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
-import {
-  CENTURY,
-  DATE,
-  DECADE,
-  MONTH,
-  YEAR,
-  SUNDAY,
-  MONDAY,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  US,
-  ISO_8601
-} from '../utils/constants'
+import { CALENDAR_TYPE, DATE_TYPES, DAYS } from '../utils/constants'
 import {
   afterDates,
   beforeDates,
@@ -41,7 +25,7 @@ import RangeHover from './RangeHover'
 import YearView from './YearView'
 import TimeView from './TimeView'
 
-const CalendarView = ({
+const CalendarView: SFC<ICalendarView> = ({
   withTime,
   classNames,
   locale,
@@ -91,7 +75,7 @@ const CalendarView = ({
   nextLabel,
   prevLabel,
   doublePrevLabel,
-  labelShortFormat,
+  navLabelShortFormat,
   tileClasses,
   headerClasses,
   disableWeekdays,
@@ -105,12 +89,12 @@ const CalendarView = ({
   minuteHeaderClasses,
   minuteListClasses,
   minuteStep
-}) => {
-  const onTimeSelected = date => {
+}: ICalendarView) => {
+  const onTimeSelected = (date: Date) => {
     onSingleSelect(date, true)
     onDateSelected && onDateSelected(date, true)
   }
-  const selectHandler = (date, selected) => {
+  const selectHandler = (date: Date, selected: boolean) => {
     const drillView = getChildView(currentView, minView)
     if (drillView) {
       onDrillDown(date, drillView)
@@ -120,13 +104,13 @@ const CalendarView = ({
 
     if (
       navigableBeforeAndAfterDates &&
-      currentView === MONTH &&
+      currentView === DATE_TYPES.MONTH &&
       beforeDates(date, firstOfMonthDate(currentViewDate))
     ) {
       onPrev && onPrev()
     } else if (
       navigableBeforeAndAfterDates &&
-      currentView === MONTH &&
+      currentView === DATE_TYPES.MONTH &&
       afterDates(date, endOfMonthDate(currentViewDate))
     ) {
       onNext && onNext()
@@ -135,20 +119,20 @@ const CalendarView = ({
       selectFn(date, selected)
     } else if (selectedDate && !equalDates(selectedDate, date)) {
       onSingleSelect(date, false)
-      let selectedRange
-      let isDisabledFn
-      if (currentView === MONTH) {
+      let selectedRange: Date[] = []
+      let isDisabledFn: Function
+      if (currentView === DATE_TYPES.MONTH) {
         isDisabledFn = isDateDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DATE)]
-      } else if (currentView === YEAR) {
+        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.DATE)]
+      } else if (currentView === DATE_TYPES.YEAR) {
         isDisabledFn = isMonthDisabled
-        selectedRange = [...getDateRange(selectedDate, date, MONTH)]
-      } else if (currentView === DECADE) {
+        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.MONTH)]
+      } else if (currentView === DATE_TYPES.DECADE) {
         isDisabledFn = isYearDisabled
-        selectedRange = [...getDateRange(selectedDate, date, YEAR)]
-      } else if (currentView === CENTURY) {
+        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.YEAR)]
+      } else if (currentView === DATE_TYPES.CENTURY) {
         isDisabledFn = isDecadeDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DECADE)]
+        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.DECADE)]
       }
       selectedRange = selectedRange.filter(selectedRangeDateItem => {
         return !isDisabledFn(
@@ -160,17 +144,17 @@ const CalendarView = ({
         )
       })
       onRangeSelect(selectedRange, selected)
-    } else if (selectedDates.length) {
+    } else if (selectedDates && selectedDates.length) {
       onRangeSelect([], false)
     } else {
       onSingleSelect(date, selected)
     }
   }
-  const isMonthView = currentView === MONTH
+  const isMonthView = currentView === DATE_TYPES.MONTH
 
   let gridView
   switch (currentView) {
-    case MONTH:
+    case DATE_TYPES.MONTH:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -200,12 +184,13 @@ const CalendarView = ({
 
       break
 
-    case YEAR:
+    case DATE_TYPES.YEAR:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
           range={range}
           currentView={currentView}
+          calendarType={calendarType}
           minDate={minDate}
           maxDate={maxDate}
           disabledDates={disabledDates}
@@ -227,12 +212,13 @@ const CalendarView = ({
       )
 
       break
-    case DECADE:
+    case DATE_TYPES.DECADE:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
           range={range}
           currentView={currentView}
+          calendarType={calendarType}
           minDate={minDate}
           maxDate={maxDate}
           disabledDates={disabledDates}
@@ -253,7 +239,7 @@ const CalendarView = ({
       )
 
       break
-    case CENTURY:
+    case DATE_TYPES.CENTURY:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -262,6 +248,7 @@ const CalendarView = ({
           minDate={minDate}
           maxDate={maxDate}
           disabledDates={disabledDates}
+          calendarType={calendarType}
           availableDates={availableDates}
           selectedDate={selectedDate}
           selectedDates={selectedDates}
@@ -309,7 +296,7 @@ const CalendarView = ({
       nextLabel={nextLabel}
       prevLabel={prevLabel}
       doublePrevLabel={doublePrevLabel}
-      labelShortFormat={labelShortFormat}
+      navLabelShortFormat={navLabelShortFormat}
     />
   )
   const header = isMonthView ? (
@@ -361,84 +348,80 @@ const CalendarView = ({
 
 CalendarView.defaultProps = {
   locale: 'en',
-  calendarType: ISO_8601
+  calendarType: CALENDAR_TYPE.ISO_8601
 }
 
-CalendarView.propTypes = {
-  classNames: PropTypes.string,
-  withTime: PropTypes.bool,
-  locale: PropTypes.string,
-  calendarType: PropTypes.oneOf([US, ISO_8601]),
-  currentView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]).isRequired,
-  minView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-  maxView: PropTypes.oneOf([MONTH, YEAR, DECADE, CENTURY]),
-  currentViewDate: PropTypes.instanceOf(Date).isRequired,
-  weekends: PropTypes.bool,
-  onDrillDown: PropTypes.func,
-  onDateSelected: PropTypes.func,
-  minDate: PropTypes.instanceOf(Date),
-  maxDate: PropTypes.instanceOf(Date),
-  disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  selectedDate: PropTypes.instanceOf(Date),
-  multiSelect: PropTypes.bool,
-  onMultiSelect: PropTypes.func,
-  onRangeSelect: PropTypes.func,
-  onSingleSelect: PropTypes.func,
-  onPrev: PropTypes.func,
-  onNext: PropTypes.func,
-  disableableYearTiles: PropTypes.bool,
-  disableableDecadeTiles: PropTypes.bool,
-  disableableCenturyTiles: PropTypes.bool,
-  navigableBeforeAndAfterDates: PropTypes.bool,
-  hideBeforeAndAfterDates: PropTypes.bool,
-  onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func,
-  range: PropTypes.bool,
-  drillUp: PropTypes.func,
-  onDoublePrev: PropTypes.func,
-  onDoubleNext: PropTypes.func,
-  navigationDisabled: PropTypes.bool,
-  prevDisabled: PropTypes.bool,
-  nextDisabled: PropTypes.bool,
-  doublePrevDisabled: PropTypes.bool,
-  doubleNextDisabled: PropTypes.bool,
-  navigationHidden: PropTypes.bool,
-  navigationClasses: PropTypes.string,
-  doublePrevClasses: PropTypes.string,
-  prevClasses: PropTypes.string,
-  labelClasses: PropTypes.string,
-  nextClasses: PropTypes.string,
-  doubleNextClasses: PropTypes.string,
-  doubleNextLabel: PropTypes.string,
-  nextLabel: PropTypes.string,
-  prevLabel: PropTypes.string,
-  doublePrevLabel: PropTypes.string,
-  labelShortFormat: PropTypes.bool,
-  tileClasses: PropTypes.string,
-  headerClasses: PropTypes.string,
-  disableWeekdays: PropTypes.arrayOf(
-    PropTypes.oneOf([
-      SUNDAY,
-      MONDAY,
-      TUESDAY,
-      WEDNESDAY,
-      THURSDAY,
-      FRIDAY,
-      SATURDAY
-    ])
-  ),
-  hourLabel: PropTypes.string,
-  hourTileClasses: PropTypes.string,
-  hourHeaderClasses: PropTypes.string,
-  hourListClasses: PropTypes.string,
-  hourFormat: PropTypes.oneOf([US, ISO_8601]),
-  minuteLabel: PropTypes.string,
-  minuteTileClasses: PropTypes.string,
-  minuteHeaderClasses: PropTypes.string,
-  minuteListClasses: PropTypes.string,
-  minuteStep: PropTypes.number
+export type ICalendarView = {
+  classNames?: string
+  withTime?: boolean
+  locale?: string
+  calendarType: CALENDAR_TYPE
+  currentView: DATE_TYPES
+  minView: DATE_TYPES
+  maxView: DATE_TYPES
+  currentViewDate: Date
+  weekends?: boolean
+  minDate?: Date
+  maxDate?: Date
+  disabledDates?: Date[]
+  availableDates?: Date[]
+  selectedDates?: Date[]
+  selectedDate?: Date
+  multiSelect?: boolean
+  disableableYearTiles?: boolean
+  disableableDecadeTiles?: boolean
+  disableableCenturyTiles?: boolean
+  navigableBeforeAndAfterDates?: boolean
+  hideBeforeAndAfterDates?: boolean
+  range?: boolean
+  navigationDisabled?: boolean
+  prevDisabled?: boolean
+  nextDisabled?: boolean
+  doublePrevDisabled?: boolean
+  doubleNextDisabled?: boolean
+  navigationHidden?: boolean
+  navigationClasses?: string
+  doublePrevClasses?: string
+  prevClasses?: string
+  labelClasses?: string
+  nextClasses?: string
+  doubleNextClasses?: string
+  doubleNextLabel?: string
+  nextLabel?: string
+  prevLabel?: string
+  doublePrevLabel?: string
+  navLabelShortFormat?: boolean
+  tileClasses?: string
+  headerClasses?: string
+  disableWeekdays?: DAYS[]
+  hourLabel?: string
+  hourTileClasses?: string
+  hourHeaderClasses?: string
+  hourListClasses?: string
+  hourFormat?: CALENDAR_TYPE
+  minuteLabel?: string
+  minuteTileClasses?: string
+  minuteHeaderClasses?: string
+  minuteListClasses?: string
+  minuteStep?: number
+  onMultiSelect: (date: Date, selected: boolean) => void
+  onDateSelected?: (date: Date, selected: boolean) => void
+  onRangeSelect: (dates: Date[], selected: boolean) => void
+  onSingleSelect: (date: Date, selected: boolean) => void
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onDrillDown: (date: Date, view: DATE_TYPES) => void
+  drillUp: () => void
+  onPrev: () => void
+  onNext: () => void
+  onDoublePrev: () => void
+  onDoubleNext: () => void
 }
 
 export default CalendarView

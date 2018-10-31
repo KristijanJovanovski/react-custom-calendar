@@ -1,10 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import TimeTile from './TimeTile'
 import './ListView.css'
-import { HOUR, MINUTE, US, ISO_8601 } from '../utils/constants'
 
-const ListView = ({
+import React, { SFC } from 'react'
+
+import { CALENDAR_TYPE, TIME_TYPE } from '../utils/constants'
+import TimeTile from './TimeTile'
+
+const ListView: SFC<IListViewProps> = ({
   items,
   onClick,
   type,
@@ -22,8 +23,8 @@ const ListView = ({
   const listClasses = `time-list${timeListClasses ? ' ' + timeListClasses : ''}`
   const tiles = items.map((item, idx) => {
     let selected = false
-    if (type === HOUR) {
-      if (hourFormat === US) {
+    if (type === TIME_TYPE.HOUR) {
+      if (hourFormat === CALENDAR_TYPE.US) {
         const h = +item.split(' ')[0]
         const am_pm = item.split(' ')[1]
         selected =
@@ -32,7 +33,7 @@ const ListView = ({
       } else {
         selected = selectedDate.getHours() === +item
       }
-    } else if (type === MINUTE) {
+    } else if (type === TIME_TYPE.MINUTE) {
       selected = selectedDate.getMinutes() === +item
     }
 
@@ -56,16 +57,16 @@ const ListView = ({
   )
 }
 
-ListView.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  ),
-  onClick: PropTypes.func,
-  type: PropTypes.oneOf([MINUTE, HOUR]),
-  timeTileClasses: PropTypes.string,
-  timeHeaderClasses: PropTypes.string,
-  timeListClasses: PropTypes.string,
-  hourFormat: PropTypes.oneOf([US, ISO_8601])
+type IListViewProps = {
+  selectedDate: Date
+  label: string
+  items: (string)[]
+  onClick: (time: string, type: TIME_TYPE, format?: CALENDAR_TYPE) => void
+  type: TIME_TYPE
+  timeTileClasses?: string
+  timeHeaderClasses?: string
+  timeListClasses?: string
+  hourFormat?: CALENDAR_TYPE
 }
 
 export default ListView

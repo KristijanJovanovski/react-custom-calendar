@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
+import { CALENDAR_TYPE, DAYS } from '../utils/constants'
 import {
   equalDates,
   getMonthViewDates,
@@ -9,10 +9,9 @@ import {
   isDateSelected,
   isWeekend
 } from '../utils/helpers'
-import { US, ISO_8601 } from '../utils/constants'
 import Tile from './Tile'
 
-const MonthView = ({
+const MonthView: SFC<IMonthViewProps> = ({
   range,
   calendarType,
   currentViewDate,
@@ -32,13 +31,18 @@ const MonthView = ({
   hoverDates,
   tileClasses,
   disableWeekdays
-}) => {
+}: IMonthViewProps) => {
   const data = getMonthViewDates(
     currentViewDate,
     calendarType,
     !!hideBeforeAndAfterDates
   ).map((item, idx) => {
-    let hover, blank, showWeekend, grayed, disabled, selected
+    let hover = false,
+      blank = false,
+      showWeekend = false,
+      grayed = false,
+      disabled = false,
+      selected = false
     if (item === null) {
       blank = true
     } else {
@@ -83,27 +87,36 @@ const MonthView = ({
   return <> {data}</>
 }
 
-MonthView.propTypes = {
-  calendarType: PropTypes.oneOf([US, ISO_8601]),
-  currentViewDate: PropTypes.instanceOf(Date).isRequired,
-  weekends: PropTypes.bool,
-  range: PropTypes.bool,
-  onDateSelected: PropTypes.func,
-  minDate: PropTypes.instanceOf(Date),
-  maxDate: PropTypes.instanceOf(Date),
-  disabledDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  selectedDate: PropTypes.instanceOf(Date),
-  selectHandler: PropTypes.func,
-  hideBeforeAndAfterDates: PropTypes.bool,
-  onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func,
-  onHover: PropTypes.func,
-  hoverDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  tileClasses: PropTypes.string
+export type IMonthViewProps = {
+  range?: boolean
+  disableWeekdays?: DAYS[]
+  weekends?: boolean
+  calendarType: CALENDAR_TYPE
+  minDate?: Date
+  maxDate?: Date
+  currentViewDate: Date
+  disabledDates?: Date[]
+  availableDates?: Date[]
+  selectedDates?: Date[]
+  selectedDate?: Date
+  hideBeforeAndAfterDates?: boolean
+  hoverDates?: Date[]
+  tileClasses?: string
+  onHover: (date: Date | null, selected: boolean) => void
+  onDateSelected?: (date: Date, selected: boolean) => void
+  selectHandler: (date: Date, selected: boolean) => void
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
 }
+
 MonthView.defaultProps = {
-  calendarType: ISO_8601
+  calendarType: CALENDAR_TYPE.ISO_8601
 }
+
 export default MonthView

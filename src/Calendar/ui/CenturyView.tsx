@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
-import { DECADE } from '../utils/constants'
+import { DATE_TYPES } from '../utils/constants'
 import {
   getDecadeRangeText,
   getNewDate,
@@ -10,12 +9,11 @@ import {
 } from '../utils/helpers'
 import Tile from './Tile'
 
-const CenturyView = ({
+const CenturyView: SFC<ICenturyViewProps> = ({
   disableableCenturyTiles,
   availableDates,
   minDate,
   maxDate,
-  onDrillDown,
   currentViewDate,
   onMouseEnterTile,
   onMouseLeaveTile,
@@ -27,12 +25,13 @@ const CenturyView = ({
   selectedDate,
   selectedDates,
   tileClasses
-}) => {
+}: ICenturyViewProps) => {
   const data = Array(10)
-    .fill()
-    .map((item, idx) => getNewDate(currentViewDate, DECADE, idx))
+    .fill(null)
+    .map((item, idx) => getNewDate(currentViewDate, DATE_TYPES.DECADE, idx))
     .map((item, idx) => {
-      let disabled, selected
+      let disabled = false,
+        selected = false
       if (disableableCenturyTiles) {
         disabled = isDecadeDisabled(item, availableDates, minDate, maxDate)
       }
@@ -43,7 +42,6 @@ const CenturyView = ({
           disabled={disabled}
           onMouseEnter={onMouseEnterTile}
           onMouseLeave={onMouseLeaveTile}
-          onDrillDown={onDrillDown}
           value={getDecadeRangeText(item)}
           date={item}
           idx={idx}
@@ -60,24 +58,29 @@ const CenturyView = ({
   return <>{data}</>
 }
 
-CenturyView.propTypes = {
-  range: PropTypes.bool,
-  hover: PropTypes.bool,
-  onHover: PropTypes.func,
-  onDateSelected: PropTypes.func,
-  selectHandler: PropTypes.func,
-  selectedDate: PropTypes.instanceOf(Date),
-  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  disableableCenturyTiles: PropTypes.bool,
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  minDate: PropTypes.instanceOf(Date),
-  maxDate: PropTypes.instanceOf(Date),
-  onDrillDown: PropTypes.func,
-  locale: PropTypes.string,
-  tileClasses: PropTypes.string,
-  currentViewDate: PropTypes.instanceOf(Date),
-  onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func
+export type ICenturyViewProps = {
+  currentViewDate: Date
+  hover: boolean
+  range?: boolean
+  selectedDate?: Date
+  selectedDates?: Date[]
+  disableableCenturyTiles?: boolean
+  availableDates?: Date[]
+  minDate?: Date
+  maxDate?: Date
+  locale?: string
+  tileClasses?: string
+  onHover: (date: Date | null, selected: boolean) => void
+  onDateSelected?: (date: Date, selected: boolean) => void
+  selectHandler: (date: Date, selected: boolean) => void
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
 }
 
 export default CenturyView

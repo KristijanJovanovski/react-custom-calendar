@@ -1,16 +1,14 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
-import { YEAR } from '../utils/constants'
+import { DATE_TYPES } from '../utils/constants'
 import { getNewDate, isYearDisabled, isYearSelected } from '../utils/helpers'
 import Tile from './Tile'
 
-const DecadeView = ({
+const DecadeView: SFC<IDecadeViewProps> = ({
   disableableDecadeTiles,
   availableDates,
   minDate,
   maxDate,
-  onDrillDown,
   currentViewDate,
   onMouseEnterTile,
   onMouseLeaveTile,
@@ -22,12 +20,13 @@ const DecadeView = ({
   onDateSelected,
   tileClasses,
   selectHandler
-}) => {
+}: IDecadeViewProps) => {
   const data = Array(10)
-    .fill()
-    .map((item, idx) => getNewDate(currentViewDate, YEAR, idx))
+    .fill(null)
+    .map((item, idx) => getNewDate(currentViewDate, DATE_TYPES.YEAR, idx))
     .map((item, idx) => {
-      let disabled, selected
+      let disabled = false,
+        selected = false
       if (disableableDecadeTiles) {
         disabled = isYearDisabled(item, availableDates, minDate, maxDate)
       }
@@ -37,7 +36,6 @@ const DecadeView = ({
           key={idx}
           onMouseEnter={onMouseEnterTile}
           onMouseLeave={onMouseLeaveTile}
-          onDrillDown={onDrillDown}
           value={item.getFullYear()}
           date={item}
           disabled={disabled}
@@ -55,23 +53,32 @@ const DecadeView = ({
   return <>{data}</>
 }
 
-DecadeView.propTypes = {
-  range: PropTypes.bool,
-  selectedDate: PropTypes.instanceOf(Date),
-  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  hover: PropTypes.bool,
-  onHover: PropTypes.func,
-  onDateSelected: PropTypes.func,
-  selectHandler: PropTypes.func,
-  disableableDecadeTiles: PropTypes.bool,
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  minDate: PropTypes.instanceOf(Date),
-  maxDate: PropTypes.instanceOf(Date),
-  onDrillDown: PropTypes.func,
-  locale: PropTypes.string,
-  tileClasses: PropTypes.string,
-  currentViewDate: PropTypes.instanceOf(Date),
-  onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func
+export type IDecadeViewProps = {
+  range?: boolean
+  currentViewDate: Date
+  selectedDate?: Date
+  selectedDates?: Date[]
+  hover: boolean
+  disableableDecadeTiles?: boolean
+  availableDates?: Date[]
+  minDate?: Date
+  maxDate?: Date
+  locale?: string
+  tileClasses?: string
+  onHover: (date: Date | null, selected: boolean) => void
+  onDateSelected?: (date: Date, selected: boolean) => void
+  selectHandler: (date: Date, selected: boolean) => void
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+}
+
+DecadeView.defaultProps = {
+  locale: 'en'
 }
 export default DecadeView

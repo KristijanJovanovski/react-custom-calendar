@@ -1,13 +1,26 @@
 import './TimeView.css'
 
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { SFC } from 'react'
 
+import { CALENDAR_TYPE, TIME_TYPE } from '../utils/constants'
+import { getHours, getMinutes } from '../utils/helpers'
 import ListView from './ListView'
-import { getMinutes, getHours } from '../utils/helpers'
-import { MINUTE, HOUR, US, ISO_8601 } from '../utils/constants'
 
-const TimeView = ({
+type ITimeViewProps = {
+  selectedDate: Date
+  onTimeSelected: (date: Date) => void
+  hourLabel?: string
+  hourTileClasses?: string
+  hourHeaderClasses?: string
+  hourListClasses?: string
+  hourFormat?: CALENDAR_TYPE
+  minuteLabel?: string
+  minuteTileClasses?: string
+  minuteHeaderClasses?: string
+  minuteListClasses?: string
+  minuteStep?: number
+}
+const TimeView: SFC<ITimeViewProps> = ({
   selectedDate,
   onTimeSelected,
   hourLabel,
@@ -20,15 +33,19 @@ const TimeView = ({
   minuteHeaderClasses,
   minuteListClasses,
   minuteStep
-}) => {
+}: ITimeViewProps) => {
   const minutes = getMinutes(minuteStep || 1)
-  const hours = getHours(hourFormat || ISO_8601)
+  const hours = getHours(hourFormat || CALENDAR_TYPE.ISO_8601)
 
-  const handleTime = (time, type, format) => {
+  const handleTime = (
+    time: string,
+    type: TIME_TYPE,
+    format: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+  ) => {
     let date = selectedDate
-    if (type === HOUR) {
-      let hours = time
-      if (format && format === US) {
+    if (type === TIME_TYPE.HOUR) {
+      let hours: string | number = time
+      if (format && format === CALENDAR_TYPE.US) {
         const am_pm = hours.split(' ')[1]
         hours =
           am_pm && am_pm === 'PM'
@@ -41,16 +58,16 @@ const TimeView = ({
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
         selectedDate.getDate(),
-        hours,
+        +hours,
         selectedDate.getMinutes()
       )
-    } else if (type === MINUTE) {
+    } else if (type === TIME_TYPE.MINUTE) {
       date = new Date(
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
         selectedDate.getDate(),
         selectedDate.getHours(),
-        time
+        +time
       )
     }
     onTimeSelected(date)
@@ -61,18 +78,18 @@ const TimeView = ({
     <div className={classes}>
       <ListView
         items={hours}
-        type={HOUR}
+        type={TIME_TYPE.HOUR}
         label={hourLabel || 'Hours:'}
         onClick={handleTime}
         selectedDate={selectedDate}
         timeTileClasses={hourTileClasses}
         timeHeaderClasses={hourHeaderClasses}
         timeListClasses={hourListClasses}
-        hourFormat={US}
+        hourFormat={CALENDAR_TYPE.US}
       />
       <ListView
         items={minutes}
-        type={MINUTE}
+        type={TIME_TYPE.MINUTE}
         label={minuteLabel || 'Minutes:'}
         onClick={handleTime}
         selectedDate={selectedDate}
@@ -82,19 +99,6 @@ const TimeView = ({
       />
     </div>
   )
-}
-
-TimeView.propTypes = {
-  hourLabel: PropTypes.string,
-  hourTileClasses: PropTypes.string,
-  hourHeaderClasses: PropTypes.string,
-  hourListClasses: PropTypes.string,
-  hourFormat: PropTypes.oneOf([US, ISO_8601]),
-  minuteLabel: PropTypes.string,
-  minuteTileClasses: PropTypes.string,
-  minuteHeaderClasses: PropTypes.string,
-  minuteListClasses: PropTypes.string,
-  minuteStep: PropTypes.number
 }
 
 export default TimeView

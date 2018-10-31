@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { SFC } from 'react'
 
-import { LONG } from '../utils/constants'
+import { MONTH_FORMAT } from '../utils/constants'
 import {
   getMonthFormated,
   getMonthsArray,
@@ -10,12 +9,11 @@ import {
 } from '../utils/helpers'
 import Tile from './Tile'
 
-const YearView = ({
+const YearView: SFC<IYearViewProps> = ({
   disableableYearTiles,
   availableDates,
   minDate,
   maxDate,
-  onDrillDown,
   locale,
   currentViewDate,
   onMouseEnterTile,
@@ -28,10 +26,11 @@ const YearView = ({
   onDateSelected,
   selectHandler,
   tileClasses
-}) => {
+}: IYearViewProps) => {
   const data = getMonthsArray(currentViewDate).map((item, idx) => {
-    let disabled, selected
-    const month = getMonthFormated(item, locale, LONG)
+    let disabled = false,
+      selected = false
+    const month = getMonthFormated(item, locale, MONTH_FORMAT.LONG)
     if (disableableYearTiles) {
       disabled = isMonthDisabled(item, availableDates, minDate, maxDate)
     }
@@ -43,7 +42,6 @@ const YearView = ({
         disabled={disabled}
         onMouseEnter={onMouseEnterTile}
         onMouseLeave={onMouseLeaveTile}
-        onDrillDown={onDrillDown}
         value={month}
         date={item}
         idx={idx}
@@ -59,23 +57,31 @@ const YearView = ({
   })
   return <>{data}</>
 }
-YearView.propTypes = {
-  selectedDate: PropTypes.instanceOf(Date),
-  selectedDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  range: PropTypes.bool,
-  hover: PropTypes.bool,
-  onHover: PropTypes.func,
-  onDateSelected: PropTypes.func,
-  selectHandler: PropTypes.func,
-  disableableYearTiles: PropTypes.bool,
-  availableDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-  minDate: PropTypes.instanceOf(Date),
-  maxDate: PropTypes.instanceOf(Date),
-  onDrillDown: PropTypes.func,
-  locale: PropTypes.string,
-  tileClasses: PropTypes.string,
-  currentViewDate: PropTypes.instanceOf(Date),
-  onMouseEnterTile: PropTypes.func,
-  onMouseLeaveTile: PropTypes.func
+export type IYearViewProps = {
+  currentViewDate: Date
+  selectedDate?: Date
+  selectedDates?: Date[]
+  hover: boolean
+  range?: boolean
+  disableableYearTiles?: boolean
+  availableDates?: Date[]
+  minDate?: Date
+  maxDate?: Date
+  locale?: string
+  tileClasses?: string
+  onHover: (date: Date | null, selected: boolean) => void
+  onDateSelected?: (date: Date, selected: boolean) => void
+  selectHandler: (date: Date, selected: boolean) => void
+  onMouseEnterTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+  onMouseLeaveTile?: (
+    e: React.MouseEvent<HTMLDivElement>,
+    date: Date | null
+  ) => void
+}
+YearView.defaultProps = {
+  locale: 'en'
 }
 export default YearView
