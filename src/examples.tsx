@@ -173,7 +173,13 @@ const Examples = () => {
         <h1> Calendar with disabled weekdays</h1>
         <div className="my-calendar-container">
           <Calendar
-            disableWeekdays={[DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY]}
+            disableWeekdays={[
+              DAYS.SUNDAY,
+              DAYS.MONDAY,
+              DAYS.TUESDAY,
+              DAYS.WEDNESDAY,
+              DAYS.THURSDAY
+            ]}
           />
           <code className="calendar-code">
             {`
@@ -251,7 +257,7 @@ const Examples = () => {
             {`
               <Calendar
                 minView={DATE_TYPES.YEAR}
-                maxView{DATE_TYPES.DECADE}
+                maxView={DATE_TYPES.DECADE}
               />`}
           </code>
         </div>

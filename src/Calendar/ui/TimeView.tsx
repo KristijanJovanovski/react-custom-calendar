@@ -85,7 +85,7 @@ const TimeView: SFC<ITimeViewProps> = ({
         timeTileClasses={hourTileClasses}
         timeHeaderClasses={hourHeaderClasses}
         timeListClasses={hourListClasses}
-        hourFormat={CALENDAR_TYPE.US}
+        hourFormat={hourFormat || CALENDAR_TYPE.ISO_8601}
       />
       <ListView
         items={minutes}
