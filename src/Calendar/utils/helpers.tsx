@@ -1,11 +1,27 @@
 import {
-  days,
-  months,
   CALENDAR_TYPE,
+  CENTURY,
+  DATE,
   DATE_TYPES,
   DAYS,
+  DECADE,
+  FRIDAY,
+  ISO_8601,
+  LONG,
+  MONDAY,
+  MONTH,
   MONTH_FORMAT,
-} from './constants'
+  months,
+  SATURDAY,
+  SHORT,
+  SUNDAY,
+  THURSDAY,
+  TUESDAY,
+  US,
+  WEDNESDAY,
+  YEAR,
+  days,
+} from './constants';
 
 export const capitalizeFirst = (str: string): string =>
   str
@@ -20,25 +36,25 @@ export const checkDate = (date: Object): void => {
   throw new Error('Not a date')
 }
 
-export const getChildView = (view: DATE_TYPES, min: DATE_TYPES = DATE_TYPES.MONTH): DATE_TYPES | null => {
-  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+export const getChildView = (view: DATE_TYPES, min: DATE_TYPES = MONTH): DATE_TYPES | null => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
   if (units.some(u => u === view) && units.some(u => u === min)) {
     let idx = units.indexOf(view)
 
     if (idx > units.indexOf(min)) {
-      return units[idx - 1]
+      return units[idx - 1] as DATE_TYPES
     }
     return null
   }
   throw new Error('Not a vaild view unit')
 }
 
-export const getParentView = (view: DATE_TYPES, max: DATE_TYPES = DATE_TYPES.CENTURY): DATE_TYPES | null => {
-  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+export const getParentView = (view: DATE_TYPES, max: DATE_TYPES = CENTURY): DATE_TYPES | null => {
+  const units = [MONTH, YEAR, DECADE, CENTURY]
   if (units.some(u => u === view) && units.some(u => u === max)) {
     let idx = units.indexOf(view)
     if (idx < units.indexOf(max)) {
-      return units[idx + 1]
+      return units[idx + 1] as DATE_TYPES
     }
     return null
   }
@@ -46,7 +62,7 @@ export const getParentView = (view: DATE_TYPES, max: DATE_TYPES = DATE_TYPES.CEN
 }
 
 export const checkViewOrder = (min: DATE_TYPES, max: DATE_TYPES): boolean => {
-  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+  const units = [MONTH, YEAR, DECADE, CENTURY]
   if (units.some(u => u === min) && units.some(u => u === max)) {
     return units.indexOf(min) <= units.indexOf(max)
   }
@@ -54,7 +70,7 @@ export const checkViewOrder = (min: DATE_TYPES, max: DATE_TYPES): boolean => {
 }
 
 export const checkView = (view: DATE_TYPES): boolean => {
-  const units = [DATE_TYPES.MONTH, DATE_TYPES.YEAR, DATE_TYPES.DECADE, DATE_TYPES.CENTURY]
+  const units = [MONTH, YEAR, DECADE, CENTURY]
   if (units.some(u => u === view)) {
     return true
   }
@@ -131,17 +147,17 @@ export const getMonthsArray = (date: Date): Date[] => {
 
 
 export const getDayIndex = (day: DAYS): number => {
-  const days = [DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY, DAYS.FRIDAY, DAYS.SATURDAY]
+  const days = [SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY]
   return days.indexOf(day)
 }
 
 export const transformWeekDays = (
-  format: MONTH_FORMAT = MONTH_FORMAT.SHORT,
+  format: MONTH_FORMAT = SHORT,
   locale = 'en',
-  calendarType: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+  calendarType: CALENDAR_TYPE = ISO_8601
 ): string[] => {
-  let dayFormat = format === MONTH_FORMAT.LONG ? 'long' : 'short'
-  if (calendarType === CALENDAR_TYPE.ISO_8601) {
+  let dayFormat = format === LONG ? 'long' : 'short'
+  if (calendarType === ISO_8601) {
     if (locale !== 'mk') {
       return Array(7)
         .fill(null)
@@ -156,7 +172,7 @@ export const transformWeekDays = (
       days[locale][dayFormat][0]
     ].map(d => capitalizeFirst(d))
   }
-  if (calendarType === CALENDAR_TYPE.US) {
+  if (calendarType === US) {
     if (locale !== 'mk') {
       return Array(7)
         .fill(null)
@@ -174,7 +190,7 @@ export const transformWeekDays = (
 export const getMonthAndYear = (
   date: Date,
   locale = 'en',
-  format = MONTH_FORMAT.LONG
+  format: MONTH_FORMAT = LONG
 ): string => {
   checkDate(date)
   const month = getMonthFormated(date, locale, format)
@@ -241,14 +257,14 @@ export const getCentryEndYear = (date: Date): number => {
 export const getMonthFormated = (
   date: Date,
   locale = 'en',
-  format: MONTH_FORMAT = MONTH_FORMAT.LONG
+  format: MONTH_FORMAT = LONG
 ): string => {
   checkDate(date)
   if (locale === 'mk') {
     return months[locale][date.getMonth() + 1]
   }
   return new Intl.DateTimeFormat(locale, {
-    month: `${format === MONTH_FORMAT.LONG ? 'long' : 'short'}`
+    month: `${format === LONG ? 'long' : 'short'}`
   }).format(date)
 }
 
@@ -257,16 +273,16 @@ export const getPrevDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case DATE_TYPES.MONTH:
+    case MONTH:
       newDate = new Date(date.getFullYear(), date.getMonth() - 1)
       break
-    case DATE_TYPES.YEAR:
+    case YEAR:
       newDate = new Date(date.getFullYear() - 1, date.getMonth())
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       newDate = new Date(date.getFullYear() - 10, date.getMonth())
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       newDate = new Date(date.getFullYear() - 100, date.getMonth())
       break
     default:
@@ -280,16 +296,16 @@ export const getNextDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case DATE_TYPES.MONTH:
+    case MONTH:
       newDate = new Date(date.getFullYear(), date.getMonth() + 1)
       break
-    case DATE_TYPES.YEAR:
+    case YEAR:
       newDate = new Date(date.getFullYear() + 1, date.getMonth())
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       newDate = new Date(date.getFullYear() + 10, date.getMonth())
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       newDate = new Date(date.getFullYear() + 100, date.getMonth())
       break
     default:
@@ -303,16 +319,16 @@ export const getDoublePrevDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case DATE_TYPES.MONTH:
+    case MONTH:
       newDate = new Date(date.getFullYear() - 1, date.getMonth())
       break
-    case DATE_TYPES.YEAR:
+    case YEAR:
       newDate = new Date(date.getFullYear() - 10, date.getMonth())
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       newDate = new Date(date.getFullYear() - 100, date.getMonth())
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       newDate = new Date(date.getFullYear() - 1000, date.getMonth())
       break
 
@@ -327,16 +343,16 @@ export const getDoubleNextDate = (date: Date, type: DATE_TYPES): Date => {
   checkDate(date)
   let newDate = date
   switch (type) {
-    case DATE_TYPES.MONTH:
+    case MONTH:
       newDate = new Date(date.getFullYear() + 1, date.getMonth())
       break
-    case DATE_TYPES.YEAR:
+    case YEAR:
       newDate = new Date(date.getFullYear() + 10, date.getMonth())
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       newDate = new Date(date.getFullYear() + 100, date.getMonth())
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       newDate = new Date(date.getFullYear() + 1000, date.getMonth())
       break
 
@@ -349,32 +365,32 @@ export const getDoubleNextDate = (date: Date, type: DATE_TYPES): Date => {
 export const getDateRange = (
   dateOne: Date,
   dateTwo: Date,
-  type: DATE_TYPES = DATE_TYPES.DATE
+  type: DATE_TYPES = DATE
 ): Date[] => {
   checkDate(dateOne)
   checkDate(dateTwo)
   if (beforeDates(dateOne, dateTwo)) {
-    if (type === DATE_TYPES.DATE) {
+    if (type === DATE) {
       return rangeDate(dateOne, dateTwo)
-    } else if (type === DATE_TYPES.MONTH) {
+    } else if (type === MONTH) {
       return rangeDate(dateOne, endOfMonthDate(dateTwo))
-    } else if (type === DATE_TYPES.YEAR) {
+    } else if (type === YEAR) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 1, 0, 0))
-    } else if (type === DATE_TYPES.DECADE) {
+    } else if (type === DECADE) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 10, 0, 0))
-    } else if (type === DATE_TYPES.CENTURY) {
+    } else if (type === CENTURY) {
       return rangeDate(dateOne, new Date(dateTwo.getFullYear() + 100, 0, 0))
     }
   } else if (afterDates(dateOne, dateTwo)) {
-    if (type === DATE_TYPES.DATE) {
+    if (type === DATE) {
       return rangeDate(dateTwo, dateOne)
-    } else if (type === DATE_TYPES.MONTH) {
+    } else if (type === MONTH) {
       return rangeDate(dateTwo, endOfMonthDate(dateOne))
-    } else if (type === DATE_TYPES.YEAR) {
+    } else if (type === YEAR) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 1, 0, 0))
-    } else if (type === DATE_TYPES.DECADE) {
+    } else if (type === DECADE) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 10, 0, 0))
-    } else if (type === DATE_TYPES.CENTURY) {
+    } else if (type === CENTURY) {
       return rangeDate(dateTwo, new Date(dateOne.getFullYear() + 100, 0, 0))
     }
   }
@@ -493,21 +509,21 @@ export const getNewDate = (date: Date, type: DATE_TYPES, idx: number): Date => {
   let year,
     newDate = date
   switch (type) {
-    case DATE_TYPES.DATE:
+    case DATE:
       newDate = new Date(date.getFullYear(), date.getMonth(), idx)
       break
-    case DATE_TYPES.MONTH:
+    case MONTH:
       newDate = new Date(date.getFullYear(), idx)
       break
-    case DATE_TYPES.YEAR:
+    case YEAR:
       year = getDecadeStartYear(date) + idx
       newDate = new Date(year, 0)
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       year = getCentryStartYear(date) + idx * 10
       newDate = new Date(year, 0)
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       year = getCentryStartYear(date)
       newDate = new Date(year, 0, idx)
       break
@@ -532,7 +548,7 @@ export const endOfMonthDate = (date: Date): Date => {
 
 export const getMonthViewDates = (
   date: Date,
-  type: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601,
+  type: CALENDAR_TYPE = ISO_8601,
   hideBeforeAndAfterDates = false
 ): (Date | null)[] => {
   checkDate(date)
@@ -555,10 +571,10 @@ export const getMonthViewDates = (
   let trailingDates = 0,
     prependDates = 0
 
-  if (type === CALENDAR_TYPE.ISO_8601) {
+  if (type === ISO_8601) {
     trailingDates = (6 - currMonthLastDay + 1) % 7
     prependDates = (currMonthFirstDay + 6) % 7
-  } else if (type === CALENDAR_TYPE.US) {
+  } else if (type === US) {
     prependDates = currMonthFirstDay
     trailingDates = (6 - currMonthLastDay) % 7
   }
@@ -868,27 +884,27 @@ export const isDecadeDisabled = (
 export const isWeekend = (
   idx: number,
   weekends: boolean = false,
-  calendarType: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+  calendarType: CALENDAR_TYPE = ISO_8601
 ) => {
   let showWeekend= false
   const weekend = idx % 7
-  if (weekends && calendarType === CALENDAR_TYPE.ISO_8601) {
+  if (weekends && calendarType === ISO_8601) {
     showWeekend = weekend === 5 || weekend === 6
   }
-  if (weekends && calendarType === CALENDAR_TYPE.US) {
+  if (weekends && calendarType === US) {
     showWeekend = weekend === 0 || weekend === 6
   }
   return showWeekend
 }
 
-export const getHours = (format = CALENDAR_TYPE.ISO_8601): string[] => {
+export const getHours = (format = ISO_8601): string[] => {
   const date = new Date()
   const hours = Array(24)
     .fill(null)
     .map((item, idx) => {
       date.setHours(idx)
       return date.toLocaleTimeString(undefined, {
-        hour12: format !== CALENDAR_TYPE.ISO_8601,
+        hour12: format !== ISO_8601,
         hour: '2-digit'
       })
     })
@@ -906,11 +922,11 @@ export const getMinutes = (step = 1): string[] => {
 
 export const getDateTimeFormated = (
   date: Date,
-  locale = CALENDAR_TYPE.US,
-  format = CALENDAR_TYPE.ISO_8601
+  locale = US,
+  format = ISO_8601
 ): string => {
   return date.toLocaleTimeString(locale, {
-    hour12: format !== CALENDAR_TYPE.ISO_8601,
+    hour12: format !== ISO_8601,
     hour: '2-digit',
     minute: '2-digit'
   })

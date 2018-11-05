@@ -1,6 +1,6 @@
 import React, { SFC } from 'react'
 
-import { MONTH_FORMAT } from '../utils/constants'
+import { LONG } from '../utils/constants'
 import {
   getMonthFormated,
   getMonthsArray,
@@ -30,7 +30,7 @@ const YearView: SFC<IYearViewProps> = ({
   const data = getMonthsArray(currentViewDate).map((item, idx) => {
     let disabled = false,
       selected = false
-    const month = getMonthFormated(item, locale, MONTH_FORMAT.LONG)
+    const month = getMonthFormated(item, locale, LONG)
     if (disableableYearTiles) {
       disabled = isMonthDisabled(item, availableDates, minDate, maxDate)
     }

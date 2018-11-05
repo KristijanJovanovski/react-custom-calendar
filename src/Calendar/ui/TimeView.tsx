@@ -2,7 +2,7 @@ import './TimeView.css'
 
 import React, { SFC } from 'react'
 
-import { CALENDAR_TYPE, TIME_TYPE } from '../utils/constants'
+import { CALENDAR_TYPE, TIME_TYPE, ISO_8601, HOUR, US, MINUTE } from '../utils/constants'
 import { getHours, getMinutes } from '../utils/helpers'
 import ListView from './ListView'
 
@@ -35,17 +35,17 @@ const TimeView: SFC<ITimeViewProps> = ({
   minuteStep
 }: ITimeViewProps) => {
   const minutes = getMinutes(minuteStep || 1)
-  const hours = getHours(hourFormat || CALENDAR_TYPE.ISO_8601)
+  const hours = getHours(hourFormat || ISO_8601)
 
   const handleTime = (
     time: string,
     type: TIME_TYPE,
-    format: CALENDAR_TYPE = CALENDAR_TYPE.ISO_8601
+    format: CALENDAR_TYPE = ISO_8601
   ) => {
     let date = selectedDate
-    if (type === TIME_TYPE.HOUR) {
+    if (type === HOUR) {
       let hours: string | number = time
-      if (format && format === CALENDAR_TYPE.US) {
+      if (format && format === US) {
         const am_pm = hours.split(' ')[1]
         hours =
           am_pm && am_pm === 'PM'
@@ -61,7 +61,7 @@ const TimeView: SFC<ITimeViewProps> = ({
         +hours,
         selectedDate.getMinutes()
       )
-    } else if (type === TIME_TYPE.MINUTE) {
+    } else if (type === MINUTE) {
       date = new Date(
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
@@ -78,18 +78,18 @@ const TimeView: SFC<ITimeViewProps> = ({
     <div className={classes}>
       <ListView
         items={hours}
-        type={TIME_TYPE.HOUR}
+        type={HOUR}
         label={hourLabel || 'Hours:'}
         onClick={handleTime}
         selectedDate={selectedDate}
         timeTileClasses={hourTileClasses}
         timeHeaderClasses={hourHeaderClasses}
         timeListClasses={hourListClasses}
-        hourFormat={hourFormat || CALENDAR_TYPE.ISO_8601}
+        hourFormat={hourFormat || ISO_8601}
       />
       <ListView
         items={minutes}
-        type={TIME_TYPE.MINUTE}
+        type={MINUTE}
         label={minuteLabel || 'Minutes:'}
         onClick={handleTime}
         selectedDate={selectedDate}

@@ -1,6 +1,6 @@
 import React, { SFC } from 'react'
 
-import { CALENDAR_TYPE, DAYS } from '../utils/constants'
+import { CALENDAR_TYPE, DAYS, ISO_8601 } from '../utils/constants'
 import {
   equalDates,
   getMonthViewDates,
@@ -116,7 +116,7 @@ export type IMonthViewProps = {
 }
 
 MonthView.defaultProps = {
-  calendarType: CALENDAR_TYPE.ISO_8601
+  calendarType: ISO_8601
 }
 
 export default MonthView

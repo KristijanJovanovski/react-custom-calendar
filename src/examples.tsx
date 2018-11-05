@@ -1,7 +1,18 @@
 import React from 'react'
 
 import Calendar from './Calendar/Calendar'
-import { DATE_TYPES, DAYS, CALENDAR_TYPE} from './Calendar/utils/constants'
+import {
+  CENTURY,
+  DECADE,
+  ISO_8601,
+  MONDAY,
+  SUNDAY,
+  THURSDAY,
+  TUESDAY,
+  US,
+  WEDNESDAY,
+  YEAR
+} from './Calendar/utils/constants'
 
 const Examples = () => {
   const handleMultiSelect = (dates: Date[]) => {
@@ -145,7 +156,7 @@ const Examples = () => {
         <h1>Default US Calendar </h1>
         <div className="my-calendar-container">
           <div className="my-calendar-container">
-            <Calendar calendarType={CALENDAR_TYPE.US} />
+            <Calendar calendarType={US} />
             <code className="calendar-code">
               {`
               <Calendar
@@ -159,7 +170,7 @@ const Examples = () => {
         <h1>Default ISO_8601 Calendar </h1>
         <div className="my-calendar-container">
           <div className="my-calendar-container">
-            <Calendar calendarType={CALENDAR_TYPE.ISO_8601} />
+            <Calendar calendarType={ISO_8601} />
             <code className="calendar-code">
               {`
               <Calendar
@@ -173,18 +184,12 @@ const Examples = () => {
         <h1> Calendar with disabled weekdays</h1>
         <div className="my-calendar-container">
           <Calendar
-            disableWeekdays={[
-              DAYS.SUNDAY,
-              DAYS.MONDAY,
-              DAYS.TUESDAY,
-              DAYS.WEDNESDAY,
-              DAYS.THURSDAY
-            ]}
+            disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
           />
           <code className="calendar-code">
             {`
               <Calendar
-                disableWeekdays={[DAYS.SUNDAY, DAYS.MONDAY, DAYS.TUESDAY, DAYS.WEDNESDAY, DAYS.THURSDAY]}
+                disableWeekdays={[SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY]}
               />`}
           </code>
         </div>
@@ -216,11 +221,11 @@ const Examples = () => {
       <div className="container">
         <h1> Calendar with startView</h1>
         <div className="my-calendar-container">
-          <Calendar startView={DATE_TYPES.CENTURY} />
+          <Calendar startView={CENTURY} />
           <code className="calendar-code">
             {`
               <Calendar
-                startView={DATE_TYPES.CENTURY}
+                startView={CENTURY}
               />`}
           </code>
         </div>
@@ -228,11 +233,11 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with min view</h1>
         <div className="my-calendar-container">
-          <Calendar minView={DATE_TYPES.YEAR} />
+          <Calendar minView={YEAR} />
           <code className="calendar-code">
             {`
               <Calendar
-                minView={DATE_TYPES.YEAR}
+                minView={YEAR}
               />`}
           </code>
         </div>
@@ -240,11 +245,11 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with max view</h1>
         <div className="my-calendar-container">
-          <Calendar maxView={DATE_TYPES.DECADE} />
+          <Calendar maxView={DECADE} />
           <code className="calendar-code">
             {`
               <Calendar
-                maxView={DATE_TYPES.DECADE}
+                maxView={DECADE}
               />`}
           </code>
         </div>
@@ -252,12 +257,12 @@ const Examples = () => {
       <div className="container">
         <h1>Calendar with min & max view</h1>
         <div className="my-calendar-container">
-          <Calendar minView={DATE_TYPES.YEAR} maxView={DATE_TYPES.DECADE} />
+          <Calendar minView={YEAR} maxView={DECADE} />
           <code className="calendar-code">
             {`
               <Calendar
-                minView={DATE_TYPES.YEAR}
-                maxView={DATE_TYPES.DECADE}
+                minView={YEAR}
+                maxView={DECADE}
               />`}
           </code>
         </div>

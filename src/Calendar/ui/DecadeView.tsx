@@ -1,6 +1,6 @@
 import React, { SFC } from 'react'
 
-import { DATE_TYPES } from '../utils/constants'
+import { YEAR } from '../utils/constants'
 import { getNewDate, isYearDisabled, isYearSelected } from '../utils/helpers'
 import Tile from './Tile'
 
@@ -23,7 +23,7 @@ const DecadeView: SFC<IDecadeViewProps> = ({
 }: IDecadeViewProps) => {
   const data = Array(10)
     .fill(null)
-    .map((item, idx) => getNewDate(currentViewDate, DATE_TYPES.YEAR, idx))
+    .map((item, idx) => getNewDate(currentViewDate, YEAR, idx))
     .map((item, idx) => {
       let disabled = false,
         selected = false

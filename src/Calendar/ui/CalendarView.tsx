@@ -1,8 +1,8 @@
-import './CalendarView.css'
+import './CalendarView.css';
 
-import React, { SFC } from 'react'
+import React, { SFC } from 'react';
 
-import { CALENDAR_TYPE, DATE_TYPES, DAYS } from '../utils/constants'
+import { CALENDAR_TYPE, CENTURY, DATE, DATE_TYPES, DAYS, DECADE, ISO_8601, MONTH, YEAR } from '../utils/constants';
 import {
   afterDates,
   beforeDates,
@@ -14,16 +14,16 @@ import {
   isDateDisabled,
   isDecadeDisabled,
   isMonthDisabled,
-  isYearDisabled
-} from '../utils/helpers'
-import CenturyView from './CenturyView'
-import DecadeView from './DecadeView'
-import Header from './Header'
-import MonthView from './MonthView'
-import Navigation from './Navigation'
-import RangeHover from './RangeHover'
-import YearView from './YearView'
-import TimeView from './TimeView'
+  isYearDisabled,
+} from '../utils/helpers';
+import CenturyView from './CenturyView';
+import DecadeView from './DecadeView';
+import Header from './Header';
+import MonthView from './MonthView';
+import Navigation from './Navigation';
+import RangeHover from './RangeHover';
+import TimeView from './TimeView';
+import YearView from './YearView';
 
 const CalendarView: SFC<ICalendarView> = ({
   withTime,
@@ -104,13 +104,13 @@ const CalendarView: SFC<ICalendarView> = ({
 
     if (
       navigableBeforeAndAfterDates &&
-      currentView === DATE_TYPES.MONTH &&
+      currentView === MONTH &&
       beforeDates(date, firstOfMonthDate(currentViewDate))
     ) {
       onPrev && onPrev()
     } else if (
       navigableBeforeAndAfterDates &&
-      currentView === DATE_TYPES.MONTH &&
+      currentView === MONTH &&
       afterDates(date, endOfMonthDate(currentViewDate))
     ) {
       onNext && onNext()
@@ -121,18 +121,18 @@ const CalendarView: SFC<ICalendarView> = ({
       onSingleSelect(date, false)
       let selectedRange: Date[] = []
       let isDisabledFn: Function
-      if (currentView === DATE_TYPES.MONTH) {
+      if (currentView === MONTH) {
         isDisabledFn = isDateDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.DATE)]
-      } else if (currentView === DATE_TYPES.YEAR) {
+        selectedRange = [...getDateRange(selectedDate, date, DATE)]
+      } else if (currentView === YEAR) {
         isDisabledFn = isMonthDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.MONTH)]
-      } else if (currentView === DATE_TYPES.DECADE) {
+        selectedRange = [...getDateRange(selectedDate, date, MONTH)]
+      } else if (currentView === DECADE) {
         isDisabledFn = isYearDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.YEAR)]
-      } else if (currentView === DATE_TYPES.CENTURY) {
+        selectedRange = [...getDateRange(selectedDate, date, YEAR)]
+      } else if (currentView === CENTURY) {
         isDisabledFn = isDecadeDisabled
-        selectedRange = [...getDateRange(selectedDate, date, DATE_TYPES.DECADE)]
+        selectedRange = [...getDateRange(selectedDate, date, DECADE)]
       }
       selectedRange = selectedRange.filter(selectedRangeDateItem => {
         return !isDisabledFn(
@@ -150,11 +150,11 @@ const CalendarView: SFC<ICalendarView> = ({
       onSingleSelect(date, selected)
     }
   }
-  const isMonthView = currentView === DATE_TYPES.MONTH
+  const isMonthView = currentView === MONTH
 
   let gridView
   switch (currentView) {
-    case DATE_TYPES.MONTH:
+    case MONTH:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -184,7 +184,7 @@ const CalendarView: SFC<ICalendarView> = ({
 
       break
 
-    case DATE_TYPES.YEAR:
+    case YEAR:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -212,7 +212,7 @@ const CalendarView: SFC<ICalendarView> = ({
       )
 
       break
-    case DATE_TYPES.DECADE:
+    case DECADE:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -239,7 +239,7 @@ const CalendarView: SFC<ICalendarView> = ({
       )
 
       break
-    case DATE_TYPES.CENTURY:
+    case CENTURY:
       gridView = (
         <RangeHover
           disableWeekdays={disableWeekdays}
@@ -348,7 +348,7 @@ const CalendarView: SFC<ICalendarView> = ({
 
 CalendarView.defaultProps = {
   locale: 'en',
-  calendarType: CALENDAR_TYPE.ISO_8601
+  calendarType: ISO_8601
 }
 
 export type ICalendarView = {

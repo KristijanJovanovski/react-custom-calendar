@@ -1,6 +1,6 @@
 import React, { SFC } from 'react'
 
-import { DATE_TYPES } from '../utils/constants'
+import { DECADE } from '../utils/constants'
 import {
   getDecadeRangeText,
   getNewDate,
@@ -28,7 +28,7 @@ const CenturyView: SFC<ICenturyViewProps> = ({
 }: ICenturyViewProps) => {
   const data = Array(10)
     .fill(null)
-    .map((item, idx) => getNewDate(currentViewDate, DATE_TYPES.DECADE, idx))
+    .map((item, idx) => getNewDate(currentViewDate, DECADE, idx))
     .map((item, idx) => {
       let disabled = false,
         selected = false

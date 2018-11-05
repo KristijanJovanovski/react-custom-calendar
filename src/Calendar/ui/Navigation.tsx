@@ -2,7 +2,7 @@ import './Navigation.css'
 
 import React, { SFC } from 'react'
 
-import { DATE_TYPES, MONTH_FORMAT } from '../utils/constants'
+import { CENTURY, DECADE, LONG, MONTH, SHORT, YEAR } from '../utils/constants'
 import {
   getCenturyRangeText,
   getDecadeRangeText,
@@ -38,17 +38,17 @@ const Navigation: SFC<INavigationProps> = ({
   navLabelShortFormat
 }: INavigationProps) => {
   let labelText
-  if (currentView === DATE_TYPES.MONTH) {
+  if (currentView === MONTH) {
     labelText = getMonthAndYear(
       currentViewDate,
       locale,
-      navLabelShortFormat ? MONTH_FORMAT.SHORT : MONTH_FORMAT.LONG
+      navLabelShortFormat ? SHORT : LONG
     )
-  } else if (currentView === DATE_TYPES.YEAR) {
+  } else if (currentView === YEAR) {
     labelText = getYear(currentViewDate)
-  } else if (currentView === DATE_TYPES.DECADE) {
+  } else if (currentView === DECADE) {
     labelText = getDecadeRangeText(currentViewDate)
-  } else if (currentView === DATE_TYPES.CENTURY) {
+  } else if (currentView === CENTURY) {
     labelText = getCenturyRangeText(currentViewDate)
   }
   const doublePrev =
@@ -136,17 +136,15 @@ const Navigation: SFC<INavigationProps> = ({
 
   return (
     <div
-      className={`navigation${
-        currentView === DATE_TYPES.CENTURY ? ' century' : ''
-      }${navigationHidden ? ' hidden' : ''}${
-        navigationClasses ? ' ' + navigationClasses : ''
-      }`}
+      className={`navigation${currentView === CENTURY ? ' century' : ''}${
+        navigationHidden ? ' hidden' : ''
+      }${navigationClasses ? ' ' + navigationClasses : ''}`}
     >
-      {!navigationHidden && currentView !== DATE_TYPES.CENTURY && doublePrev}
+      {!navigationHidden && currentView !== CENTURY && doublePrev}
       {!navigationHidden && prev}
       {label}
       {!navigationHidden && next}
-      {!navigationHidden && currentView !== DATE_TYPES.CENTURY && doubleNext}
+      {!navigationHidden && currentView !== CENTURY && doubleNext}
     </div>
   )
 }

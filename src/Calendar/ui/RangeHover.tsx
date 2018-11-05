@@ -1,6 +1,14 @@
 import React from 'react'
 
-import { CALENDAR_TYPE, DATE_TYPES, DAYS } from '../utils/constants'
+import {
+  CALENDAR_TYPE,
+  CENTURY,
+  DATE_TYPES,
+  DAYS,
+  DECADE,
+  MONTH,
+  YEAR
+} from '../utils/constants'
 import {
   getDateRange,
   getDecadeRange,
@@ -33,16 +41,16 @@ export default class RangeHover extends React.Component<
       if (selectedDate && hover && hoverDate) {
         let isDisabledFn: Function
         let hoverRangeDates: Date[] = []
-        if (currentView === DATE_TYPES.MONTH) {
+        if (currentView === MONTH) {
           isDisabledFn = isDateDisabled
           hoverRangeDates = getDateRange(selectedDate, hoverDate)
-        } else if (currentView === DATE_TYPES.YEAR) {
+        } else if (currentView === YEAR) {
           isDisabledFn = isMonthDisabled
           hoverRangeDates = getMonthRange(selectedDate, hoverDate)
-        } else if (currentView === DATE_TYPES.DECADE) {
+        } else if (currentView === DECADE) {
           isDisabledFn = isYearDisabled
           hoverRangeDates = getYearRange(selectedDate, hoverDate)
-        } else if (currentView === DATE_TYPES.CENTURY) {
+        } else if (currentView === CENTURY) {
           isDisabledFn = isDecadeDisabled
           hoverRangeDates = getDecadeRange(selectedDate, hoverDate)
         }

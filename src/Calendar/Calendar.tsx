@@ -3,7 +3,16 @@ import './Calendar.css'
 import React, { Component } from 'react'
 
 import CalendarView from './ui/CalendarView'
-import { DATE_TYPES, DAYS, CALENDAR_TYPE } from './utils/constants'
+import {
+  CALENDAR_TYPE,
+  CENTURY,
+  DATE_TYPES,
+  DAYS,
+  DECADE,
+  MONTH,
+  US,
+  YEAR
+} from './utils/constants'
 import {
   checkDate,
   checkMinMaxDate,
@@ -26,10 +35,10 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
   }
   static defaultProps: Partial<ICalendarProps> = {
     startViewDate: new Date(),
-    minView: DATE_TYPES.MONTH,
-    maxView: DATE_TYPES.CENTURY,
+    minView: MONTH,
+    maxView: CENTURY,
     locale: 'en',
-    calendarType: CALENDAR_TYPE.US
+    calendarType: US
   }
 
   static getDerivedStateFromProps(
@@ -132,27 +141,27 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
     const maxView = this.props.maxView
     let newDate
     switch (currentView) {
-      case DATE_TYPES.MONTH:
-        newDate = getNewDate(currentViewDate!, DATE_TYPES.MONTH, 1)
-        checkViewOrder(DATE_TYPES.YEAR, maxView!) &&
+      case MONTH:
+        newDate = getNewDate(currentViewDate!, MONTH, 1)
+        checkViewOrder(YEAR, maxView!) &&
           this.setState({
-            currentView: DATE_TYPES.YEAR,
+            currentView: YEAR,
             currentViewDate: newDate
           })
         break
-      case DATE_TYPES.YEAR:
-        newDate = getNewDate(currentViewDate!, DATE_TYPES.DECADE, 1)
-        checkViewOrder(DATE_TYPES.DECADE, maxView!) &&
+      case YEAR:
+        newDate = getNewDate(currentViewDate!, DECADE, 1)
+        checkViewOrder(DECADE, maxView!) &&
           this.setState({
-            currentView: DATE_TYPES.DECADE,
+            currentView: DECADE,
             currentViewDate: newDate
           })
         break
-      case DATE_TYPES.DECADE:
-        newDate = getNewDate(currentViewDate!, DATE_TYPES.CENTURY, 1)
-        checkViewOrder(DATE_TYPES.CENTURY, maxView!) &&
+      case DECADE:
+        newDate = getNewDate(currentViewDate!, CENTURY, 1)
+        checkViewOrder(CENTURY, maxView!) &&
           this.setState({
-            currentView: DATE_TYPES.CENTURY,
+            currentView: CENTURY,
             currentViewDate: newDate
           })
         break

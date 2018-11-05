@@ -2,7 +2,7 @@ import './ListView.css'
 
 import React, { SFC } from 'react'
 
-import { CALENDAR_TYPE, TIME_TYPE } from '../utils/constants'
+import { CALENDAR_TYPE, TIME_TYPE, HOUR, US, MINUTE } from '../utils/constants'
 import TimeTile from './TimeTile'
 
 const ListView: SFC<IListViewProps> = ({
@@ -23,8 +23,8 @@ const ListView: SFC<IListViewProps> = ({
   const listClasses = `time-list${timeListClasses ? ' ' + timeListClasses : ''}`
   const tiles = items.map((item, idx) => {
     let selected = false
-    if (type === TIME_TYPE.HOUR) {
-      if (hourFormat === CALENDAR_TYPE.US) {
+    if (type === HOUR) {
+      if (hourFormat === US) {
         const h = +item.split(' ')[0]
         const am_pm = item.split(' ')[1]
         selected =
@@ -33,7 +33,7 @@ const ListView: SFC<IListViewProps> = ({
       } else {
         selected = selectedDate.getHours() === +item
       }
-    } else if (type === TIME_TYPE.MINUTE) {
+    } else if (type === MINUTE) {
       selected = selectedDate.getMinutes() === +item
     }
 

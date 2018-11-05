@@ -1,35 +1,40 @@
-export enum DATE_TYPES {
-  DATE = 'DATE',
-  MONTH = 'MONTH',
-  YEAR = 'YEAR',
-  DECADE = 'DECADE',
-  CENTURY = 'CENTURY'
-}
+export const DATE = 'DATE'
+export const MONTH = 'MONTH'
+export const YEAR = 'YEAR'
+export const DECADE = 'DECADE'
+export const CENTURY = 'CENTURY'
+export type DATE_TYPES = 'DATE' | 'MONTH' | 'YEAR' | 'DECADE' | 'CENTURY'
 
-export enum MONTH_FORMAT {
-  SHORT = 'SHORT',
-  LONG = 'LONG'
-}
+export const SHORT = 'SHORT'
+export const LONG = 'LONG'
+export type MONTH_FORMAT = 'SHORT' | 'LONG'
 
-export enum DAYS {
-  SUNDAY = 'SUNDAY',
-  MONDAY = 'MONDAY',
-  TUESDAY = 'TUESDAY',
-  WEDNESDAY = 'WEDNESDAY',
-  THURSDAY = 'THURSDAY',
-  FRIDAY = 'FRIDAY',
-  SATURDAY = 'SATURDAY'
-}
+export const SUNDAY = 'SUNDAY'
+export const MONDAY = 'MONDAY'
+export const TUESDAY = 'TUESDAY'
+export const WEDNESDAY = 'WEDNESDAY'
+export const THURSDAY = 'THURSDAY'
+export const FRIDAY = 'FRIDAY'
+export const SATURDAY = 'SATURDAY'
 
-export enum TIME_TYPE {
-  MINUTE = 'MINUTE',
-  HOUR = 'HOUR'
-}
+export type DAYS =
+  | 'SUNDAY'
+  | 'MONDAY'
+  | 'TUESDAY'
+  | 'WEDNESDAY'
+  | 'THURSDAY'
+  | 'FRIDAY'
+  | 'SATURDAY'
 
-export enum CALENDAR_TYPE {
-  US = 'US',
-  ISO_8601 = 'ISO 8601'
-}
+export const MINUTE = 'MINUTE'
+export const HOUR = 'HOUR'
+
+export type TIME_TYPE = 'MINUTE' | 'HOUR'
+
+export const US = 'US'
+export const ISO_8601 = 'ISO_8601'
+
+export type CALENDAR_TYPE = 'US' | 'ISO_8601'
 
 export const months = {
   en: {
