@@ -7,7 +7,7 @@ import {
   getCenturyRangeText,
   getDecadeRangeText,
   getMonthAndYear,
-  getYear
+  getYear,
 } from '../utils/helpers'
 
 const Navigation: SFC<INavigationProps> = ({
@@ -35,7 +35,7 @@ const Navigation: SFC<INavigationProps> = ({
   prevLabel,
   nextLabel,
   doubleNextLabel,
-  navLabelShortFormat
+  navLabelShortFormat,
 }: INavigationProps) => {
   let labelText
   if (currentView === MONTH) {
@@ -179,7 +179,7 @@ export type INavigationProps = {
 
 Navigation.defaultProps = {
   locale: 'en',
-  navLabelShortFormat: false
+  navLabelShortFormat: false,
 }
 
 export default Navigation

@@ -5,7 +5,7 @@ import React from 'react'
 import Examples from './examples'
 
 const App = () => (
-  <div className="App">
+  <div className={'App'}>
     <Examples />
   </div>
 )

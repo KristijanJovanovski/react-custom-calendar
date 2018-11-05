@@ -1,8 +1,18 @@
-import './CalendarView.css';
+import './CalendarView.css'
 
-import React, { SFC } from 'react';
+import React, { SFC } from 'react'
 
-import { CALENDAR_TYPE, CENTURY, DATE, DATE_TYPES, DAYS, DECADE, ISO_8601, MONTH, YEAR } from '../utils/constants';
+import {
+  CALENDAR_TYPE,
+  CENTURY,
+  DATE,
+  DATE_TYPES,
+  DAYS,
+  DECADE,
+  ISO_8601,
+  MONTH,
+  YEAR,
+} from '../utils/constants'
 import {
   afterDates,
   beforeDates,
@@ -15,15 +25,15 @@ import {
   isDecadeDisabled,
   isMonthDisabled,
   isYearDisabled,
-} from '../utils/helpers';
-import CenturyView from './CenturyView';
-import DecadeView from './DecadeView';
-import Header from './Header';
-import MonthView from './MonthView';
-import Navigation from './Navigation';
-import RangeHover from './RangeHover';
-import TimeView from './TimeView';
-import YearView from './YearView';
+} from '../utils/helpers'
+import CenturyView from './CenturyView'
+import DecadeView from './DecadeView'
+import Header from './Header'
+import MonthView from './MonthView'
+import Navigation from './Navigation'
+import RangeHover from './RangeHover'
+import TimeView from './TimeView'
+import YearView from './YearView'
 
 const CalendarView: SFC<ICalendarView> = ({
   withTime,
@@ -48,6 +58,7 @@ const CalendarView: SFC<ICalendarView> = ({
   onSingleSelect,
   onPrev,
   onNext,
+  disableableNavigation,
   disableableYearTiles,
   disableableDecadeTiles,
   disableableCenturyTiles,
@@ -78,7 +89,7 @@ const CalendarView: SFC<ICalendarView> = ({
   navLabelShortFormat,
   tileClasses,
   headerClasses,
-  disableWeekdays,
+  disabledWeekdays,
   hourLabel,
   hourTileClasses,
   hourHeaderClasses,
@@ -88,7 +99,7 @@ const CalendarView: SFC<ICalendarView> = ({
   minuteTileClasses,
   minuteHeaderClasses,
   minuteListClasses,
-  minuteStep
+  minuteStep,
 }: ICalendarView) => {
   const onTimeSelected = (date: Date) => {
     onSingleSelect(date, true)
@@ -120,7 +131,13 @@ const CalendarView: SFC<ICalendarView> = ({
     } else if (selectedDate && !equalDates(selectedDate, date)) {
       onSingleSelect(date, false)
       let selectedRange: Date[] = []
-      let isDisabledFn: Function
+      let isDisabledFn: (
+        selectedRangeDateItem: Date,
+        availableDates?: Date[],
+        minDate?: Date,
+        maxDate?: Date,
+        disabledDates?: Date[]
+      ) => boolean
       if (currentView === MONTH) {
         isDisabledFn = isDateDisabled
         selectedRange = [...getDateRange(selectedDate, date, DATE)]
@@ -150,6 +167,7 @@ const CalendarView: SFC<ICalendarView> = ({
       onSingleSelect(date, selected)
     }
   }
+
   const isMonthView = currentView === MONTH
 
   let gridView
@@ -157,7 +175,7 @@ const CalendarView: SFC<ICalendarView> = ({
     case MONTH:
       gridView = (
         <RangeHover
-          disableWeekdays={disableWeekdays}
+          disabledWeekdays={disabledWeekdays}
           currentView={currentView}
           range={range}
           calendarType={calendarType}
@@ -187,7 +205,7 @@ const CalendarView: SFC<ICalendarView> = ({
     case YEAR:
       gridView = (
         <RangeHover
-          disableWeekdays={disableWeekdays}
+          disabledWeekdays={disabledWeekdays}
           range={range}
           currentView={currentView}
           calendarType={calendarType}
@@ -215,7 +233,7 @@ const CalendarView: SFC<ICalendarView> = ({
     case DECADE:
       gridView = (
         <RangeHover
-          disableWeekdays={disableWeekdays}
+          disabledWeekdays={disabledWeekdays}
           range={range}
           currentView={currentView}
           calendarType={calendarType}
@@ -242,7 +260,7 @@ const CalendarView: SFC<ICalendarView> = ({
     case CENTURY:
       gridView = (
         <RangeHover
-          disableWeekdays={disableWeekdays}
+          disabledWeekdays={disabledWeekdays}
           range={range}
           currentView={currentView}
           minDate={minDate}
@@ -348,7 +366,7 @@ const CalendarView: SFC<ICalendarView> = ({
 
 CalendarView.defaultProps = {
   locale: 'en',
-  calendarType: ISO_8601
+  calendarType: ISO_8601,
 }
 
 export type ICalendarView = {
@@ -368,6 +386,7 @@ export type ICalendarView = {
   selectedDates?: Date[]
   selectedDate?: Date
   multiSelect?: boolean
+  disableableNavigation?: boolean
   disableableYearTiles?: boolean
   disableableDecadeTiles?: boolean
   disableableCenturyTiles?: boolean
@@ -393,7 +412,7 @@ export type ICalendarView = {
   navLabelShortFormat?: boolean
   tileClasses?: string
   headerClasses?: string
-  disableWeekdays?: DAYS[]
+  disabledWeekdays?: DAYS[]
   hourLabel?: string
   hourTileClasses?: string
   hourHeaderClasses?: string

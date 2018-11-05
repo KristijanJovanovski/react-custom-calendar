@@ -11,7 +11,7 @@ import {
   DECADE,
   MONTH,
   US,
-  YEAR
+  YEAR,
 } from './utils/constants'
 import {
   checkDate,
@@ -23,7 +23,7 @@ import {
   getDoublePrevDate,
   getNewDate,
   getNextDate,
-  getPrevDate
+  getPrevDate,
 } from './utils/helpers'
 
 class Calendar extends Component<ICalendarProps, ICalendarState> {
@@ -31,14 +31,14 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
     currentView: undefined,
     currentViewDate: undefined,
     selectedDates: [],
-    selectedDate: undefined
+    selectedDate: undefined,
   }
   static defaultProps: Partial<ICalendarProps> = {
     startViewDate: new Date(),
     minView: MONTH,
     maxView: CENTURY,
     locale: 'en',
-    calendarType: US
+    calendarType: US,
   }
 
   static getDerivedStateFromProps(
@@ -46,7 +46,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
     prevState: ICalendarState
   ) {
     let state = {}
-    if (prevState.currentViewDate === undefined) {
+    if (!prevState.currentViewDate) {
       nextProps.startViewDate && checkDate(nextProps.startViewDate)
       nextProps.minDate && checkDate(nextProps.minDate)
       nextProps.maxDate && checkDate(nextProps.maxDate)
@@ -70,11 +70,11 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         selectedDates: prevState.selectedDates
           ? [...prevState.selectedDates]
           : [],
-        currentViewDate: nextProps.startViewDate
+        currentViewDate: nextProps.startViewDate,
       }
     }
     // before first render
-    if (prevState.currentView === undefined) {
+    if (!prevState.currentView) {
       nextProps.startView && checkView(nextProps.startView)
       nextProps.minView && checkView(nextProps.minView)
       nextProps.maxView && checkView(nextProps.maxView)
@@ -109,7 +109,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
           selectedDates: prevState.selectedDates
             ? [...prevState.selectedDates]
             : [],
-          currentView: nextProps.minView
+          currentView: nextProps.minView,
         }
       } else {
         state = {
@@ -118,7 +118,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
           selectedDates: prevState.selectedDates
             ? [...prevState.selectedDates]
             : [],
-          currentView: nextProps.startView
+          currentView: nextProps.startView,
         }
       }
     }
@@ -146,7 +146,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         checkViewOrder(YEAR, maxView!) &&
           this.setState({
             currentView: YEAR,
-            currentViewDate: newDate
+            currentViewDate: newDate,
           })
         break
       case YEAR:
@@ -154,7 +154,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         checkViewOrder(DECADE, maxView!) &&
           this.setState({
             currentView: DECADE,
-            currentViewDate: newDate
+            currentViewDate: newDate,
           })
         break
       case DECADE:
@@ -162,7 +162,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         checkViewOrder(CENTURY, maxView!) &&
           this.setState({
             currentView: CENTURY,
-            currentViewDate: newDate
+            currentViewDate: newDate,
           })
         break
 
@@ -213,10 +213,10 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         )
         newSelectedDates = [
           ...selectedDates.slice(0, index),
-          ...selectedDates.slice(index + 1)
+          ...selectedDates.slice(index + 1),
         ]
         this.setState({
-          selectedDates: newSelectedDates
+          selectedDates: newSelectedDates,
         })
       }
       onMultiSelect && onMultiSelect([...newSelectedDates])
@@ -228,7 +228,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
       onMultiSelect,
       range,
       onRangeMultiSelect,
-      freezeSelection
+      freezeSelection,
     } = this.props
     let newSelectedDates: Date[] = []
     if (!freezeSelection) {
@@ -237,20 +237,20 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         this.setState({
           selectedDates: [
             newSelectedDates[0],
-            newSelectedDates[newSelectedDates.length - 1]
-          ]
+            newSelectedDates[newSelectedDates.length - 1],
+          ],
         })
         range &&
           onRangeMultiSelect &&
           onRangeMultiSelect([
             newSelectedDates[0],
-            newSelectedDates[newSelectedDates.length - 1]
+            newSelectedDates[newSelectedDates.length - 1],
           ])
       } else {
         newSelectedDates = []
         range && onRangeMultiSelect && onRangeMultiSelect(newSelectedDates)
         this.setState({
-          selectedDates: newSelectedDates
+          selectedDates: newSelectedDates,
         })
       }
       range && onMultiSelect && onMultiSelect([...newSelectedDates])
@@ -271,7 +271,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
       currentView,
       currentViewDate,
       selectedDate,
-      selectedDates
+      selectedDates,
     } = this.state
     const {
       classNames,
@@ -313,7 +313,7 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
       navLabelShortFormat,
       tileClasses,
       headerClasses,
-      disableWeekdays,
+      disabledWeekdays,
       withTime,
       hourLabel,
       hourTileClasses,
@@ -324,7 +324,8 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
       minuteTileClasses,
       minuteHeaderClasses,
       minuteListClasses,
-      minuteStep
+      minuteStep,
+      disableableNavigation,
     } = this.props
 
     return (
@@ -354,7 +355,8 @@ class Calendar extends Component<ICalendarProps, ICalendarState> {
         disabledDates={disabledDates}
         availableDates={availableDates}
         multiSelect={multiSelect}
-        disableWeekdays={disableWeekdays}
+        disableableNavigation={disableableNavigation}
+        disabledWeekdays={disabledWeekdays}
         disableableYearTiles={disableableYearTiles}
         disableableDecadeTiles={disableableDecadeTiles}
         disableableCenturyTiles={disableableCenturyTiles}
@@ -426,7 +428,7 @@ type ICalendarProps = {
   startView?: DATE_TYPES
   disabledDates?: Date[]
   availableDates?: Date[]
-  disableWeekdays?: DAYS[]
+  disabledWeekdays?: DAYS[]
   navigationDisabled?: boolean
   prevDisabled?: boolean
   nextDisabled?: boolean
@@ -444,6 +446,7 @@ type ICalendarProps = {
   nextClasses?: string
   doubleNextClasses?: string
   navLabelShortFormat?: boolean
+  disableableNavigation?: boolean
   disableableYearTiles?: boolean
   disableableDecadeTiles?: boolean
   disableableCenturyTiles?: boolean

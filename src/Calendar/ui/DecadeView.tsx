@@ -19,7 +19,7 @@ const DecadeView: SFC<IDecadeViewProps> = ({
   onHover,
   onDateSelected,
   tileClasses,
-  selectHandler
+  selectHandler,
 }: IDecadeViewProps) => {
   const data = Array(10)
     .fill(null)
@@ -79,6 +79,6 @@ export type IDecadeViewProps = {
 }
 
 DecadeView.defaultProps = {
-  locale: 'en'
+  locale: 'en',
 }
 export default DecadeView

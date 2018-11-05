@@ -30,7 +30,7 @@ const MonthView: SFC<IMonthViewProps> = ({
   onHover,
   hoverDates,
   tileClasses,
-  disableWeekdays
+  disabledWeekdays,
 }: IMonthViewProps) => {
   const data = getMonthViewDates(
     currentViewDate,
@@ -54,7 +54,7 @@ const MonthView: SFC<IMonthViewProps> = ({
         minDate,
         maxDate,
         disabledDates,
-        disableWeekdays
+        disabledWeekdays
       )
       showWeekend = isWeekend(idx, weekends, calendarType)
       if (range && hoverDates && onHover && selectedDate) {
@@ -89,7 +89,7 @@ const MonthView: SFC<IMonthViewProps> = ({
 
 export type IMonthViewProps = {
   range?: boolean
-  disableWeekdays?: DAYS[]
+  disabledWeekdays?: DAYS[]
   weekends?: boolean
   calendarType: CALENDAR_TYPE
   minDate?: Date
@@ -116,7 +116,7 @@ export type IMonthViewProps = {
 }
 
 MonthView.defaultProps = {
-  calendarType: ISO_8601
+  calendarType: ISO_8601,
 }
 
 export default MonthView

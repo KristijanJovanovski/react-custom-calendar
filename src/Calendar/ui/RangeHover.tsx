@@ -7,7 +7,7 @@ import {
   DAYS,
   DECADE,
   MONTH,
-  YEAR
+  YEAR,
 } from '../utils/constants'
 import {
   getDateRange,
@@ -17,7 +17,7 @@ import {
   isDateDisabled,
   isDecadeDisabled,
   isMonthDisabled,
-  isYearDisabled
+  isYearDisabled,
 } from '../utils/helpers'
 
 export default class RangeHover extends React.Component<
@@ -25,7 +25,7 @@ export default class RangeHover extends React.Component<
   IState
 > {
   state: IState = {
-    hoverDates: []
+    hoverDates: [],
   }
   handleHover = (hoverDate: Date | null, hover: boolean) => {
     const {
@@ -35,11 +35,17 @@ export default class RangeHover extends React.Component<
       minDate,
       maxDate,
       currentView,
-      range
+      range,
     } = this.props
     if (range) {
       if (selectedDate && hover && hoverDate) {
-        let isDisabledFn: Function
+        let isDisabledFn: (
+          selectedRangeDateItem: Date,
+          availableDates?: Date[],
+          minDate?: Date,
+          maxDate?: Date,
+          disabledDates?: Date[]
+        ) => boolean
         let hoverRangeDates: Date[] = []
         if (currentView === MONTH) {
           isDisabledFn = isDateDisabled
@@ -94,7 +100,7 @@ export type IRangeHoverProps = {
   ) => React.ReactNode
   calendarType: CALENDAR_TYPE
   range?: boolean
-  disableWeekdays?: DAYS[]
+  disabledWeekdays?: DAYS[]
   weekends?: boolean
   minDate?: Date
   maxDate?: Date

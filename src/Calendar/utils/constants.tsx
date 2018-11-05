@@ -32,9 +32,9 @@ export const HOUR = 'HOUR'
 export type TIME_TYPE = 'MINUTE' | 'HOUR'
 
 export const US = 'US'
-export const ISO_8601 = 'ISO_8601'
+export const ISO_8601 = 'ISO 8601'
 
-export type CALENDAR_TYPE = 'US' | 'ISO_8601'
+export type CALENDAR_TYPE = 'US' | 'ISO 8601'
 
 export const months = {
   en: {
