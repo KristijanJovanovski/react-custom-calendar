@@ -1,10 +1,13 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "no-shadowed-variable": false,
+    "one-variable-per-declaration": false,
+    "interface-over-type-literal": false,
     "max-line-length": [true, 160],
     "no-unnecessary-initializer": false,
     "no-var-requires": true,
-    "no-null-keyword": true,
+    "no-null-keyword": false,
     "no-consecutive-blank-lines": true,
     "quotemark": [true, "single", "avoid-escape"],
     "interface-name": false,
@@ -14,7 +17,7 @@
     "object-literal-sort-keys": false,
     "arrow-parens": false,
     "member-ordering": [
-      true,
+      false,
       {
         "order": [
           "public-static-field",
@@ -38,7 +41,7 @@
     "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
     "no-inferrable-types": [true, "ignore-params"],
     "no-switch-case-fall-through": true,
-    "typedef": [true, "call-signature", "parameter"],
+    "typedef": [false, "call-signature", "parameter"],
     "trailing-comma": [
       true,
       {
@@ -56,7 +59,7 @@
     "curly": true,
     "eofline": true,
     "jsdoc-format": true,
-    "member-access": true,
+    "member-access": false,
     "no-arg": true,
     "no-construct": true,
     "no-duplicate-variable": true,
@@ -65,7 +68,7 @@
     "no-internal-module": true,
     "no-string-literal": true,
     "no-trailing-whitespace": true,
-    "no-unused-expression": true,
+    "no-unused-expression": false,
     "no-var-keyword": true,
     "one-line": [
       true,
@@ -75,7 +78,7 @@
       "check-finally",
       "check-whitespace"
     ],
-    "semicolon": true,
+    "semicolon": false,
     "switch-default": true,
     "triple-equals": [true, "allow-null-check"],
     "typedef-whitespace": [
