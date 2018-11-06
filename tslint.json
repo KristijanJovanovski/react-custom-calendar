@@ -9,7 +9,7 @@
     "no-var-requires": true,
     "no-null-keyword": false,
     "no-consecutive-blank-lines": true,
-    "quotemark": [true, "single", "avoid-escape"],
+    "quotemark": [true, "single"],
     "interface-name": false,
     "no-empty-interface": false,
     "no-namespace": false,

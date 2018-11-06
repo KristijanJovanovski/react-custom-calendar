@@ -49,17 +49,98 @@ const Examples = () => {
         </div>
       </div>
       <div className={'container'}>
-        <h1>Testing Calendar</h1>
+        <h1>Testing Calendar with disableableNavigation and availableDates</h1>
         <div className={'my-calendar-container'}>
           <Calendar
-            disabledWeekdays={['SUNDAY']}
+            disableableNavigation={true}
             availableDates={[new Date(2018, 10, 4)]}
           />
           <code className={'calendar-code'}>
             {`
               <Calendar
-                disabledWeekdays={["SUNDAY"]}
+                disableableNavigation={true}
                 availableDates={[new Date(2018, 10, 4)]}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className={'container'}>
+        <h1>Testing Calendar with disableableNavigation and disabledDates</h1>
+        <div className={'my-calendar-container'}>
+          <Calendar
+            disableableNavigation={true}
+            disabledDates={[new Date(2018, 10, 4)]}
+          />
+          <code className={'calendar-code'}>
+            {`
+              <Calendar
+                disableableNavigation={true}
+                disabledDates={[new Date(2018, 10, 4)]}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className={'container'}>
+        <h1>
+          Testing Calendar with disableableNavigation and disabledDates and
+          maxDate
+        </h1>
+        <div className={'my-calendar-container'}>
+          <Calendar
+            disableableNavigation={true}
+            disabledDates={[new Date(2018, 10, 4)]}
+            maxDate={new Date(2018, 10, 25)}
+          />
+          <code className={'calendar-code'}>
+            {`
+              <Calendar
+                disableableNavigation={true}
+                disabledDates={[new Date(2018, 10, 4)]}
+                maxDate={new Date(2018, 10, 25)}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className={'container'}>
+        <h1>
+          Testing Calendar with disableableNavigation and availableDates and
+          maxDate
+        </h1>
+        <div className={'my-calendar-container'}>
+          <Calendar
+            disableableNavigation={true}
+            availableDates={[new Date(2018, 10, 4)]}
+            maxDate={new Date(2018, 10, 25)}
+          />
+          <code className={'calendar-code'}>
+            {`
+              <Calendar
+                disableableNavigation={true}
+                availableDates={[new Date(2018, 10, 4)]}
+                maxDate={new Date(2018, 10, 25)}
+              />`}
+          </code>
+        </div>
+      </div>
+      <div className={'container'}>
+        <h1>
+          Testing Calendar with disableableNavigation and disabledDates and
+          availableDates and maxDate
+        </h1>
+        <div className={'my-calendar-container'}>
+          <Calendar
+            disableableNavigation={true}
+            availableDates={[new Date(2018, 12, 4)]}
+            disabledDates={[new Date(2018, 11, 5)]}
+            maxDate={new Date(2018, 11, 25)}
+          />
+          <code className={'calendar-code'}>
+            {`
+              <Calendar
+                disableableNavigation={true}
+                availableDates={[new Date(2018, 12, 4)]}
+                disabledDates={[new Date(2018, 11, 5)]}
+                maxDate={new Date(2018, 11, 25)}
               />`}
           </code>
         </div>

@@ -660,54 +660,234 @@ export const getMonthViewDates = (
   return viewDates
 }
 
-export const hasAvailableDatesAfter = (
+export const availableDatesAfter = (
   currentViewDate: Date,
   currentView: DATE_TYPES,
-  minDate?: Date,
+  double: boolean,
   maxDate?: Date,
   disabledDates?: Date[],
-  availableDates?: Date[],
-  disabledWeekdays?: DAYS[]
+  availableDates?: Date[]
 ): boolean => {
-  let flag = false
   let checkDate = currentViewDate
-  switch (currentView) {
-    case 'MONTH':
+  console.log('currentViewDate: ', checkDate)
+  const adjustedView = double ? getParentView(currentView) : currentView
+  switch (adjustedView) {
+    case MONTH:
       checkDate = endOfMonthDate(currentViewDate)
-      // check if there is available date after checkDate
-      // do not pre-generate the dates
-      //
-      flag =
-        !!availableDates &&
-        availableDates.some(dateItem => afterDates(dateItem, checkDate))
       break
-    case 'YEAR':
+    case YEAR:
       checkDate = endOfYearDate(currentViewDate)
       break
-    case 'DECADE':
+    case DECADE:
       checkDate = endOfDecadeDate(currentViewDate)
       break
-    case 'CENTURY':
+    case CENTURY:
       checkDate = endOfCenturyDate(currentViewDate)
       break
 
     default:
       break
   }
+  // if none are passed return true
+  console.log('checkDate: ', checkDate)
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    !maxDate
+  ) {
+    console.log('first')
+    return true
+  }
 
-  return flag
+  // if only availableDates is passed check if there is avaliable date after checkDate
+  if (
+    !!availableDates &&
+    availableDates.length &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    !maxDate
+  ) {
+    console.log(
+      'second: ',
+      availableDates.some(dateItem => afterDates(dateItem, checkDate))
+    )
+    return availableDates.some(dateItem => afterDates(dateItem, checkDate))
+  }
+  // if disabledDates and availableDates are passed, others are not:
+  if (
+    !!availableDates &&
+    availableDates.length &&
+    !!disabledDates &&
+    disabledDates.length &&
+    !maxDate
+  ) {
+    const filteredAvailableDates = availableDates.filter(
+      availableDateItem =>
+        !disabledDates.some(disabledDateItem =>
+          equalDates(availableDateItem, disabledDateItem)
+        )
+    )
+    console.log('third')
+    return filteredAvailableDates.some(dateItem =>
+      afterDates(dateItem, checkDate)
+    )
+  }
+  // if disabledDates are passed, availableDates is not:
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    !!disabledDates &&
+    disabledDates.length
+  ) {
+    console.log('fourth')
+    if (maxDate) {
+      return afterDates(maxDate, checkDate)
+    }
+    return true
+  }
+  // if maxDate is passed and availableDates and disabledDates are not:
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    maxDate
+  ) {
+    console.log('fifth')
+    return afterDates(checkDate, maxDate)
+  }
+  // if maxDate and availableDates are passed, disabledDates are maybe:
+  if (!!availableDates && availableDates.length && maxDate) {
+    const filteredAvailableDates =
+      (!!disabledDates &&
+        availableDates.filter(
+          availableDateItem =>
+            !disabledDates.some(disabledDateItem =>
+              equalDates(availableDateItem, disabledDateItem)
+            )
+        )) ||
+      availableDates
+
+    const filteredAndSortedAvailableDates = filteredAvailableDates
+      .filter(availableDateItem => afterDates(availableDateItem, maxDate))
+      .sort((first: Date, second: Date) => first.getTime() - second.getTime())
+      .reverse()
+    console.log('sixth')
+    return afterDates(filteredAndSortedAvailableDates[0] || maxDate, checkDate)
+  }
+  // tslint:disable-next-line:quotemark
+  console.log("shouldn't come to this")
+  return false
 }
-export const hasAvailableDatesBefore = (
+export const availableDatesBefore = (
   currentViewDate: Date,
   currentView: DATE_TYPES,
+  double: boolean,
   minDate?: Date,
-  maxDate?: Date,
   disabledDates?: Date[],
   availableDates?: Date[]
 ): boolean => {
-  const flag = false
+  let checkDate = currentViewDate
+  console.log('currentViewDate: ', checkDate)
+  const adjustedView = double ? getParentView(currentView) : currentView
+  switch (adjustedView) {
+    case MONTH:
+      checkDate = firstOfMonthDate(currentViewDate)
+      break
+    case YEAR:
+      checkDate = firstOfYearDate(currentViewDate)
+      break
+    case DECADE:
+      checkDate = firstOfDecadeDate(currentViewDate)
+      break
+    case CENTURY:
+      checkDate = firstOfCenturyDate(currentViewDate)
+      break
 
-  return flag
+    default:
+      break
+  }
+  // if none are passed return true
+  console.log('checkDate: ', checkDate)
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    !minDate
+  ) {
+    console.log('first')
+    return true
+  }
+
+  // if only availableDates is passed check if there is avaliable date after checkDate
+  if (
+    !!availableDates &&
+    availableDates.length &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    !minDate
+  ) {
+    console.log(
+      'second: ',
+      availableDates.some(dateItem => beforeDates(dateItem, checkDate))
+    )
+    return availableDates.some(dateItem => beforeDates(dateItem, checkDate))
+  }
+  // if disabledDates and availableDates are passed, others are not:
+  if (
+    !!availableDates &&
+    availableDates.length &&
+    !!disabledDates &&
+    disabledDates.length &&
+    !minDate
+  ) {
+    const filteredAvailableDates = availableDates.filter(
+      availableDateItem =>
+        !disabledDates.some(disabledDateItem =>
+          equalDates(availableDateItem, disabledDateItem)
+        )
+    )
+    console.log('third')
+    return filteredAvailableDates.some(dateItem =>
+      beforeDates(dateItem, checkDate)
+    )
+  }
+  // if disabledDates are passed, availableDates is not:
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    !!disabledDates &&
+    disabledDates.length
+  ) {
+    console.log('fourth')
+    if (minDate) {
+      return beforeDates(minDate, checkDate)
+    }
+    return true
+  }
+  // if minDate is passed and availableDates and disabledDates are not:
+  if (
+    (!availableDates || (!!availableDates && !availableDates.length)) &&
+    (!disabledDates || (!!disabledDates && !disabledDates.length)) &&
+    minDate
+  ) {
+    console.log('fifth')
+    return beforeDates(checkDate, minDate)
+  }
+  // if minDate and availableDates are passed, disabledDates are maybe:
+  if (!!availableDates && availableDates.length && minDate) {
+    const filteredAvailableDates =
+      (!!disabledDates &&
+        availableDates.filter(
+          availableDateItem =>
+            !disabledDates.some(disabledDateItem =>
+              equalDates(availableDateItem, disabledDateItem)
+            )
+        )) ||
+      availableDates
+
+    const filteredAndSortedAvailableDates = filteredAvailableDates
+      .filter(availableDateItem => beforeDates(availableDateItem, minDate))
+      .sort((first: Date, second: Date) => first.getTime() - second.getTime())
+    console.log('sixth')
+    return beforeDates(filteredAndSortedAvailableDates[0] || minDate, checkDate)
+  }
+  // tslint:disable-next-line:quotemark
+  console.log("shouldn't come to this")
+  return false
 }
 
 export const isDateGrayed = (date: Date, currentViewDate: Date): boolean => {
@@ -838,14 +1018,18 @@ export const isDateDisabled = (
         ))
     )
   } else if (!minDate && !maxDate) {
+    // FIXME: Issue #1, add check for availableDates and disabledDates here also in the other functions that check if some form of date is disabled
     disabled = !!(
-      !availableDates.some(availableDateItem =>
+      (!availableDates.some(availableDateItem =>
         equalDates(availableDateItem, date)
       ) &&
-      (!!disabledWeekdays &&
-        disabledWeekdays.some(
-          weekDay => getDayIndex(weekDay) === date.getDay()
-        ))
+        (!!disabledWeekdays &&
+          disabledWeekdays.some(
+            weekDay => getDayIndex(weekDay) === date.getDay()
+          ))) ||
+      !availableDates.some(availableDateItem =>
+        equalDates(availableDateItem, date)
+      )
     )
   } else {
     disabled = !!(

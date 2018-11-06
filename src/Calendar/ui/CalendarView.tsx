@@ -15,6 +15,8 @@ import {
 } from '../utils/constants'
 import {
   afterDates,
+  availableDatesAfter,
+  availableDatesBefore,
   beforeDates,
   endOfMonthDate,
   equalDates,
@@ -299,10 +301,54 @@ const CalendarView: SFC<ICalendarView> = ({
       onDoublePrev={onDoublePrev}
       onDoubleNext={onDoubleNext}
       navigationDisabled={navigationDisabled}
-      prevDisabled={prevDisabled}
-      nextDisabled={nextDisabled}
-      doublePrevDisabled={doublePrevDisabled}
-      doubleNextDisabled={doubleNextDisabled}
+      prevDisabled={
+        prevDisabled ||
+        (disableableNavigation &&
+          !availableDatesBefore(
+            currentViewDate,
+            currentView,
+            false,
+            minDate,
+            disabledDates,
+            availableDates
+          ))
+      }
+      nextDisabled={
+        nextDisabled ||
+        (disableableNavigation &&
+          !availableDatesAfter(
+            currentViewDate,
+            currentView,
+            false,
+            maxDate,
+            disabledDates,
+            availableDates
+          ))
+      }
+      doublePrevDisabled={
+        doublePrevDisabled ||
+        (disableableNavigation &&
+          !availableDatesBefore(
+            currentViewDate,
+            currentView,
+            true,
+            minDate,
+            disabledDates,
+            availableDates
+          ))
+      }
+      doubleNextDisabled={
+        doubleNextDisabled ||
+        (disableableNavigation &&
+          !availableDatesAfter(
+            currentViewDate,
+            currentView,
+            true,
+            maxDate,
+            disabledDates,
+            availableDates
+          ))
+      }
       navigationHidden={navigationHidden}
       navigationClasses={navigationClasses}
       doublePrevClasses={doublePrevClasses}

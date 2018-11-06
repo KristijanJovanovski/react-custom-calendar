@@ -49,7 +49,7 @@ export const months = {
     9: 'September',
     10: 'October',
     11: 'November',
-    12: 'December'
+    12: 'December',
   },
   mk: {
     1: 'Јануари',
@@ -63,8 +63,8 @@ export const months = {
     9: 'Септември',
     10: 'Октомври',
     11: 'Ноември',
-    12: 'Декември'
-  }
+    12: 'Декември',
+  },
 }
 
 export const days = {
@@ -76,9 +76,9 @@ export const days = {
       'WEDNESDAY',
       'THURSDAY',
       'FRIDAY',
-      'SATURDAY'
+      'SATURDAY',
     ],
-    short: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+    short: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
   },
   mk: {
     long: [
@@ -88,8 +88,8 @@ export const days = {
       'СРЕДА',
       'ЧЕТВРТОК',
       'ПЕТОК',
-      'САБОТА'
+      'САБОТА',
     ],
-    short: ['НЕД', 'ПОН', 'ВТО', 'СРЕ', 'ЧЕТ', 'ПЕТ', 'САБ']
-  }
+    short: ['НЕД', 'ПОН', 'ВТО', 'СРЕ', 'ЧЕТ', 'ПЕТ', 'САБ'],
+  },
 }
